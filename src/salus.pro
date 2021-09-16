@@ -11,14 +11,18 @@ CONFIG += c++11
 SOURCES += \
     doctor.cpp \
     launcherwindow.cpp \
-    main.cpp
+    main.cpp \
+    profileregistrationwindow.cpp
 
 HEADERS += \
     doctor.h \
-    launcherwindow.h
+    launcherwindow.h \
+    main.h \
+    profileregistrationwindow.h
 
 FORMS += \
-    launcherwindow.ui
+    launcherwindow.ui \
+    profileregistrationwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

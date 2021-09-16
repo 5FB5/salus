@@ -1,3 +1,5 @@
+#include <QtCore>
+#include <QMessageBox>
 #include <QString>
 #include <QFileInfo>
 #include <QDebug>
@@ -10,13 +12,6 @@ LauncherWindow::LauncherWindow(QWidget *parent) :
     ui(new Ui::LauncherWindow)
 {
     ui->setupUi(this);
-
-    QFileInfo checkDoctorDb("./doctors.csv");
-
-    if (checkDoctorDb.exists() == false) {
-        qDebug() << "\nFile: 'doctor.csv' database doesn't exists!";
-    }
-
 }
 
 LauncherWindow::~LauncherWindow()
