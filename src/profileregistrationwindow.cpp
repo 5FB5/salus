@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "profileregistrationwindow.h"
 #include "ui_profileregistrationwindow.h"
 

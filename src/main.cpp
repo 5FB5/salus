@@ -1,19 +1,18 @@
+#include <QApplication>
+
 #include "main.h"
 #include "launcherwindow.h"
-#include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    LauncherWindow launcherWindow;
+    LauncherWindow lw;
 
-    if (isDoctorsJsonDbExists() == true) {
-        // enter to the system
-        launcherWindow.show();
+    if (isDoctorsJsonExists() == false) {
+        createNewProfileMessageBox();
     }
     else {
-        // create new profile
-        createNewProfileMessageBox();
+        lw.show();
     }
 
     return a.exec();

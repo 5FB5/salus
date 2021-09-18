@@ -5,7 +5,7 @@ Doctor::Doctor(QObject *parent) : QObject(parent)
 
 }
 
-void Doctor::saveDataToDataBase()
+void Doctor::saveDataToJson()
 {
 
 }

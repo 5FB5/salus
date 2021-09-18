@@ -12,7 +12,6 @@ public:
     explicit Doctor(QObject *parent = nullptr);
 
     QString doctorFullName;
-    QString doctorShortName; // to get an initials from full name
     QString doctorSpecialization;
     QString institutionName;
     QString institutionCode;
@@ -20,12 +19,12 @@ public:
     QString inn;
     QString licenseInfo;
 
-public slots:
-    void saveDataToDataBase(); // for profile registration
+    QString getDoctorShortName(QString fullName); // to get an initials from full name
+
     void loadDataFromDataBase();
 
-private:
-    QString getDoctorShortName(QString fullName);
+public slots:
+    void saveDataToJson(); // for profile registration
 
 };
 
