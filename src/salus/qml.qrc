@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>login_page.qml</file>
     </qresource>
 </RCC>
