@@ -9,44 +9,47 @@ Window {
     visible: true
     title: qsTr("Салюс")
 
+    // Отображается только при запуске система (открывается окно входа)
     StackView {
         id: stackview_startup
         initialItem: page_login
 
         anchors.fill: parent
 
-        width: parent.width
-        height: parent.height
+        anchors.centerIn: parent
     }
 
-    Item {
-        id: mainWindow
-        anchors.fill: parent
+    Rectangle {
+        id: menu_bar
         visible: false
 
-        Rectangle {
-            id: menu_bar
-            visible: true
-            anchors.left: parent.left
-            width: 256
-            height: parent.height
-            color: "#828282"
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
 
-            StackView {
-                id: stackview_content_main
-                initialItem: patient_medical_card
-                x: parent.width
-                y: 0
-                width: window.width - parent.width
-                height: parent.height
-            }
+        width: 256
+
+        color: "#828282"
+
+        StackView {
+            id: stackview_content_main
+            x: 0
+            y: 0
+
+            width: 1344
+            height: 900
+
+            anchors.top: applicationWindow.top
+            anchors.bottom: applicationWindow.bottom
+            anchors.left: parent.right
+            anchors.right: applicationWindow.right
         }
     }
 
     LoginPage {
         id: page_login
         onLogIn: {
-            stackview_startup.push(mainWindow)
+            stackview_startup.push(menu_bar)
         }
 
     }
@@ -83,6 +86,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}
+    D{i:0;formeditorZoom:0.66}
 }
 ##^##*/
