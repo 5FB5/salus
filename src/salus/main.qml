@@ -6,7 +6,10 @@ Window {
     id: applicationWindow
     width: 1600
     height: 900
+    minimumWidth: 800
+    minimumHeight: 600
     visible: true
+    visibility: "Maximized"
     title: qsTr("Салюс")
 
     // Отображается только при запуске система (открывается окно входа)
@@ -15,7 +18,6 @@ Window {
         initialItem: page_login
 
         anchors.fill: parent
-
         anchors.centerIn: parent
     }
 
