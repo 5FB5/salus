@@ -11,60 +11,72 @@ Window {
 
     StackView {
         id: stackview_startup
-        initialItem: login_page
+        initialItem: page_login
 
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            top: parent.top
-        }
+        anchors.fill: parent
 
         width: parent.width
         height: parent.height
     }
 
-    Rectangle {
-        id: menu_bar
-        visible: true
-        anchors.left: parent.left
-        width: 256
-        height: parent.height
-        color: "#828282"
+    Item {
+        id: mainWindow
+        anchors.fill: parent
+        visible: false
 
-        StackView {
-            id: stackview_content_main
-            initialItem: patient_medical_card
-            x: parent.width
-            y: 0
-            width: window.width - parent.width
+        Rectangle {
+            id: menu_bar
+            visible: true
+            anchors.left: parent.left
+            width: 256
             height: parent.height
+            color: "#828282"
+
+            StackView {
+                id: stackview_content_main
+                initialItem: patient_medical_card
+                x: parent.width
+                y: 0
+                width: window.width - parent.width
+                height: parent.height
+            }
         }
     }
 
+    LoginPage {
+        id: page_login
+        onLogIn: {
+            stackview_startup.push(mainWindow)
+        }
+
+    }
+
+    /*
     Component {
-        id: login_page
+        id: page_login
     }
 
     Component {
-        id: doctor_profile_registration
+        id: page_doctor_profile_registration
     }
 
     Component {
-        id: doctor_profile
+        id: page_doctor_profile
     }
 
     Component {
-        id: doctor_diagnoses_list
+        id: page_doctor_diagnoses_list
     }
 
     Component {
-        id: patient_medical_card
+        id: page_patient_medical_card
     }
 
     Component {
-        id: patient_registration
+        id: page_patient_registration
     }
+
+    */
 }
 
 
