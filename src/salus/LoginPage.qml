@@ -6,10 +6,8 @@ Page {
     id: root
 
     property alias labelDoctorName: doctorName.text
-   // property alias backgroundColor: backgroundRect.color
-
-   // property alias buttonLoginText: buttonEnterToProfile.text
-   // property alias buttonSignUpText: buttonSignUp.text
+    property int buttonStandartTextFontSize: 10
+    property int standartTextSize: 14
 
     signal logIn();
     signal signUp();
@@ -17,9 +15,13 @@ Page {
     // Табличка, на которой будет отображаться имя врача из профиля
     Label {
         id: doctorName
-        anchors.top: parent.top
+        text: "[Заглушка] Фамилия Имя Отчество"
+
+        font.pointSize: standartTextSize
+
+        anchors.top: rowButtons.top
+        anchors.topMargin: -112
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 20
     }
 
     background: Rectangle {
@@ -28,14 +30,19 @@ Page {
     }
 
     Row {
+        id: rowButtons
+
         spacing: 15
 
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: (parent.height / 2) - 50
 
         Button {
             id: buttonEnterToProfile
             text: "Войти"
+
+            font.pointSize: buttonStandartTextFontSize
 
             width: 200
             height: 60
@@ -48,6 +55,8 @@ Page {
         Button {
             id: buttonSignUp
             text: "Зарегистрироваться"
+
+            font.pointSize: buttonStandartTextFontSize
 
             width: 200
             height: 60
