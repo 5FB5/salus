@@ -1,30 +1,38 @@
 #ifndef DOCTOR_H
 #define DOCTOR_H
 
-#include <QObject>
-#include <QString>
+#define JSON_FILE_PATH QCoreApplication::applicationDirPath() + "/doctors.json"
 
-class Doctor : public QObject
+#include <QCoreApplication>
+#include <QString>
+#include <QFile>
+#include <QFileInfo>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QObject>
+
+class Doctor
 {
-    Q_OBJECT
 
 public:
-    explicit Doctor(QObject *parent = nullptr);
+    Doctor(QString fullName, QString specialization,
+           QString institutionName, QString institutionCode, QString institutionAddress,
+           QString inn, QString licenseInfo);
 
-    QString doctorFullName;
-    QString doctorSpecialization;
-    QString institutionName;
-    QString institutionCode;
-    QString institutionAddress;
-    QString inn;
-    QString licenseInfo;
+    QString bFullName;
+    QString bSpecialization;
+    QString bInstitutionName;
+    QString bInstitutionCode;
+    QString bInstitutionAddress;
+    QString bInn;
+    QString bLicenseInfo;
 
-    QString getDoctorShortName(QString fullName); // to get an initials from full name
+    QString getDoctorShortName(QString fullName); // для инициалов
 
-    void loadDataFromDataBase();
+    void loadProfileFromJson(QString doctorFullName);
+    void saveProfileToJson(QJsonObject jsonObject);
 
-public slots:
-    void saveDataToJson(); // for profile registration
+    bool isProfileExists();
 
 };
 

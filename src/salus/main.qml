@@ -56,6 +56,10 @@ Window {
 
     }
 
+    DoctorProfileRegistrationPage {
+        id: page_doctor_registration
+    }
+
     /*
     Component {
         id: page_login
