@@ -16,11 +16,9 @@ class Doctor
 {
 
 public:
-    Doctor();
-
-    void createNewProfile(QString fullName, QString specialization,
-                          QString institutionName, QString institutionCode, QString institutionAddress,
-                          QString inn, QString licenseInfo);
+    Doctor(QString fullName, QString specialization,
+           QString institutionName, QString institutionCode, QString institutionAddress,
+           QString inn, QString licenseInfo);
 
     void loadProfileFromJson(QString doctorFullName);
 
@@ -30,6 +28,7 @@ public:
 
 private:
     void saveProfileToJson(QJsonArray jsonArray);
+
     QJsonDocument loadJson();
 
 };

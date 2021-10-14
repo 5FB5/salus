@@ -1,13 +1,8 @@
 #include "doctor.h"
 
-Doctor::Doctor()
-{
-
-}
-
-void Doctor::createNewProfile(QString fullName, QString specialization,
-                              QString institutionName, QString institutionCode, QString institutionAddress,
-                              QString inn, QString licenseInfo)
+Doctor::Doctor(QString fullName, QString specialization,
+               QString institutionName, QString institutionCode, QString institutionAddress,
+               QString inn, QString licenseInfo)
 {
     /* Пример структуры
      *
