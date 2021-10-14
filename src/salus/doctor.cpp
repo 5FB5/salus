@@ -1,20 +1,14 @@
 #include "doctor.h"
 
-Doctor::Doctor(QString fullName, QString specialization, // for profile registration
-               QString institutionName, QString institutionCode, QString institutionAddress,
-               QString inn, QString licenseInfo)
+Doctor::Doctor()
 {
-    bFullName = fullName;
-    bSpecialization = specialization;
-    bInstitutionName = institutionName;
-    bInstitutionCode = institutionCode;
-    bInstitutionAddress = institutionAddress;
-    bInn = inn;
-    bLicenseInfo = licenseInfo;
 
-    // создаём глобальный объект JSON для создания структуры файла с подкатегориями
-    QJsonObject jsonGlobalObj;
+}
 
+void Doctor::createNewProfile(QString fullName, QString specialization,
+                              QString institutionName, QString institutionCode, QString institutionAddress,
+                              QString inn, QString licenseInfo)
+{
     /* Пример структуры
      *
      * {
@@ -28,11 +22,20 @@ Doctor::Doctor(QString fullName, QString specialization, // for profile registra
      *      "licenseInfo": "Наименование лицензии"
      *   }
      *
-     *  ...
-     *
      * }
      *
      */
+
+   /* if (isProfileExists(fullName) == false) {
+        qDebug() << "Salus: [Doctor.h] profile '" + fullName + "' already exists\n";
+        return;
+    }
+*/
+    QJsonDocument jsonDocument = loadJson();
+    QJsonArray jsonArray = jsonDocument.array();
+
+    // создаём глобальный объект JSON для создания структуры файла с подкатегориями
+    QJsonObject jsonGlobalObj;
 
     // объект для добавления данных нового пользователя в структуру
     QJsonObject doctorProfileObj;
@@ -45,20 +48,75 @@ Doctor::Doctor(QString fullName, QString specialization, // for profile registra
     doctorProfileObj.insert("licenseInfo", licenseInfo);
 
     jsonGlobalObj[(QString)fullName] = doctorProfileObj;
+    jsonArray.append(jsonGlobalObj);
 
-    saveProfileToJson(jsonGlobalObj);
+    saveProfileToJson(jsonArray);
 }
 
-void Doctor::saveProfileToJson(QJsonObject jsonObj)
+QJsonDocument Doctor::loadJson()
+{
+    QFileInfo fInfo(JSON_FILE_PATH);
+
+    if (fInfo.exists()) {
+        QFile f(JSON_FILE_PATH);
+        f.open(QFile::ReadOnly);
+        QJsonDocument jd = QJsonDocument().fromJson(f.readAll());
+        f.close();
+        return jd;
+    }
+    else {
+        QFile f(JSON_FILE_PATH);
+        f.open(QFile::WriteOnly);
+        QJsonDocument jd;
+        f.write(jd.toJson());
+        f.close();
+        return jd;
+    }
+}
+
+void Doctor::saveProfileToJson(QJsonArray jsonArray)
 {
     QJsonDocument jsonDocument;
-    jsonDocument.setObject(jsonObj);
+    jsonDocument.setArray(jsonArray);
 
     QFile jsonFile(JSON_FILE_PATH);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(jsonDocument.toJson());
     jsonFile.close();
+
+    qDebug() << "Salus: [Doctor.h] saveProfileToJson() - object saved\n";
 }
+
+
+//bool Doctor::isProfileExists(QString fullname)
+//{
+//    QFileInfo jsonFileInfo(JSON_FILE_PATH);
+//    if (!jsonFileInfo.exists()) {
+//        qDebug() << "Salus: [Doctor.h -> isProfileExists()] " + JSON_FILE_PATH + " not found\n";
+//        return false;
+//    }
+
+//    /*
+//     * открываем файл
+//     * парсим всё содержимое
+//     * берём оттуда данные
+//     * смотрим наличие профиля
+//     * если есть - true
+//     *
+//     */
+
+//    QFile jsonFile(JSON_FILE_PATH);
+//    jsonFile.open(QFile::ReadOnly);
+
+//    //TODO: парсинг всех данных из файла
+
+//    jsonFile.close();
+
+//    return true;
+
+//}
+
+
 /*
 void Doctor::loadDataFromJson(QString doctorFullName)
 {
@@ -73,7 +131,6 @@ void Doctor::loadDataFromJson(QString doctorFullName)
     QFile jsonFile("doctors.json");
 
     QJsonDocument jsonDocument;
-    QJsonObject currentDoctorProfile;
 
     jsonFile.open(QFile::ReadOnly);
 

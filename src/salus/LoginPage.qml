@@ -10,7 +10,6 @@ Page {
     property int standartTextSize: 14
 
     signal logIn();
-    signal signUp();
 
     // Табличка, на которой будет отображаться имя врача из профиля
     Label {
@@ -52,19 +51,19 @@ Page {
             }
         }
 
-        Button {
-            id: buttonSignUp
-            text: "Зарегистрироваться"
+//        Button {
+//            id: buttonSignUp
+//            text: "Зарегистрироваться"
 
-            font.pointSize: buttonStandartTextFontSize
+//            font.pointSize: buttonStandartTextFontSize
 
-            width: 200
-            height: 60
+//            width: 200
+//            height: 60
 
-            onClicked: {
-                root.signUp();
-            }
-        }
+//            onClicked: {
+//                root.signUp();
+//            }
+//        }
     }
 
 }

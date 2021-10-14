@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QObject>
 
@@ -15,24 +16,21 @@ class Doctor
 {
 
 public:
-    Doctor(QString fullName, QString specialization,
-           QString institutionName, QString institutionCode, QString institutionAddress,
-           QString inn, QString licenseInfo);
+    Doctor();
 
-    QString bFullName;
-    QString bSpecialization;
-    QString bInstitutionName;
-    QString bInstitutionCode;
-    QString bInstitutionAddress;
-    QString bInn;
-    QString bLicenseInfo;
+    void createNewProfile(QString fullName, QString specialization,
+                          QString institutionName, QString institutionCode, QString institutionAddress,
+                          QString inn, QString licenseInfo);
+
+    void loadProfileFromJson(QString doctorFullName);
+
+    bool isProfileExists(QString fullname);
 
     QString getDoctorShortName(QString fullName); // для инициалов
 
-    void loadProfileFromJson(QString doctorFullName);
-    void saveProfileToJson(QJsonObject jsonObject);
-
-    bool isProfileExists();
+private:
+    void saveProfileToJson(QJsonArray jsonArray);
+    QJsonDocument loadJson();
 
 };
 

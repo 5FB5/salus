@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include "doctor.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,12 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+
+    Doctor test1;
+    test1.createNewProfile("A", "B", "C", "D", "E", "F", "G");
+
+    Doctor test2;
+    test2.createNewProfile("H", "I", "J", "K", "L", "M", "N");
 
     return app.exec();
 }
