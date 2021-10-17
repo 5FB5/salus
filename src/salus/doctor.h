@@ -20,14 +20,12 @@ public:
            QString institutionName, QString institutionCode, QString institutionAddress,
            QString inn, QString licenseInfo);
 
-    void loadProfileFromJson(QString doctorFullName);
+    void saveProfileToJson(QJsonArray array);
 
     bool isProfileExists(QString fullname);
 
-    QString getDoctorShortName(QString fullName); // для инициалов
-
-private:
-    void saveProfileToJson(QJsonArray jsonArray);
+    QString getProfileField(QString fullname, QString key);
+    QString getProfileShortName(QString fullName); // для инициалов
 
     QJsonDocument loadJson();
 
