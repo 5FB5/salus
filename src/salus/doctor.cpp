@@ -56,6 +56,9 @@ void Doctor::createNewProfile(QString fullName, QString specialization,
     jsonArray.append(doctorProfileObj);
 
     saveProfileToJson(jsonArray);
+
+    // Сразу после добавления выбираем профиль
+    selectProfile(fullName);
 }
 
 QJsonDocument Doctor::loadJson()
@@ -93,33 +96,45 @@ void Doctor::saveProfileToJson(QJsonArray array)
 
 void Doctor::selectProfile(QString profileName)
 {
-    this->fullName = getProfileField(profileName, "fullname");
-    this->specialization = getProfileField(profileName, "specialization");
-    this->institutionName = getProfileField(profileName, "institutionName");
-    this->institutionAddress = getProfileField(profileName, "institutionAddress");
-    this->institutionCode = getProfileField(profileName, "institutionCode");
-    this->inn = getProfileField(profileName, "inn");
-    this->licenseInfo = getProfileField(profileName, "licenseInfo");
+    if (isProfileExists(profileName) == true) {
+        this->fullName = getProfileField(profileName, "fullname");
+        this->specialization = getProfileField(profileName, "specialization");
+        this->institutionName = getProfileField(profileName, "institutionName");
+        this->institutionAddress = getProfileField(profileName, "institutionAddress");
+        this->institutionCode = getProfileField(profileName, "institutionCode");
+        this->inn = getProfileField(profileName, "inn");
+        this->licenseInfo = getProfileField(profileName, "licenseInfo");
+    }
+    else {
+        qDebug() << "Salus: [Doctor.h] selectProfile() - can't select non-existing profile (" << profileName << ")\n";
+        return;
+    }
 }
 
 void Doctor::updateProfile(QString fullname, QString key, QString value)
 {
-    QJsonDocument doc = loadJson();
-    QJsonArray array = doc.array();
-    QJsonObject currentObj;
+    if (isProfileExists(fullname) == true) {
+        QJsonDocument doc = loadJson();
+        QJsonArray array = doc.array();
+        QJsonObject currentObj;
 
-    for (int i = 0; i < array.size(); ++i) {
-        for (auto j = array.cbegin(); j < array.cend(); ++j) {
-            currentObj = j->toObject();
+        for (int i = 0; i < array.size(); ++i) {
+            for (auto j = array.cbegin(); j < array.cend(); ++j) {
+                currentObj = j->toObject();
 
-            if (currentObj["fullname"] == fullname) {
-                currentObj[key] = value;
-                array.replace(i, currentObj);
-                saveProfileToJson(array);
-                qDebug() << "Salus: [Doctor.h] updateProfile() - object's info (" << key << ") updated\n";
-                break;
+                if (currentObj["fullname"] == fullname) {
+                    currentObj[key] = value;
+                    array.replace(i, currentObj);
+                    saveProfileToJson(array);
+                    qDebug() << "Salus: [Doctor.h] updateProfile() - object's info (" << key << ") updated\n";
+                    break;
+                }
             }
         }
+    }
+    else {
+        qDebug() << "Salus: [Doctor.h] updateProfile() - can't update non-existing profile (" << fullname << ")\n";
+        return;
     }
 }
 
@@ -148,14 +163,33 @@ QString Doctor::getProfileField(QString fullname, QString key)
     return !field.isEmpty() ? field : nullptr;
 }
 
+QString Doctor::getProfileShortName()
+{
+    QString shortName;
+
+    if (isProfileExists(this->fullName) == true) {
+        QString firstName;
+        QString lastNameLetter;
+        QString middleNameLetter;
+
+        QString fullname = getProfileField(this->fullName, "fullname");
+        QStringList sl = fullname.split(' ', Qt::SkipEmptyParts);
+
+        firstName = sl[0];
+        lastNameLetter = sl[1].at(0);
+        middleNameLetter = sl[2].at(0);
+
+        shortName = lastNameLetter + '.' + middleNameLetter + "." + firstName;
+
+    }
+    else {
+        qDebug() << "Salus: [Doctor.h] getProfileShortName() - Can't get name from non-existing profile (" << this->fullName << ")\n";
+    }
+
+    return !shortName.isEmpty() ? shortName : nullptr;
+}
+
 bool Doctor::isProfileExists(QString fullname)
 {
     return getProfileField(fullname, "fullname") == fullname ? true : false;
 }
-
-/*
-QString Doctor::getProfileShortName(QString fullName)
-{
-
-}
-*/

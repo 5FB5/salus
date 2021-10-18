@@ -37,7 +37,7 @@ public:
     bool isProfileExists(QString fullname);
 
     QString getProfileField(QString fullname, QString key);
-    QString getProfileShortName(QString fullName); // для инициалов
+    QString getProfileShortName(); // для инициалов
 
     QJsonDocument loadJson();
 
