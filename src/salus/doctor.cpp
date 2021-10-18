@@ -1,8 +1,13 @@
 #include "doctor.h"
 
-Doctor::Doctor(QString fullName, QString specialization,
-               QString institutionName, QString institutionCode, QString institutionAddress,
-               QString inn, QString licenseInfo)
+Doctor::Doctor()
+{
+
+}
+
+void Doctor::createNewProfile(QString fullName, QString specialization,
+                              QString institutionName, QString institutionCode, QString institutionAddress,
+                              QString inn, QString licenseInfo)
 {
 
     // Пример структуры
@@ -29,11 +34,11 @@ Doctor::Doctor(QString fullName, QString specialization,
     //    ]
 
 
-   /* if (isProfileExists(fullName) == false) {
-        qDebug() << "Salus: [Doctor.h] profile '" + fullName + "' already exists\n";
+   if (isProfileExists(fullName) == true) {
+        qDebug() << "Salus: [Doctor.h] Profile " << fullName << " already exists\n";
         return;
     }
-*/
+
     QJsonDocument jsonDocument = loadJson();
 
     QJsonArray jsonArray = jsonDocument.array();
@@ -55,17 +60,16 @@ Doctor::Doctor(QString fullName, QString specialization,
 
 QJsonDocument Doctor::loadJson()
 {
-    QFileInfo fInfo(JSON_FILE_PATH);
+    QFileInfo fInfo(JSON_DOCTOR_FILE_PATH);
+    QFile f(JSON_DOCTOR_FILE_PATH);
 
     if (fInfo.exists()) {
-        QFile f(JSON_FILE_PATH);
         f.open(QFile::ReadOnly);
         QJsonDocument jd = QJsonDocument::fromJson(f.readAll());
         f.close();
         return jd;
     }
     else {
-        QFile f(JSON_FILE_PATH);
         f.open(QFile::WriteOnly);
         QJsonDocument jd;
         f.write(jd.toJson());
@@ -79,12 +83,44 @@ void Doctor::saveProfileToJson(QJsonArray array)
     QJsonDocument doc;
     doc.setArray(array);
 
-    QFile jsonFile(JSON_FILE_PATH);
+    QFile jsonFile(JSON_DOCTOR_FILE_PATH);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(doc.toJson());
     jsonFile.close();
 
     qDebug() << "Salus: [Doctor.h] saveProfileToJson() - object saved\n";
+}
+
+void Doctor::selectProfile(QString profileName)
+{
+    this->fullName = getProfileField(profileName, "fullname");
+    this->specialization = getProfileField(profileName, "specialization");
+    this->institutionName = getProfileField(profileName, "institutionName");
+    this->institutionAddress = getProfileField(profileName, "institutionAddress");
+    this->institutionCode = getProfileField(profileName, "institutionCode");
+    this->inn = getProfileField(profileName, "inn");
+    this->licenseInfo = getProfileField(profileName, "licenseInfo");
+}
+
+void Doctor::updateProfile(QString fullname, QString key, QString value)
+{
+    QJsonDocument doc = loadJson();
+    QJsonArray array = doc.array();
+    QJsonObject currentObj;
+
+    for (int i = 0; i < array.size(); ++i) {
+        for (auto j = array.cbegin(); j < array.cend(); ++j) {
+            currentObj = j->toObject();
+
+            if (currentObj["fullname"] == fullname) {
+                currentObj[key] = value;
+                array.replace(i, currentObj);
+                saveProfileToJson(array);
+                qDebug() << "Salus: [Doctor.h] updateProfile() - object's info (" << key << ") updated\n";
+                break;
+            }
+        }
+    }
 }
 
 QString Doctor::getProfileField(QString fullname, QString key)
@@ -96,50 +132,26 @@ QString Doctor::getProfileField(QString fullname, QString key)
     foreach (const QJsonValue &v, array) {
         QJsonObject currentObject =  v.toObject();
         if (v["fullname"] == fullname) {
-            qDebug() << "Salus: [Doctor.h] getDoctorProfileField() - Profile " << fullname << " key " << key << " = " << v[key].toString() << "\n";
+            //qDebug() << "Salus: [Doctor.h] getDoctorProfileField() - Profile " << fullname << ", return key " << key << " = " << v[key].toString() << "\n";
             field = v[key].toString();
         }
         else if (v["fullname"] != fullname) {
             continue;
         }
         else {
-            qDebug() << "Salus: [Doctor.h] getProfileField() - Profile doesn't exists\n";
-            field = nullptr;
+            qDebug() << "Salus: [Doctor.h] getProfileField() - Can't take a field from non-existing profile (" << fullName << ")\n";
+            break;
         }
 
     }
 
-    return field;
+    return !field.isEmpty() ? field : nullptr;
 }
 
-
-//bool Doctor::isProfileExists(QString fullname)
-//{
-//    QFileInfo jsonFileInfo(JSON_FILE_PATH);
-//    if (!jsonFileInfo.exists()) {
-//        qDebug() << "Salus: [Doctor.h -> isProfileExists()] " + JSON_FILE_PATH + " not found\n";
-//        return false;
-//    }
-
-//    /*
-//     * открываем файл
-//     * парсим всё содержимое
-//     * берём оттуда данные
-//     * смотрим наличие профиля
-//     * если есть - true
-//     *
-//     */
-
-//    QFile jsonFile(JSON_FILE_PATH);
-//    jsonFile.open(QFile::ReadOnly);
-
-//    //TODO: парсинг всех данных из файла
-
-//    jsonFile.close();
-
-//    return true;
-
-//}
+bool Doctor::isProfileExists(QString fullname)
+{
+    return getProfileField(fullname, "fullname") == fullname ? true : false;
+}
 
 /*
 QString Doctor::getProfileShortName(QString fullName)
