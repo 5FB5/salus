@@ -2,12 +2,13 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
+
 Window {
     id: applicationWindow
-    width: 1600
-    height: 900
-    minimumWidth: 800
-    minimumHeight: 600
+    width: ScreenInfo.desktopAvailableWidth
+    height: ScreenInfo.desktopAvailableHeight
+    minimumWidth: 1366
+    minimumHeight: 768
     visible: true
     visibility: "Maximized"
     title: qsTr("Салюс")

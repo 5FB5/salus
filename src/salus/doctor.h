@@ -26,21 +26,29 @@ public:
     QString inn;
     QString licenseInfo;
 
+    QString getProfileShortName(); // для инициалов
+    QString findDiagnosis(QJsonArray diagnosesData);
+
     void createNewProfile(QString fullName, QString specialization,
                           QString institutionName, QString institutionCode, QString institutionAddress,
                           QString inn, QString licenseInfo);
 
-    void saveProfileToJson(QJsonArray array);
     void selectProfile(QString profileName);
     void updateProfile(QString fullname, QString key, QString value);
-
-    bool isProfileExists(QString fullname);
-
-    QString getProfileField(QString fullname, QString key);
-    QString getProfileShortName(); // для инициалов
+    void addDiagnosis(QString fullname, QString value);
+    void editDiagnosis(QJsonArray diagnosesData, QString key, QString value);
 
     QJsonDocument loadJson();
 
+    QJsonArray diagnosesData;
+
+private:
+    QString getProfileField(QString fullname, QString key);
+
+    bool isProfileExists(QString fullname);
+    bool isDiagnosisExists(QJsonArray data, QString value);
+
+    void saveProfileToJson(QJsonArray array);
 };
 
 #endif // DOCTOR_H
