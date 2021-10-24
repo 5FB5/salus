@@ -10,7 +10,6 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QObject>
 
 class Doctor
 {
@@ -27,26 +26,32 @@ public:
     QString licenseInfo;
 
     QString getProfileShortName(); // для инициалов
-    QString findDiagnosis(QJsonArray diagnosesData);
+    //QString findDiagnosis(QJsonArray diagnosesData);
 
     void createNewProfile(QString fullName, QString specialization,
                           QString institutionName, QString institutionCode, QString institutionAddress,
                           QString inn, QString licenseInfo);
 
     void selectProfile(QString profileName);
-    void updateProfile(QString fullname, QString key, QString value);
-    void addDiagnosis(QString fullname, QString value);
-    void editDiagnosis(QJsonArray diagnosesData, QString key, QString value);
+    void updateProfile(QString key, QString value);
+
+    void addDiagnosis(QString value);
+
+    void addTreatment(QString value);
+    // TODO: void editTreatments...
+    // TODO: void editDiagnosis(QJsonArray diagnosesData, QString key, QString value);
 
     QJsonDocument loadJson();
 
-    QJsonArray diagnosesData;
+    QJsonArray diagnosesData; // массив для хранения собственных формулировок возможных диагнозов исходя из диагностики
+    QJsonArray treatmentsData; // массив для хранения собственных формулировок возможных процедур лечения
 
 private:
     QString getProfileField(QString fullname, QString key);
 
     bool isProfileExists(QString fullname);
-    bool isDiagnosisExists(QJsonArray data, QString value);
+
+    bool isArrayItemExists(QJsonArray data, QString value);
 
     void saveProfileToJson(QJsonArray array);
 };

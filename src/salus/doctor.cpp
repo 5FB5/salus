@@ -23,6 +23,9 @@ void Doctor::createNewProfile(QString fullName, QString specialization,
     //            "institutionName": "ИП Иванов И.И.",
     //            "licenseInfo": "Лицензия №256",
     //            "specialization": "Стоматолог"
+    //            "treatments": [       // Набор собственных наименований способов лечения
+    //                "Антисептик"
+    //            ]
     //        }
     //    ]
 
@@ -46,6 +49,7 @@ void Doctor::createNewProfile(QString fullName, QString specialization,
     doctorProfileObj.insert("inn", inn);
     doctorProfileObj.insert("licenseInfo", licenseInfo);
     doctorProfileObj.insert("diagnoses", diagnosesData);
+    doctorProfileObj.insert("treatments", treatmentsData);
 
     jsonArray.append(doctorProfileObj);
 
@@ -76,45 +80,71 @@ QJsonDocument Doctor::loadJson()
     }
 }
 
-void Doctor::addDiagnosis(QString fullname, QString value)
+void Doctor::addDiagnosis(QString value)
 {
-    if (isProfileExists(fullname) == true) {
-        QJsonDocument doc = loadJson();
-        QJsonArray array = doc.array();
-        QJsonObject currentObj;
-        QJsonArray currentObjDiagnoses;
+    QJsonDocument doc = loadJson();
+    QJsonArray array = doc.array();
+    QJsonObject currentObj;
+    QJsonArray currentObjDiagnoses;
 
-        for (int i = 0; i < array.size(); ++i) {
-            for (auto j = array.cbegin(); j < array.cend(); ++j) {
-                currentObj = j->toObject();
+    for (int i = 0; i < array.size(); ++i) {
+        for (auto j = array.cbegin(); j < array.cend(); ++j) {
+            currentObj = j->toObject();
 
-                if (currentObj["fullname"] == fullname) {
-                    currentObjDiagnoses = currentObj["diagnoses"].toArray();
+            if (currentObj["fullname"] == this->fullName) {
+                currentObjDiagnoses = currentObj["diagnoses"].toArray();
 
-                    if (isDiagnosisExists(currentObjDiagnoses, value) == false) {
-                        currentObjDiagnoses.append(value);
-                        currentObj["diagnoses"] = currentObjDiagnoses;
+                if (isArrayItemExists(currentObjDiagnoses, value) == false) {
+                    currentObjDiagnoses.append(value);
+                    currentObj["diagnoses"] = currentObjDiagnoses;
 
-                        array.replace(i, currentObj);
+                    array.replace(i, currentObj);
 
-                        qDebug() << "Salus: [Doctor.h] addDiagnosis() - Saving new diagnosis...\n";
-                        saveProfileToJson(array);
-                        return;
-                    }
-                    else {
-                        qDebug() << "Salus: [Doctor.h] addDiagnosis() - Diagnosis " << value << " already exists\n";
-                        return;
-                    }
+                    qDebug() << "Salus: [Doctor.h] addDiagnosis() - Saving new diagnosis...\n";
+                    saveProfileToJson(array);
+                    break;
+                }
+                else {
+                    qDebug() << "Salus: [Doctor.h] addDiagnosis() - Diagnosis " << value << " already exists\n";
                 }
             }
         }
     }
-    else {
-        qDebug() << "Salus: [Doctor.h] updateProfile() - can't update non-existing profile (" << fullname << ")\n";
-        return;
+}
+
+void Doctor::addTreatment(QString value)
+{
+    QJsonDocument doc = loadJson();
+    QJsonArray array = doc.array();
+    QJsonObject currentObj;
+    QJsonArray currentObjTreatments;
+
+    for (int i = 0; i < array.size(); ++i) {
+        for (auto j = array.cbegin(); j < array.cend(); ++j) {
+            currentObj = j->toObject();
+
+            if (currentObj["fullname"] == this->fullName) {
+                currentObjTreatments = currentObj["treatments"].toArray();
+
+                if (isArrayItemExists(currentObjTreatments, value) == false) {
+                    currentObjTreatments.append(value);
+                    currentObj["treatments"] = currentObjTreatments;
+
+                    array.replace(i, currentObj);
+
+                    qDebug() << "Salus: [Doctor.h] addTreatments() - Saving new treatment...\n";
+                    saveProfileToJson(array);
+                    break;
+                }
+                else {
+                    qDebug() << "Salus: [Doctor.h] addTreatments() - Treatment " << value << " already exists\n";
+                }
+            }
+        }
     }
 }
 
+// TODO: make diagnoses array editable
 //void Doctor::editDiagnosis(QJsonArray diagnosesData, QString value)
 //{
 
@@ -152,32 +182,30 @@ void Doctor::selectProfile(QString profileName)
     }
 }
 
-void Doctor::updateProfile(QString fullname, QString key, QString value)
+void Doctor::updateProfile(QString key, QString value)
 {
-    if (isProfileExists(fullname) == true) {
-        QJsonDocument doc = loadJson();
-        QJsonArray array = doc.array();
-        QJsonObject currentObj;
+    QJsonDocument doc = loadJson();
+    QJsonArray array = doc.array();
+    QJsonObject currentObj;
 
-        for (int i = 0; i < array.size(); ++i) {
-            for (auto j = array.cbegin(); j < array.cend(); ++j) {
-                currentObj = j->toObject();
+    for (int i = 0; i < array.size(); ++i) {
+        for (auto j = array.cbegin(); j < array.cend(); ++j) {
+            currentObj = j->toObject();
 
-                if (currentObj["fullname"] == fullname) {
-                    currentObj[key] = value;
-                    array.replace(i, currentObj);
-
-                    qDebug() << "Salus: [Doctor.h] updateProfile() - Saving updated key...\n";
-                    saveProfileToJson(array);
-                    qDebug() << "Salus: [Doctor.h] updateProfile() - object's info (" << key << ") updated\n";
+            if ((currentObj["fullname"] == this->fullName)) {
+                if (currentObj[key] == value) {
+                    qDebug() << "Salus: [Doctor.h] updateProfile() - value " << value << " is equal to profile's value (" << currentObj[key].toString() << ")\n";
                     return;
                 }
+                currentObj[key] = value;
+                array.replace(i, currentObj);
+
+                qDebug() << "Salus: [Doctor.h] updateProfile() - Saving updated key...\n";
+                saveProfileToJson(array);
+
+                qDebug() << "Salus: [Doctor.h] updateProfile() - object's info (" << key << ") updated\n";
             }
         }
-    }
-    else {
-        qDebug() << "Salus: [Doctor.h] updateProfile() - can't update non-existing profile (" << fullname << ")\n";
-        return;
     }
 }
 
@@ -189,7 +217,6 @@ QString Doctor::getProfileField(QString fullname, QString key)
 
     foreach (const QJsonValue &v, array) {
         if (v["fullname"] == fullname) {
-            //qDebug() << "Salus: [Doctor.h] getDoctorProfileField() - Profile " << fullname << ", return key " << key << " = " << v[key].toString() << "\n";
             field = v[key].toString();
         }
         else if (v["fullname"] != fullname) {
@@ -236,7 +263,7 @@ bool Doctor::isProfileExists(QString fullname)
     return getProfileField(fullname, "fullname") == fullname ? true : false;
 }
 
-bool Doctor::isDiagnosisExists(QJsonArray data, QString value)
+bool Doctor::isArrayItemExists(QJsonArray data, QString value)
 {
     bool isExists = false;
     int i = 0;
