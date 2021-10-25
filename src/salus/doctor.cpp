@@ -30,7 +30,7 @@ void Doctor::createNewProfile(QString fullName, QString specialization,
     //    ]
 
    if (isProfileExists(fullName) == true) {
-        qDebug() << "Salus: [Doctor.h] Profile " << fullName << " already exists. Selecting this profile...\n";
+        qDebug() << "Salus: [Doctor.h] createNewProfile() - Profile " << fullName << " already exists. Selecting this profile...\n";
         selectProfile(fullName);
         return;
     }
@@ -83,9 +83,8 @@ QJsonDocument Doctor::loadJson()
 void Doctor::addDiagnosis(QString value)
 {
     QJsonDocument doc = loadJson();
-    QJsonArray array = doc.array();
+    QJsonArray array = doc.array(), currentObjDiagnoses;
     QJsonObject currentObj;
-    QJsonArray currentObjDiagnoses;
 
     for (int i = 0; i < array.size(); ++i) {
         for (auto j = array.cbegin(); j < array.cend(); ++j) {
@@ -115,9 +114,8 @@ void Doctor::addDiagnosis(QString value)
 void Doctor::addTreatment(QString value)
 {
     QJsonDocument doc = loadJson();
-    QJsonArray array = doc.array();
+    QJsonArray array = doc.array(), currentObjTreatments;
     QJsonObject currentObj;
-    QJsonArray currentObjTreatments;
 
     for (int i = 0; i < array.size(); ++i) {
         for (auto j = array.cbegin(); j < array.cend(); ++j) {
@@ -163,6 +161,29 @@ void Doctor::saveProfileToJson(QJsonArray array)
     qDebug() << "\tSalus: [Doctor.h] saveProfileToJson() - Profile saved\n";
 }
 
+QJsonArray Doctor::getArray(QString profileName, QString key)
+{
+    QJsonDocument doc = loadJson();
+    QJsonArray array = doc.array(), objArray;
+    QJsonObject obj;
+
+    if (isProfileExists(profileName) == true) {
+        foreach(const QJsonValue &v, array) {
+            obj = v.toObject();
+
+            if (obj["fullname"] == profileName) {
+                objArray = obj[key].toArray();
+                //qDebug() << "Salus: [Doctor.h] getArray() - Array '" << key << "' from profile '" << profileName << "' is " << objArray << "\n";
+            }
+        }
+    }
+    else {
+        qDebug() << "Salus: [Doctor.h] getArray() - Can't get an array from non-existing profile " << profileName << "\n";
+    }
+
+    return objArray;
+}
+
 void Doctor::selectProfile(QString profileName)
 {
     if (isProfileExists(profileName) == true) {
@@ -173,6 +194,8 @@ void Doctor::selectProfile(QString profileName)
         this->institutionCode = getProfileField(profileName, "institutionCode");
         this->inn = getProfileField(profileName, "inn");
         this->licenseInfo = getProfileField(profileName, "licenseInfo");
+        this->diagnosesData = getArray(profileName, "diagnoses");
+        this->treatmentsData = getArray(profileName, "treatments");
 
         qDebug() << "Salus: [Doctor.h] selectProfile() - Profile " << profileName << " selected\n";
     }
