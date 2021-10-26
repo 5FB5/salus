@@ -5,12 +5,16 @@ import QtQuick.Controls 2.15
 
 Window {
     id: applicationWindow
-    width: ScreenInfo.desktopAvailableWidth
-    height: ScreenInfo.desktopAvailableHeight
+
+    width: Screen.width
+    height: Screen.height
+
     minimumWidth: 1366
     minimumHeight: 768
+
     visible: true
     visibility: "Maximized"
+
     title: qsTr("Салюс")
 
     // Отображается только при запуске система (открывается окно входа)
@@ -59,6 +63,7 @@ Window {
 
     DoctorProfileRegistrationPage {
         id: page_doctor_registration
+        anchors.fill: parent
     }
 
     /*

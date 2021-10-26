@@ -1,7 +1,8 @@
 #include "doctor.h"
 
-Doctor::Doctor()
+Doctor::Doctor(QObject *parent) : QObject(parent)
 {
+
 }
 
 void Doctor::createNewProfile(QString fullName, QString specialization,

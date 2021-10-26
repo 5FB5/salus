@@ -11,13 +11,26 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-class Doctor
+#include <QtQml/qqml.h>
+
+class Doctor : public QObject
 {
+    Q_OBJECT
+//    Q_PROPERTY(QString fullName READ fullName WRITE setFullName)
+//    Q_PROPERTY(QString specialization READ specialization WRITE setspecialization)
+//    Q_PROPERTY(QString inn READ inn WRITE setInn)
+//    Q_PROPERTY(QString institutionName READ institutionName WRITE setInstitutionName)
+//    Q_PROPERTY(QString institutionAddress READ institutionAddress WRITE setInstitutionAddress)
+//    Q_PROPERTY(QString institutionCode READ institutionCode WRITE setInstitutionCode)
+//    Q_PROPERTY(QString licenseInfo READ licenseInfo WRITE setlicenseInfo)
+    QML_ELEMENT
 
 public:
-    Doctor();
+    explicit Doctor(QObject *parent = nullptr);
 
     QString fullName;
+    void setFullName(const QString &fullName);
+
     QString specialization;
     QString institutionName;
     QString institutionCode;
