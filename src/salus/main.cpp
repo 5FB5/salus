@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    engine.rootContext();
 
     qmlRegisterType<Doctor>("io.qt.salus", 1, 0, "Doctor"); // add Doctor class as custom QML type
 

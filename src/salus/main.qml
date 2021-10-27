@@ -20,7 +20,7 @@ Window {
     // Отображается только при запуске система (открывается окно входа)
     StackView {
         id: stackview_startup
-        initialItem: page_login
+        initialItem: page_doctor_registration//page_login
 
         anchors.fill: parent
         anchors.centerIn: parent
@@ -53,13 +53,13 @@ Window {
         }
     }
 
-    LoginPage {
-        id: page_login
-        onLogIn: {
-            stackview_startup.push(menu_bar)
-        }
+//    LoginPage {
+//        id: page_login
+//        onLogIn: {
+//            stackview_startup.push(menu_bar)
+//        }
 
-    }
+//    }
 
     DoctorProfileRegistrationPage {
         id: page_doctor_registration

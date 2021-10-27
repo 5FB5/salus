@@ -2,10 +2,14 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-//import io.qt.salus 1.0
+import io.qt.salus 1.0
 
 Page {
     id: root
+
+    Doctor {
+        id: doctor
+    }
 
     width: Screen.width
     height: Screen.height
@@ -31,8 +35,6 @@ Page {
         transformOrigin: Item.Center
         anchors.centerIn: parent
         spacing: 15
-
-
 
        TextField {
            id: textEditFullName
@@ -220,7 +222,12 @@ Page {
             height: 50
 
             onClicked: {
-                //root.logIn();
+                doctor.createNewProfile(
+                            textEditFullName.text.toString(), textEditSpecialization.text.toString(),
+                            textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
+                            textEditInstitutionAddress.text.toString(), textEditInn.text.toString(),
+                            textEditInn.text.toString()
+                            )
             }
         }
     }
