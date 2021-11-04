@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-#include "doctor.h"
+#include "backend.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.rootContext();
 
-    qmlRegisterType<Doctor>("io.qt.salus", 1, 0, "Doctor"); // add Doctor class as custom QML type
+    qmlRegisterType<Backend>("io.qt.salus", 1, 0, "Backend"); // register backend class to QML
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 

@@ -7,8 +7,8 @@ import io.qt.salus 1.0
 Page {
     id: root
 
-    Doctor {
-        id: doctor
+    Backend {
+        id: backend
     }
 
     width: Screen.width
@@ -222,12 +222,11 @@ Page {
             height: 50
 
             onClicked: {
-                doctor.createNewProfile(
-                            textEditFullName.text.toString(), textEditSpecialization.text.toString(),
-                            textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
-                            textEditInstitutionAddress.text.toString(), textEditInn.text.toString(),
-                            textEditInn.text.toString()
-                            )
+                backend.addNewDoctorProfile(textEditFullName.text.toString(), textEditSpecialization.text.toString(),
+                                            textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
+                                            textEditInstitutionAddress.text.toString(), textEditInn.text.toString(),
+                                            textEditLicense.text.toString()
+                                            )
             }
         }
     }

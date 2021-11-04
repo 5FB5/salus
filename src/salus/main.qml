@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
+import io.qt.salus 1.0
 
 Window {
     id: applicationWindow
@@ -17,7 +18,7 @@ Window {
 
     title: qsTr("Салюс")
 
-    // Отображается только при запуске система (открывается окно входа)
+    // Отображается только при запуске системы (открывается окно входа)
     StackView {
         id: stackview_startup
         initialItem: page_doctor_registration//page_login
