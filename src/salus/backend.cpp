@@ -1,6 +1,6 @@
 #include "backend.h"
 
-Backend::Backend()
+Backend::Backend(QObject *parent) : QObject(parent)
 {
     QObject::connect(this, &Backend::setDoctorProfile, this, &Backend::selectProfile);
 }
@@ -10,6 +10,11 @@ QString Backend::getCurrentDoctorInn()
     return currentDoctorInn;
 }
 
+bool Backend::getIsDoctorDbExists()
+{
+    return doctorDb.doctorsList->isEmpty();
+}
+
 void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                                   QString doctorInstitutionName, QString doctorInstitutionCode, QString doctorInstitutionAddress,
                                   QString doctorInn, QString doctorLicenseInfo)
@@ -17,7 +22,6 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
                               doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
                               doctorInn,  doctorLicenseInfo);
-
     emit setDoctorProfile(doctorInn);
 }
 

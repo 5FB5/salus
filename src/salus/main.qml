@@ -18,11 +18,15 @@ Window {
 
     title: qsTr("Салюс")
 
+    Backend {
+        id: backend
+    }
+
     // Отображается только при запуске системы (открывается окно входа)
     StackView {
         id: stackview_startup
-        initialItem: page_doctor_registration//page_login
 
+        initialItem: backend.isDoctorDbEmpty === true ? page_doctor_registration : page_login
         anchors.fill: parent
         anchors.centerIn: parent
     }
@@ -54,17 +58,18 @@ Window {
         }
     }
 
-//    LoginPage {
-//        id: page_login
-//        onLogIn: {
-//            stackview_startup.push(menu_bar)
-//        }
+    LoginPage {
+        id: page_login
+        onLogIn: {
+            stackview_startup.push(menu_bar)
+        }
+        visible: false;
 
-//    }
+    }
 
     DoctorProfileRegistrationPage {
         id: page_doctor_registration
-        anchors.fill: parent
+        visible: false;
     }
 
     /*
