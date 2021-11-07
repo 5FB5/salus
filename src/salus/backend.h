@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include "doctordatabase.h"
+#include "patientdb.h"
 
 /*! Backend class for working with QML frontend */
 class Backend : public QObject
@@ -12,6 +13,7 @@ class Backend : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn)
+    Q_PROPERTY(QString currentPatientInsuranceNumber READ getCurrentPatientInsuranceNumber)
 //    Q_PROPERTY(QString doctorFullName READ getDoctorFullName)
 //    Q_PROPERTY(QString doctorSpecialization READ getDoctorSpecialization)
 //    Q_PROPERTY(QString doctorInsitutionName READ getDoctorInsitutionName)
@@ -24,11 +26,16 @@ public:
     Backend();
 
     DoctorDataBase doctorDb;
+    patientDB patient;
 
     /*! Key of current doctor's profile */
     QString currentDoctorInn;
+    QString currentPatientInsuranceNumber;
 
     QString getCurrentDoctorInn();
+
+    QString getCurrentPatientInsuranceNumber();
+
 
 //    QString getDoctorFullName();
 //    QString getDoctorSpecialization();
@@ -40,8 +47,20 @@ public:
 
 signals:
     void setDoctorProfile(QString inn);
+    void setPatientProfile(QString insuranceNumber);
 
 public slots:
+    void addNewPatient(  QString fullName, quint8 age,
+                         bool sex,
+                         QDate birthDate,
+                         QString adress,
+                         QString insuranceCompany,
+                         QString insuranceNumber,
+                         QString phoneNumber,
+                         QString occupation,
+                         QString diagnosis,
+                         QList<QString> diseases,
+                         QString diseaseDescription);
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, QString doctorInstitutionCode,
@@ -49,6 +68,8 @@ public slots:
                              QString doctorLicenseInfo);
 
     void selectProfile(QString inn);
+    void selectPatientProfile(QString insuranceNumber);
+
 };
 
 #endif // BACKEND_H

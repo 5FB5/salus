@@ -10,7 +10,9 @@ SOURCES += \
         backend.cpp \
         doctor.cpp \
         doctordatabase.cpp \
-        main.cpp
+        main.cpp \
+        patient.cpp \
+        patientdb.cpp
 
 RESOURCES += qml.qrc
 
@@ -28,4 +30,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     backend.h \
     doctor.h \
-    doctordatabase.h
+    doctordatabase.h \
+    patient.h \
+    patientdb.h
