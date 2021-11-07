@@ -84,7 +84,6 @@ QJsonArray DoctorDataBase::convertListToJsonArray(const QList<QString> &list)
     for (auto &data : list) {
         array.append(data);
     }
-
     return array;
 }
 
@@ -153,10 +152,6 @@ QJsonArray DoctorDataBase::convertListToJsonArray(const QList<QString> &list)
 void DoctorDataBase::getDoctorsListFromJson()
 {
     QJsonDocument doc = loadJson();
-
-    if (doc.isEmpty() == true) {
-        return;
-    }
 
     doctorsList = new QList<Doctor>;
 
@@ -357,9 +352,7 @@ bool DoctorDataBase::isProfileExists(QString inn)
             return true;
         }
     }
-
     return false;
-
     //return getProfileField(inn, "inn") == inn ? true : false;
 }
 

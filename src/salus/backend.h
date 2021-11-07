@@ -14,6 +14,8 @@ class Backend : public QObject
 
     Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn)
     Q_PROPERTY(QString currentPatientInsuranceNumber READ getCurrentPatientInsuranceNumber)
+    Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
+
 //    Q_PROPERTY(QString doctorFullName READ getDoctorFullName)
 //    Q_PROPERTY(QString doctorSpecialization READ getDoctorSpecialization)
 //    Q_PROPERTY(QString doctorInsitutionName READ getDoctorInsitutionName)
@@ -23,7 +25,7 @@ class Backend : public QObject
 //    Q_PROPERTY(QString doctorLicenseInfo READ getDoctorLicenseInfo)
 
 public:
-    Backend();
+    explicit Backend(QObject *parent = nullptr);
 
     DoctorDataBase doctorDb;
     patientDB patient;
@@ -36,6 +38,12 @@ public:
 
     QString getCurrentPatientInsuranceNumber();
 
+    QString getCurrentDoctorInn();
+
+    //For QML to check that we doesn't have a doctor's DB file
+    bool isDoctorDbEmpty;
+    // For Q_PROPERTY
+    bool getIsDoctorDbExists();
 
 //    QString getDoctorFullName();
 //    QString getDoctorSpecialization();
