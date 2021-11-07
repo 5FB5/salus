@@ -24,18 +24,31 @@ public:
 
     QList<Doctor>* doctorsList = nullptr;
 
-//    /*! Set profile fields for current instance of Doctor class */
-//    void selectProfile(QString profileName);
-
-public slots:
-//    /*! Returns short name (initials) of full name */
-//    QString getProfileShortName(); // для инициалов
-    //QString findDiagnosis(QJsonArray diagnosesData);
-
     /*! Returns true if profile creating was successfully */
     void createNewProfile(QString fullName, QString specialization,
                           QString institutionName, QString institutionCode, QString institutionAddress,
                           QString inn, QString licenseInfo);
+
+    // We use inn as primary key to get right doctor's data
+    /*! Returns full name from profile via inn */
+    QString getFullName(QString inn);
+    /*! Returns specialization from profile via inn */
+    QString getSpecialization(QString inn);
+    /*! Returns institution's name from profile via inn */
+    QString getInstitutionName(QString inn);
+    /*! Returns code of institution from profile via inn */
+    QString getInstitutionCode(QString inn);
+    /*! Returns institution's address from profile via inn */
+    QString getInstitutionAddress(QString inn);
+    /*! Returns profile's inn via inn */
+    QString getInn(QString inn);
+    /*! Returns license from profile via inn */
+    QString getLicenseInfo(QString inn);
+    /*! Returns initials of full name via inn */
+    QString getProfileInitials(QString inn);
+
+    //QString findDiagnosis(QJsonArray diagnosesData);
+
 
 //    /*! Update profile's data via JSON's key */
 //    void updateProfile(QString key, QString value);

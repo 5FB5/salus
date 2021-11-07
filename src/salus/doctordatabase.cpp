@@ -57,6 +57,96 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
     saveProfileToJson(newDoctor);
 }
 
+QString DoctorDataBase::getFullName(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.fullName;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getSpecialization(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.specialization;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getInstitutionName(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.institutionName;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getInstitutionCode(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.institutionCode;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getInstitutionAddress(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.institutionAddress;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getInn(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.inn;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getLicenseInfo(QString inn)
+{
+    if (doctorsList->isEmpty() == false) {
+        foreach(Doctor doctor, *doctorsList) {
+            if (doctor.inn == inn) {
+                return doctor.licenseInfo;
+            }
+        }
+    }
+    return nullptr;
+}
+
+QString DoctorDataBase::getProfileInitials(QString inn)
+{
+    //TODO: get initials from full name
+    return inn;
+}
+
 QJsonDocument DoctorDataBase::loadJson()
 {
     QFileInfo fInfo(JSON_DOCTOR_FILE_PATH);
@@ -160,30 +250,32 @@ void DoctorDataBase::getDoctorsListFromJson()
     QJsonArray array = doc.array(), currentObjDiagnoses, currentObjTreatments;
     QJsonObject currentObj;
 
-    foreach(const QJsonValue &v, array) {
+    if (array.isEmpty() == false) {
+        foreach(const QJsonValue &v, array) {
 
-        currentObj = v.toObject();
+            currentObj = v.toObject();
 
-        currentProfile.fullName = currentObj["fullname"].toString();
-        currentProfile.specialization = currentObj["specialization"].toString();
-        currentProfile.institutionName = currentObj["institutionName"].toString();
-        currentProfile.institutionCode = currentObj["institutionCode"].toString();
-        currentProfile.institutionAddress = currentObj["institutionAddress"].toString();
-        currentProfile.licenseInfo = currentObj["licenseInfo"].toString();
-        currentProfile.inn = currentObj["inn"].toString();
+            currentProfile.fullName = currentObj["fullname"].toString();
+            currentProfile.specialization = currentObj["specialization"].toString();
+            currentProfile.institutionName = currentObj["institutionName"].toString();
+            currentProfile.institutionCode = currentObj["institutionCode"].toString();
+            currentProfile.institutionAddress = currentObj["institutionAddress"].toString();
+            currentProfile.licenseInfo = currentObj["licenseInfo"].toString();
+            currentProfile.inn = currentObj["inn"].toString();
 
-        currentObjDiagnoses = currentObj["diagnoses"].toArray();
-        currentObjTreatments = currentObj["treatments"].toArray();
+            currentObjDiagnoses = currentObj["diagnoses"].toArray();
+            currentObjTreatments = currentObj["treatments"].toArray();
 
-        foreach(QJsonValue v, currentObjDiagnoses) {
-            currentProfile.diagnoses.append(v.toString());
+            foreach(QJsonValue v, currentObjDiagnoses) {
+                currentProfile.diagnoses.append(v.toString());
+            }
+
+            foreach(QJsonValue v, currentObjTreatments) {
+                currentProfile.treatments.append(v.toString());
+            }
+
+            doctorsList->append(currentProfile);
         }
-
-        foreach(QJsonValue v, currentObjTreatments) {
-            currentProfile.treatments.append(v.toString());
-        }
-
-        doctorsList->append(currentProfile);
     }
 }
 
@@ -347,9 +439,11 @@ void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
 
 bool DoctorDataBase::isProfileExists(QString inn)
 {
-    for(Doctor currentDoctor : *doctorsList) {
-        if (currentDoctor.inn == inn) {
-            return true;
+    if (doctorsList->isEmpty() == false) {
+        foreach (Doctor currentDoctor, *doctorsList) {
+            if (currentDoctor.inn == inn) {
+                return true;
+            }
         }
     }
     return false;

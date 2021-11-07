@@ -5,8 +5,8 @@ import QtQuick.Controls 2.15
 Page {
     id: root
 
-    width: Screen.width
-    height: Screen.height
+    width: ScreenInfo.desktopAvailableWidth
+    height: ScreenInfo.desktopAvailableHeight
 
     property alias labelDoctorName: doctorName.text
     property int buttonStandartTextFontSize: 10

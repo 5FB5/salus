@@ -7,8 +7,8 @@ import io.qt.salus 1.0
 Window {
     id: applicationWindow
 
-    width: Screen.width
-    height: Screen.height
+    width: ScreenInfo.desktopAvailableWidth
+    height: ScreenInfo.desktopAvailableHeight
 
     minimumWidth: 1366
     minimumHeight: 768

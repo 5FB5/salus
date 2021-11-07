@@ -6,43 +6,46 @@
 
 #include "doctordatabase.h"
 
-/*! Backend class for working with QML frontend */
+/*! Class for working with QML frontend */
 class Backend : public QObject
 {
     Q_OBJECT
 
+    // Properties for accessing to current doctor's data from QML
+    Q_PROPERTY(QString currentDoctorFullName READ getCurrentDoctorFullName)
+    Q_PROPERTY(QString currentDoctorSpecialization READ getCurrentDoctorSpecialization)
+    Q_PROPERTY(QString currentDoctorInstitutionName READ getCurrentDoctorInstitutionName)
+    Q_PROPERTY(QString currentDoctorInstitutionCode READ getCurrentDoctorInstitutionCode)
+    Q_PROPERTY(QString currentDoctorInstitutionAddress READ getCurrentDoctorInstitutionAddress)
     Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn)
-    Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
+    Q_PROPERTY(QString currentDoctorLicenseInfo READ getCurrentDoctorLicenseInfo)
+    Q_PROPERTY(QString currentDoctorInitials READ getCurrentDoctorInitials);
 
-//    Q_PROPERTY(QString doctorFullName READ getDoctorFullName)
-//    Q_PROPERTY(QString doctorSpecialization READ getDoctorSpecialization)
-//    Q_PROPERTY(QString doctorInsitutionName READ getDoctorInsitutionName)
-//    Q_PROPERTY(QString doctorInsitutionCode READ getDoctorInsitutionCode)
-//    Q_PROPERTY(QString doctorInstitutionAddress READ getDoctorInstitutionAddress)
-//    Q_PROPERTY(QString doctorInn READ getDoctorInn)
-//    Q_PROPERTY(QString doctorLicenseInfo READ getDoctorLicenseInfo)
+    Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
 
 public:
     explicit Backend(QObject *parent = nullptr);
 
+    /*! Global class for accessing the doctor's database */
     DoctorDataBase doctorDb;
 
-    /*! Key of current doctor's profile */
+    /*!
+     *  Stores INN value of selected doctor's profile as current.
+     *  Can be used as primary key to access another data
+    */
     QString currentDoctorInn;
+
+    QString getCurrentDoctorFullName();
+    QString getCurrentDoctorSpecialization();
+    QString getCurrentDoctorInstitutionName();
+    QString getCurrentDoctorInstitutionCode();
+    QString getCurrentDoctorInstitutionAddress();
     QString getCurrentDoctorInn();
+    QString getCurrentDoctorLicenseInfo();
+    QString getCurrentDoctorInitials();
 
-    //For QML to check that we doesn't have a doctor's DB file
-    bool isDoctorDbEmpty;
-    // For Q_PROPERTY
+    /*! Returns true if doctor's database doesn't have any profiles */
     bool getIsDoctorDbExists();
-
-//    QString getDoctorFullName();
-//    QString getDoctorSpecialization();
-//    QString getDoctorInstitutionName();
-//    QString getDoctorInstitutionCode();
-//    QString getDoctorInstitutionAddress();
-//    QString getDoctorInn();
-//    QString getDoctorLicenseInfo();
 
 signals:
     void setDoctorProfile(QString inn);
@@ -53,7 +56,7 @@ public slots:
                              QString doctorInstitutionAddress, QString doctorInn,
                              QString doctorLicenseInfo);
 
-    void selectProfile(QString inn);
+    void selectDoctorProfile(QString inn);
 };
 
 #endif // BACKEND_H

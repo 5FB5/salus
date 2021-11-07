@@ -11,8 +11,8 @@ Page {
         id: backend
     }
 
-    width: Screen.width
-    height: Screen.height
+    width: ScreenInfo.desktopAvailableWidth
+    height: ScreenInfo.desktopAvailableHeight
 
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
