@@ -12,21 +12,31 @@ Window {
 
     minimumWidth: 1366
     minimumHeight: 768
-
-    visible: true
     visibility: "Maximized"
 
     title: qsTr("Салюс")
 
+    property string doctorFullName
+    property string doctorSpecialization
+    property string doctorInstitutionName
+    property string doctorInstitutionCode
+    property string doctorInstitutionAddress
+    property string doctorInn
+    property string doctorLicenseInfo
+
     Backend {
         id: backend
     }
+
+    //FIXME: don't do that, 'cause it will be call once on start
+    //property string doctorProfileName: backend.currentDoctorFullName
 
     // Отображается только при запуске системы (открывается окно входа)
     StackView {
         id: stackview_startup
 
         initialItem: backend.isDoctorDbEmpty === true ? page_doctor_registration : page_login
+
         anchors.fill: parent
         anchors.centerIn: parent
     }
@@ -42,6 +52,17 @@ Window {
         width: 256
 
         color: "#828282"
+
+        Button {
+            id: button_profile
+
+            font.pointSize: 12
+
+            width: parent.width
+            height: 60
+
+            text: doctorFullName
+        }
 
         StackView {
             id: stackview_content_main
@@ -60,30 +81,42 @@ Window {
 
     LoginPage {
         id: page_login
+
         onLogIn: {
+            doctorFullName = page_login.logInDoctorName.toString()
+            doctorSpecialization = page_login.logInDoctorSpecialization.toString()
+            doctorInstitutionName = page_login.logInDoctorInstitutionName.toString()
+            doctorInstitutionCode = page_login.logInDoctorInstitutionCode.toString()
+            doctorInstitutionAddress = page_login.logInDoctorInstitutionAddress.toString()
+            doctorInn = page_login.logInDoctorInn.toString()
+            doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
+
             stackview_startup.push(menu_bar)
         }
+
         visible: false;
 
     }
 
     DoctorProfileRegistrationPage {
         id: page_doctor_registration
+
         visible: false;
+
+        onProfileRegistered: {
+            doctorFullName = page_doctor_registration.registeredDoctorFullName.toString()
+            doctorSpecialization = page_doctor_registration.registeredDoctorSpecialization.toString()
+            doctorInstitutionName = page_doctor_registration.registeredDoctorInstitutionName.toString()
+            doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
+            doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
+            doctorInn = page_doctor_registration.registeredDoctorInn.toString()
+            doctorLicenseInfo: page_doctor_registration.registeredDoctorLicenseInfo.toString()
+
+            stackview_startup.push(menu_bar)
+        }
     }
 
     /*
-    Component {
-        id: page_login
-    }
-
-    Component {
-        id: page_doctor_profile_registration
-    }
-
-    Component {
-        id: page_doctor_profile
-    }
 
     Component {
         id: page_doctor_diagnoses_list

@@ -41,7 +41,7 @@ public:
     /*! Returns institution's address from profile via inn */
     QString getInstitutionAddress(QString inn);
     /*! Returns profile's inn via inn */
-    QString getInn(QString inn);
+    QString getInn(); // FIXME: works only for 1 profile
     /*! Returns license from profile via inn */
     QString getLicenseInfo(QString inn);
     /*! Returns initials of full name via inn */

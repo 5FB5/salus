@@ -2,12 +2,12 @@
 
 Backend::Backend(QObject *parent) : QObject(parent)
 {
-    QObject::connect(this, &Backend::setDoctorProfile, this, &Backend::selectDoctorProfile);
+    if (doctorDb.doctorsList->size() > 0) {
+        if (doctorDb.doctorsList->size() == 1) {
+            currentDoctorInn = doctorDb.getInn(); //FIXME: this works only for 1 profile in database
+        }
+    }
 }
-
-/*
- * Interface for working with Doctors database
- */
 
 QString Backend::getCurrentDoctorFullName()
 {
@@ -39,6 +39,11 @@ QString Backend::getCurrentDoctorInn()
     return currentDoctorInn;
 }
 
+void Backend::setCurrentDoctorInn(QString inn)
+{
+    currentDoctorInn = inn;
+}
+
 QString Backend::getCurrentDoctorLicenseInfo()
 {
     return doctorDb.getLicenseInfo(currentDoctorInn);
@@ -61,10 +66,7 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
                               doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
                               doctorInn,  doctorLicenseInfo);
-    emit setDoctorProfile(doctorInn);
+
+    currentDoctorInn = doctorInn;
 }
 
-void Backend::selectDoctorProfile(QString inn)
-{
-    currentDoctorInn = inn;
-}

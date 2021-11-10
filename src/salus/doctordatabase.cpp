@@ -117,13 +117,11 @@ QString DoctorDataBase::getInstitutionAddress(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getInn(QString inn)
+QString DoctorDataBase::getInn()
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
-            if (doctor.inn == inn) {
-                return doctor.inn;
-            }
+            return doctor.inn;
         }
     }
     return nullptr;

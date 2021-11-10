@@ -7,6 +7,16 @@ import io.qt.salus 1.0
 Page {
     id: root
 
+    signal profileRegistered()
+
+    property string registeredDoctorFullName
+    property string registeredDoctorSpecialization
+    property string registeredDoctorInstitutionName
+    property string registeredDoctorInstitutionCode
+    property string registeredDoctorInstitutionAddress
+    property string registeredDoctorInn
+    property string registeredDoctorLicenseInfo
+
     Backend {
         id: backend
     }
@@ -110,7 +120,7 @@ Page {
        }
 
        TextField {
-           id: textEditLicense
+           id: textEditLicenseInfo
            placeholderText: ("Введите лицензию")
            font.pointSize: 11
 
@@ -225,8 +235,18 @@ Page {
                 backend.addNewDoctorProfile(textEditFullName.text.toString(), textEditSpecialization.text.toString(),
                                             textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
                                             textEditInstitutionAddress.text.toString(), textEditInn.text.toString(),
-                                            textEditLicense.text.toString()
+                                            textEditLicenseInfo.text.toString()
                                             )
+
+                registeredDoctorFullName = textEditFullName.text.toString()
+                registeredDoctorSpecialization = textEditSpecialization.text.toString()
+                registeredDoctorInstitutionName = textEditInstitutionName.text.toString()
+                registeredDoctorInstitutionCode = textEditInstitutionCode.text.toString()
+                registeredDoctorInstitutionAddress = textEditInstitutionAddress.text.toString()
+                registeredDoctorInn = textEditInn.text.toString()
+                registeredDoctorLicenseInfo = textEditLicenseInfo.text.toString()
+
+                profileRegistered()
             }
         }
     }
@@ -234,6 +254,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.75}D{i:18}
+    D{i:0;formeditorZoom:0.75}
 }
 ##^##*/

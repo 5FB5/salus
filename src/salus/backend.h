@@ -19,7 +19,7 @@ class Backend : public QObject
     Q_PROPERTY(QString currentDoctorInstitutionAddress READ getCurrentDoctorInstitutionAddress)
     Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn)
     Q_PROPERTY(QString currentDoctorLicenseInfo READ getCurrentDoctorLicenseInfo)
-    Q_PROPERTY(QString currentDoctorInitials READ getCurrentDoctorInitials);
+    Q_PROPERTY(QString currentDoctorInitials READ getCurrentDoctorInitials)
 
     Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
 
@@ -40,7 +40,9 @@ public:
     QString getCurrentDoctorInstitutionName();
     QString getCurrentDoctorInstitutionCode();
     QString getCurrentDoctorInstitutionAddress();
+
     QString getCurrentDoctorInn();
+
     QString getCurrentDoctorLicenseInfo();
     QString getCurrentDoctorInitials();
 
@@ -48,7 +50,7 @@ public:
     bool getIsDoctorDbExists();
 
 signals:
-    void setDoctorProfile(QString inn);
+    void changeDoctorProfile();
 
 public slots:
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
@@ -56,7 +58,7 @@ public slots:
                              QString doctorInstitutionAddress, QString doctorInn,
                              QString doctorLicenseInfo);
 
-    void selectDoctorProfile(QString inn);
+    void setCurrentDoctorInn(QString inn);
 };
 
 #endif // BACKEND_H
