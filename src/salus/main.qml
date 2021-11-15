@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 import io.qt.salus 1.0
 
@@ -12,6 +13,7 @@ Window {
 
     minimumWidth: 1366
     minimumHeight: 768
+
     visibility: "Maximized"
 
     title: qsTr("Салюс")
@@ -28,8 +30,56 @@ Window {
         id: backend
     }
 
-    //FIXME: don't do that, 'cause it will be call once on start
-    //property string doctorProfileName: backend.currentDoctorFullName
+    // Окно, отображающее контент на основной странице
+    StackLayout {
+        id: stack_content_main
+
+        width: applicationWindow.width - menu_bar.width //width: (applicationWindow.width - menu_bar.width) - 15
+        height: applicationWindow.height
+
+        anchors.top: applicationWindow.top
+        anchors.bottom: applicationWindow.bottom
+        anchors.left: menu_bar.right
+        anchors.right: applicationWindow.right
+
+        currentIndex: 0
+
+        DoctorProfilePage { // 0
+            id: doctorProfilePage
+
+            width: parent.width
+            height: parent.height
+        }
+
+        DoctorDiagnosesDataBase { // 1
+            id: page_doctor_diagnoses
+
+            width: parent.width
+            height: parent.height
+        }
+
+        DoctorTreatmentsDatabase { // 2
+            id: page_doctor_treatments
+
+            width: parent.width
+            height: parent.height
+        }
+
+        PatientMedicalCardPage { // 3
+            id: page_medical_card
+
+            width: parent.width
+            height: parent.height
+
+        }
+
+        PatientMedicalCardRegistrationPage { // 4
+            id: page_patient_registration
+
+            width: parent.width
+            height: parent.height
+        }
+    }
 
     // Отображается только при запуске системы (открывается окно входа)
     StackView {
@@ -57,25 +107,72 @@ Window {
             id: button_profile
 
             font.pointSize: 12
+            font.bold: true
 
             width: parent.width
             height: 60
 
+            anchors.top: parent.top
+
             text: doctorFullName
+
+            onClicked: {
+                stack_content_main.currentIndex = 0
+            }
         }
 
-        StackView {
-            id: stackview_content_main
-            x: 0
-            y: 0
+        Button {
+            id: button_patient_card
 
-            width: 1344
-            height: 900
+            font.pointSize: 12
 
-            anchors.top: applicationWindow.top
-            anchors.bottom: applicationWindow.bottom
-            anchors.left: parent.right
-            anchors.right: applicationWindow.right
+            width: parent.width
+            height: 60
+
+            anchors.top: parent.top
+            anchors.topMargin: 250
+
+            text: "Амбулаторная карта"
+
+            onClicked: {
+                stack_content_main.currentIndex = 3
+            }
+        }
+
+        Button {
+            id: button_diagnoses_database
+
+            font.pointSize: 12
+
+            width: parent.width
+            height: 60
+
+            anchors.top: parent.top
+            anchors.topMargin: 400
+
+            text: "База диагнозов"
+
+            onClicked: {
+                stack_content_main.currentIndex = 1
+            }
+        }
+
+        Button {
+            id: button_treatments_database
+
+            font.pointSize: 12
+
+            width: parent.width
+            height: 60
+
+            anchors.top: parent.top
+            anchors.topMargin: 480
+
+            text: "База вариантов лечения"
+
+            onClicked: {
+                stack_content_main.currentIndex = 2
+            }
         }
     }
 
@@ -116,27 +213,58 @@ Window {
         }
     }
 
-    /*
+//    DoctorProfilePage {
+//        id: page_doctor_profile
 
-    Component {
-        id: page_doctor_diagnoses_list
+//        visible: false
+
+//        width: stackview_content_main.width
+//        height: stackview_content_main.height
+//    }
+
+//    DoctorDiagnosesDataBase {
+//        id: page_doctor_diagnoses
+
+//        visible: false
+
+//        width: stackview_content_main.width
+//        height: stackview_content_main.height
+//    }
+
+//    DoctorTreatmentsDatabase {
+//        id: page_doctor_treatments
+
+//        visible: false
+
+//        width: stackview_content_main.width
+//        height: stackview_content_main.height
+//    }
+
+//    PatientMedicalCardPage {
+//        id: page_medical_card
+
+//        visible: false
+
+//        width: stackview_content_main.width
+//        height: stackview_content_main.height
+
+//    }
+
+//    PatientMedicalCardRegistrationPage {
+//        id: page_patient_registration
+
+//        visible: false
+
+//        width: stackview_content_main.width
+//        height: stackview_content_main.height
+//    }
+// }
+
     }
-
-    Component {
-        id: page_patient_medical_card
-    }
-
-    Component {
-        id: page_patient_registration
-    }
-
-    */
-}
-
 
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.66}
+    D{i:0;formeditorZoom:0.75}
 }
 ##^##*/

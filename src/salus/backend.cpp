@@ -2,6 +2,7 @@
 
 Backend::Backend(QObject *parent) : QObject(parent)
 {
+    // Check for profiles on startup
     if (doctorDb.doctorsList->size() > 0) {
         if (doctorDb.doctorsList->size() == 1) {
             currentDoctorInn = doctorDb.getInn(); //FIXME: this works only for 1 profile in database
