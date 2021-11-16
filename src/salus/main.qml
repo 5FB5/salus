@@ -34,7 +34,7 @@ Window {
     StackLayout {
         id: stack_content_main
 
-        width: applicationWindow.width - menu_bar.width //width: (applicationWindow.width - menu_bar.width) - 15
+        width: applicationWindow.width - menu_bar.width
         height: applicationWindow.height
 
         anchors.top: applicationWindow.top
@@ -42,10 +42,11 @@ Window {
         anchors.left: menu_bar.right
         anchors.right: applicationWindow.right
 
-        currentIndex: 0
+        // По умолчанию отображается окно амбулаторной карты
+        currentIndex: 3
 
         DoctorProfilePage { // 0
-            id: doctorProfilePage
+            id: page_doctor_profile
 
             width: parent.width
             height: parent.height
@@ -91,6 +92,7 @@ Window {
         anchors.centerIn: parent
     }
 
+    // Левая панель управления
     Rectangle {
         id: menu_bar
         visible: false
@@ -176,8 +178,11 @@ Window {
         }
     }
 
+    // Страница логина, передающая данные профиля
     LoginPage {
         id: page_login
+
+        visible: false;
 
         onLogIn: {
             doctorFullName = page_login.logInDoctorName.toString()
@@ -188,13 +193,20 @@ Window {
             doctorInn = page_login.logInDoctorInn.toString()
             doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
 
+            // Передаём данные на страницу профиля
+            page_doctor_profile.doctorName = doctorFullName
+            page_doctor_profile.doctorSpecialization = doctorSpecialization
+            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
+            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
+            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
+            page_doctor_profile.doctorInn = doctorInn
+            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
+
             stackview_startup.push(menu_bar)
         }
-
-        visible: false;
-
     }
 
+    // Страница регистрации, передающая данные о только что зарегистрированном пользователе
     DoctorProfileRegistrationPage {
         id: page_doctor_registration
 
@@ -209,58 +221,19 @@ Window {
             doctorInn = page_doctor_registration.registeredDoctorInn.toString()
             doctorLicenseInfo: page_doctor_registration.registeredDoctorLicenseInfo.toString()
 
+            // Передаём данные на страницу профиля
+            page_doctor_profile.doctorName = doctorFullName
+            page_doctor_profile.doctorSpecialization = doctorSpecialization
+            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
+            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
+            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
+            page_doctor_profile.doctorInn = doctorInn
+            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
+
             stackview_startup.push(menu_bar)
         }
     }
-
-//    DoctorProfilePage {
-//        id: page_doctor_profile
-
-//        visible: false
-
-//        width: stackview_content_main.width
-//        height: stackview_content_main.height
-//    }
-
-//    DoctorDiagnosesDataBase {
-//        id: page_doctor_diagnoses
-
-//        visible: false
-
-//        width: stackview_content_main.width
-//        height: stackview_content_main.height
-//    }
-
-//    DoctorTreatmentsDatabase {
-//        id: page_doctor_treatments
-
-//        visible: false
-
-//        width: stackview_content_main.width
-//        height: stackview_content_main.height
-//    }
-
-//    PatientMedicalCardPage {
-//        id: page_medical_card
-
-//        visible: false
-
-//        width: stackview_content_main.width
-//        height: stackview_content_main.height
-
-//    }
-
-//    PatientMedicalCardRegistrationPage {
-//        id: page_patient_registration
-
-//        visible: false
-
-//        width: stackview_content_main.width
-//        height: stackview_content_main.height
-//    }
-// }
-
-    }
+}
 
 
 /*##^##

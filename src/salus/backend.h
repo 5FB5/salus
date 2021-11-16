@@ -12,13 +12,13 @@ class Backend : public QObject
     Q_OBJECT
 
     // Properties for accessing to current doctor's data from QML
-    Q_PROPERTY(QString currentDoctorFullName READ getCurrentDoctorFullName)
-    Q_PROPERTY(QString currentDoctorSpecialization READ getCurrentDoctorSpecialization)
-    Q_PROPERTY(QString currentDoctorInstitutionName READ getCurrentDoctorInstitutionName)
-    Q_PROPERTY(QString currentDoctorInstitutionCode READ getCurrentDoctorInstitutionCode)
-    Q_PROPERTY(QString currentDoctorInstitutionAddress READ getCurrentDoctorInstitutionAddress)
-    Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn)
-    Q_PROPERTY(QString currentDoctorLicenseInfo READ getCurrentDoctorLicenseInfo)
+    Q_PROPERTY(QString currentDoctorFullName READ getCurrentDoctorFullName) // WRITE setCurrentDoctorFullname)
+    Q_PROPERTY(QString currentDoctorSpecialization READ getCurrentDoctorSpecialization) // WRITE setCurrentDoctorSpecialization)
+    Q_PROPERTY(QString currentDoctorInstitutionName READ getCurrentDoctorInstitutionName) // WRITE setCurrentDoctorInstitutionName)
+    Q_PROPERTY(QString currentDoctorInstitutionCode READ getCurrentDoctorInstitutionCode) // WRITE setCurrentDoctorInstitutionCode)
+    Q_PROPERTY(QString currentDoctorInstitutionAddress READ getCurrentDoctorInstitutionAddress) // WRITE setCurrentDoctorInstitutionAddress)
+    Q_PROPERTY(QString currentDoctorInn READ getCurrentDoctorInn) // WRITE setCurrentDoctorInn)
+    Q_PROPERTY(QString currentDoctorLicenseInfo READ getCurrentDoctorLicenseInfo) // WRITE setCurrentDoctorLicenseInfo)
     Q_PROPERTY(QString currentDoctorInitials READ getCurrentDoctorInitials)
 
     Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
