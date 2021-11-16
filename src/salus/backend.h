@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include "doctordatabase.h"
+#include "patientdb.h"
 
 /*! Class for working with QML frontend */
 class Backend : public QObject
@@ -28,6 +29,7 @@ public:
 
     /*! Global class for accessing the doctor's database */
     DoctorDataBase doctorDb;
+    patientDB patient;
 
     /*!
      *  Stores INN value of selected doctor's profile as current.
@@ -50,9 +52,22 @@ public:
     bool getIsDoctorDbExists();
 
 signals:
+    void setPatientProfile(QString insuranceNumber);
     void changeDoctorProfile();
 
 public slots:
+    void addNewPatient(  QString fullName, quint8 age,
+                         bool sex,
+                         QDate birthDate,
+                         QString adress,
+                         QString insuranceCompany,
+                         QString insuranceNumber,
+                         QString phoneNumber,
+                         QString occupation,
+                         QString diagnosis,
+                         QList<QString> diseases,
+                         QString diseaseDescription);
+
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, QString doctorInstitutionCode,
                              QString doctorInstitutionAddress, QString doctorInn,

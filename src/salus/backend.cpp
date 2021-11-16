@@ -67,7 +67,32 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
                               doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
                               doctorInn,  doctorLicenseInfo);
+    emit setDoctorProfile(doctorInn);
+}
+void Backend::addNewPatient(QString fullName, quint8 age,
+                            bool sex,
+                            QDate birthDate,
+                            QString adress,
+                            QString insuranceCompany,
+                            QString insuranceNumber,
+                            QString phoneNumber,
+                            QString occupation,
+                            QString diagnosis,
+                            QList<QString> diseases,
+                            QString diseaseDescription)
+{
+    patient.addNewPatient(fullName, age, sex,  birthDate,  adress, insuranceCompany,
+                            insuranceNumber,phoneNumber,occupation,diagnosis,diseases,diseaseDescription);
+
+    emit setPatientProfile(insuranceNumber);
+}
 
     currentDoctorInn = doctorInn;
 }
-
+QString Backend::getCurrentPatientInsuranceNumber(){
+    return currentPatientInsuranceNumber;
+}
+void Backend::selectPatientProfile(QString insuranceNumber)
+{
+    currentPatientInsuranceNumber = insuranceNumber;
+}
