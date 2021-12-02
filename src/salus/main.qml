@@ -18,6 +18,7 @@ Window {
 
     title: qsTr("Салюс")
 
+    // Здесь хранятся все данные по профилю врача, передающиеся из C++, либо напрямую при регистрации
     property string doctorFullName
     property string doctorSpecialization
     property string doctorInstitutionName
@@ -66,16 +67,31 @@ Window {
             height: parent.height
         }
 
-        PatientMedicalCardPage { // 3
-            id: page_medical_card
+        PatientSearchMedicalCardPage { // 3
+            id: page_medical_card_search
 
             width: parent.width
             height: parent.height
 
+            onOpenCurrentMedicalCard: {
+                stack_content_main.currentIndex = 3
+
+            }
+
+            onRegisterMedicalCard: {
+                stack_content_main.currentIndex = 4
+            }
         }
 
         PatientMedicalCardRegistrationPage { // 4
             id: page_patient_registration
+
+            width: parent.width
+            height: parent.height
+        }
+
+        PatientMedicalCardMain { // 5
+            id: page_patient_medical_card_main
 
             width: parent.width
             height: parent.height
@@ -219,7 +235,7 @@ Window {
             doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
             doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
             doctorInn = page_doctor_registration.registeredDoctorInn.toString()
-            doctorLicenseInfo: page_doctor_registration.registeredDoctorLicenseInfo.toString()
+            doctorLicenseInfo = page_doctor_registration.registeredDoctorLicenseInfo.toString()
 
             // Передаём данные на страницу профиля
             page_doctor_profile.doctorName = doctorFullName

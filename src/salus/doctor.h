@@ -10,13 +10,9 @@ class Doctor
 public:
     Doctor();
 
-    QString fullName;
-    QString specialization;
-    QString institutionName;
-    QString institutionCode;
-    QString institutionAddress;
-    QString inn;
-    QString licenseInfo;
+    QString fullName, specialization, institutionName, institutionAddress, licenseInfo;
+
+    quint16 institutionCode, inn;
 
     QList<QString> diagnoses, treatments;
 

@@ -12,7 +12,7 @@ SOURCES += \
         doctordatabase.cpp \
         main.cpp \
         patient.cpp \
-        patientdb.cpp
+        patientdatabase.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,4 +32,5 @@ HEADERS += \
     doctor.h \
     doctordatabase.h \
     patient.h \
-    patientdb.h
+    patientdatabase.h
+

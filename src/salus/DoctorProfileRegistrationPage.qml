@@ -59,14 +59,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -83,14 +83,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -107,14 +107,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -131,14 +131,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -155,14 +155,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -179,14 +179,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -203,14 +203,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }

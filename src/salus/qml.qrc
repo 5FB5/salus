@@ -3,10 +3,11 @@
         <file>main.qml</file>
         <file>LoginPage.qml</file>
         <file>DoctorProfileRegistrationPage.qml</file>
-        <file>PatientMedicalCardPage.qml</file>
+        <file>PatientSearchMedicalCardPage.qml</file>
         <file>DoctorDiagnosesDataBase.qml</file>
         <file>DoctorTreatmentsDatabase.qml</file>
         <file>PatientMedicalCardRegistrationPage.qml</file>
         <file>DoctorProfilePage.qml</file>
+        <file>PatientMedicalCardMain.qml</file>
     </qresource>
 </RCC>

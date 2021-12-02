@@ -6,28 +6,29 @@ DoctorDataBase::DoctorDataBase(QObject *parent) : QObject(parent)
 }
 
 void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
-                                      QString institutionName, QString institutionCode, QString institutionAddress,
-                                      QString inn, QString licenseInfo)
+                                      QString institutionName, quint16 institutionCode, QString institutionAddress,
+                                      quint16 inn, QString licenseInfo)
 {
 
-    // Пример структуры
+    // Структура профиля в doctors.json. Представлен, как массив объектов со внутренними полями типа "ключ->значение"
     //    [
     //        {
-    //            "diagnoses": [        // Набор собственных наименований диагнозов для подстановки в карту пациента
+    //            "diagnoses": [                                            // Набор собственных наименований диагнозов для подстановки в карту пациента
     //                "Кариес",
     //                "Пульпит"
     //            ],
     //            "fullname": "Иванов Иван Иванович",
     //            "inn": "0000000",
-    //            "institutionAddress": "ул. Строителей, д 25, кв. 12",
-    //            "institutionCode": "11111111",
-    //            "institutionName": "ИП Иванов И.И.",
-    //            "licenseInfo": "Лицензия №256",
-    //            "specialization": "Стоматолог"
-    //            "treatments": [       // Набор собственных наименований способов лечения
+    //            "institutionAddress": "ул. Строителей, д 25, кв. 12",     // Адрес организации
+    //            "institutionCode": "11111111",                            // Код организации
+    //            "institutionName": "ИП Иванов И.И.",                      // Наименование организации
+    //            "licenseInfo": "Лицензия №256",                           // Наименование лицензии
+    //            "specialization": "Стоматолог"                            // Наименование специализации врача
+    //            "treatments": [                                           // Набор собственных наименований способов лечения
     //                "Антисептик"
     //            ]
-    //        }
+    //        },
+    //          ... следующий профиль
     //    ]
 
     if (doctorsList == nullptr) {
@@ -57,7 +58,7 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
     saveProfileToJson(newDoctor);
 }
 
-QString DoctorDataBase::getFullName(QString inn)
+QString DoctorDataBase::getFullName(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -69,7 +70,7 @@ QString DoctorDataBase::getFullName(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getSpecialization(QString inn)
+QString DoctorDataBase::getSpecialization(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -81,7 +82,7 @@ QString DoctorDataBase::getSpecialization(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getInstitutionName(QString inn)
+QString DoctorDataBase::getInstitutionName(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -93,7 +94,7 @@ QString DoctorDataBase::getInstitutionName(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getInstitutionCode(QString inn)
+quint16 DoctorDataBase::getInstitutionCode(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -102,10 +103,10 @@ QString DoctorDataBase::getInstitutionCode(QString inn)
             }
         }
     }
-    return nullptr;
+    return 0;
 }
 
-QString DoctorDataBase::getInstitutionAddress(QString inn)
+QString DoctorDataBase::getInstitutionAddress(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -117,17 +118,17 @@ QString DoctorDataBase::getInstitutionAddress(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getInn()
+quint16 DoctorDataBase::getInn()
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
             return doctor.inn;
         }
     }
-    return nullptr;
+    return 0;
 }
 
-QString DoctorDataBase::getLicenseInfo(QString inn)
+QString DoctorDataBase::getLicenseInfo(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach(Doctor doctor, *doctorsList) {
@@ -139,10 +140,10 @@ QString DoctorDataBase::getLicenseInfo(QString inn)
     return nullptr;
 }
 
-QString DoctorDataBase::getProfileInitials(QString inn)
+QString DoctorDataBase::getProfileInitials(quint16 inn)
 {
     //TODO: get initials from full name
-    return inn;
+    return nullptr;
 }
 
 QJsonDocument DoctorDataBase::loadJson()
@@ -256,10 +257,10 @@ void DoctorDataBase::getDoctorsListFromJson()
             currentProfile.fullName = currentObj["fullname"].toString();
             currentProfile.specialization = currentObj["specialization"].toString();
             currentProfile.institutionName = currentObj["institutionName"].toString();
-            currentProfile.institutionCode = currentObj["institutionCode"].toString();
+            currentProfile.institutionCode = currentObj["institutionCode"].toInt();
             currentProfile.institutionAddress = currentObj["institutionAddress"].toString();
             currentProfile.licenseInfo = currentObj["licenseInfo"].toString();
-            currentProfile.inn = currentObj["inn"].toString();
+            currentProfile.inn = currentObj["inn"].toInt();
 
             currentObjDiagnoses = currentObj["diagnoses"].toArray();
             currentObjTreatments = currentObj["treatments"].toArray();
@@ -435,7 +436,7 @@ void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
 //    return !shortName.isEmpty() ? shortName : nullptr;
 //}
 
-bool DoctorDataBase::isProfileExists(QString inn)
+bool DoctorDataBase::isProfileExists(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
         foreach (Doctor currentDoctor, *doctorsList) {

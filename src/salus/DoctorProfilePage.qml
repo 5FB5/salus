@@ -30,7 +30,7 @@ Page {
         font.bold: true
 
         anchors.top: parent.top
-        anchors.topMargin: 20
+        anchors.topMargin: 50
 
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -43,7 +43,7 @@ Page {
         id: column_profile_data
 
         anchors.top: parent.top
-        anchors.topMargin: 100//50
+        anchors.topMargin: 150
 
         anchors.left: parent.left
         anchors.leftMargin: 120
