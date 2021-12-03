@@ -77,9 +77,16 @@ signals:
 public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
-                       quint16 phoneNumber, QString occupation,
-                       QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-                       QString anamnesis);
+                       quint16 phoneNumber, QString occupation);
+                       /*QString diagnosis, QList<QString> complaints, QList<QString> diseases,
+                       QString anamnesis*/
+
+
+//    void addNewPatient(QString fullName, quint16 age, bool sex,
+//                       QString birthDate, QString address,
+//                       quint16 phoneNumber, QString occupation,
+//                       QString diagnosis, QList<QString> complaints, QList<QString> diseases,
+//                       QString anamnesis);
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, quint16 doctorInstitutionCode,

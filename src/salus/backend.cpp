@@ -107,13 +107,24 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
 
 void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
-                            quint16 phoneNumber, QString occupation,
-                            QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-                            QString anamnesis)
+                            quint16 phoneNumber, QString occupation)
+                            /*QString diagnosis, QList<QString> complaints, QList<QString> diseases,
+                            QString anamnesis*/
 {
-    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation,
-                             diagnosis,  complaints, diseases, anamnesis);
+    qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to DB..." << "\n";
+    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
+//                             diagnosis,  complaints, diseases, anamnesis);
 }
+
+//void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
+//                            QString birthDate, QString address,
+//                            quint16 phoneNumber, QString occupation,
+//                            QString diagnosis, QList<QString> complaints, QList<QString> diseases,
+//                            QString anamnesis)
+//{
+//    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation,
+//                             diagnosis,  complaints, diseases, anamnesis);
+//}
 //QString Backend::getCurrentPatientInsuranceNumber(){
 //    return currentPatientInsuranceNumber;
 //}

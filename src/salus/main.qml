@@ -73,12 +73,14 @@ Window {
             width: parent.width
             height: parent.height
 
-            onOpenCurrentMedicalCard: {
-                stack_content_main.currentIndex = 3
+//            onOpenCurrentMedicalCard: {
+//                stack_content_main.currentIndex = 3
 
-            }
+//            }
 
             onRegisterMedicalCard: {
+                page_patient_registration.patientFullName = fullname
+
                 stack_content_main.currentIndex = 4
             }
         }
@@ -88,6 +90,7 @@ Window {
 
             width: parent.width
             height: parent.height
+
         }
 
         PatientMedicalCardMain { // 5

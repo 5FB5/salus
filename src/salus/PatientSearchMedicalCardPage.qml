@@ -21,6 +21,7 @@ Page {
 
         for (var i in array) {
             names[i] = array[i]
+            console.log("Salus: [QML](PatientSearchMedicalCardPage) - Patient ", i, " is ", names[i])
         }
         return names
     }
@@ -71,7 +72,7 @@ Page {
             // передавать значение индекса в backend
             // если возвращается NULL - открыть окно регистрации, после чего поставить номер страховки как текущий
             // иначе, выставить номер страховки по выбранному пациенту, открыть окно карты и подставить поля из значения страховки
-            patientInsuranceNumber = backend.setPatient(editText) !== 0 ? openCurrentMedicalCard() : registerMedicalCard(editText)
+            patientInsuranceNumber = find(editText) !== -1 ? console.log("Yes") : registerMedicalCard(editText) //openCurrentMedicalCard() : registerMedicalCard(editText)
 
         }
     }

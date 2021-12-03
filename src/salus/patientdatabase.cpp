@@ -9,9 +9,9 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 
 void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
                                     QString birthDate, QString address,
-                                    quint16 phoneNumber, QString occupation,
-                                    QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-                                    QString anamnesis)
+                                    quint16 phoneNumber, QString occupation)
+//                                    QString diagnosis, QList<QString> complaints, QList<QString> diseases,
+//                                    QString anamnesis)
 {
 
     // Структура профиля в patients.json. Представлен, как массив объектов со внутренними полями типа "ключ->значение"
@@ -40,10 +40,10 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
         patientsList = new QList<Patient>;
     }
     else {
-        if (isProfileExists(birthDate)) {
+        if (isProfileExists(birthDate) == true) {
             qDebug() << "Salus: [PatienDataBase.h] addNewPatient() - Patient " << fullName << " already exists. Selecting this profile...\n";
+            return;
         }
-        return;
     }
 
     Patient newPatient;
@@ -55,10 +55,10 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     newPatient.address = address;
     newPatient.phoneNumber = phoneNumber;
     newPatient.occupation = occupation;
-    newPatient.currentDiagnosis = diagnosis;
-    newPatient.complaints = complaints;
-    newPatient.diseases = diseases;
-    newPatient.anamnesis = anamnesis;
+//    newPatient.currentDiagnosis = diagnosis;
+//    newPatient.complaints = complaints;
+//    newPatient.diseases = diseases;
+//    newPatient.anamnesis = anamnesis;
 
     patientsList->append(newPatient);
 
@@ -263,7 +263,7 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     patientProfileDiseases = convertListToJsonArray(patientProfile.diseases);
     patientProfileComplaints = convertListToJsonArray(patientProfile.complaints);
 
-    PatientProfileObj.insert("fullName", patientProfile.fullName);
+    PatientProfileObj.insert("fullname", patientProfile.fullName);
     PatientProfileObj.insert("age", patientProfile.age);
     PatientProfileObj.insert("sex", patientProfile.sex);
     PatientProfileObj.insert("birthDate", patientProfile.birthDate);
@@ -294,6 +294,9 @@ bool PatientDataBase::isProfileExists(QString birthDate) {
         foreach (Patient currentDoctor, *patientsList) {
             if (currentDoctor.birthDate == birthDate) {
                 return true;
+            }
+            else {
+                continue;
             }
         }
     }
