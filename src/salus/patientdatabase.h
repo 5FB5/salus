@@ -27,7 +27,7 @@ public:
 
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
-                       quint16 phoneNumber, QString occupation);
+                       QString phoneNumber, QString occupation);
 
     void deletePatient(QString birthDate);
 
@@ -47,7 +47,7 @@ public:
     bool getSex(QString birthDate);
 
     quint16 getAge(QString birthDate);
-    quint16 getPhoneNumber(QString birthDate);
+    QString getPhoneNumber(QString birthDate);
 
 private:
     void getPatientsListFromJson();

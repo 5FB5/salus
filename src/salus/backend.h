@@ -33,7 +33,7 @@ class Backend : public QObject
     Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
     Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
     Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
-    Q_PROPERTY(quint16 currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
+    Q_PROPERTY(QString currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
     Q_PROPERTY(QList<QString> currentPatientComplaints READ getCurrentPatientComplaints);
     Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
     Q_PROPERTY(QList<QString> currentPatientDiseases READ getCurrentPatientDiseases);
@@ -66,7 +66,7 @@ public:
 
     QString getCurrentPatientFullName();
     QString getCurrentPatientBirthDate();
-    quint16 getCurrentPatientPhoneNumber();
+    QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
     QString getCurrentPatientDiagnosis();
@@ -87,7 +87,7 @@ signals:
 public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
-                       quint16 phoneNumber, QString occupation);
+                       QString phoneNumber, QString occupation);
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, quint16 doctorInstitutionCode,

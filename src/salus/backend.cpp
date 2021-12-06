@@ -89,7 +89,7 @@ QString Backend::getCurrentPatientBirthDate()
     return patientsDb.getBirthDate(currentPatientBirthDate);
 }
 
-quint16 Backend::getCurrentPatientPhoneNumber()
+QString Backend::getCurrentPatientPhoneNumber()
 {
     return patientsDb.getPhoneNumber(currentPatientBirthDate);
 }
@@ -159,7 +159,7 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
 
 void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
-                            quint16 phoneNumber, QString occupation)
+                            QString phoneNumber, QString occupation)
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);

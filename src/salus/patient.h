@@ -17,7 +17,7 @@ class Patient
 public:
     Patient();
     //      ФИО         Адрес      Профессия   Текущий диагноз, Анамнез
-    QString fullName, address, occupation, currentDiagnosis, anamnesis;
+    QString fullName, address, occupation, currentDiagnosis, anamnesis, phoneNumber;
     QString birthDate; // TODO: это должно быть QDate, но непонятно где это использовать
 
     QList<QString> complaints; // жалобы
@@ -25,8 +25,7 @@ public:
 
     bool sex;
 
-    //          Моб. телефон
-    quint16 age, phoneNumber;
+    quint16 age;
 
 };
 

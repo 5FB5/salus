@@ -9,7 +9,7 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 
 void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
                                     QString birthDate, QString address,
-                                    quint16 phoneNumber, QString occupation)
+                                    QString phoneNumber, QString occupation)
 //                                    QString diagnosis, QList<QString> complaints, QList<QString> diseases,
 //                                    QString anamnesis)
 {
@@ -199,7 +199,7 @@ quint16 PatientDataBase::getAge(QString birthDate)
     return 0;
 }
 
-quint16 PatientDataBase::getPhoneNumber(QString birthDate)
+QString PatientDataBase::getPhoneNumber(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
         foreach(Patient patient, *patientsList) {
@@ -232,7 +232,7 @@ void PatientDataBase::getPatientsListFromJson()
             currentProfile.sex = currentObj["sex"].toInt();
             currentProfile.birthDate = currentObj["birthdate"].toString();
             currentProfile.address = currentObj["address"].toString();
-            currentProfile.birthDate = currentObj["birthDate"].toString();
+            currentProfile.birthDate = currentObj["birthdate"].toString();
             currentProfile.phoneNumber = currentObj["phoneNumber"].toInt();
             currentProfile.occupation = currentObj["occupation"].toString();
             currentProfile.currentDiagnosis = currentObj["diagnosis"].toString();
@@ -266,9 +266,8 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     PatientProfileObj.insert("fullname", patientProfile.fullName);
     PatientProfileObj.insert("age", patientProfile.age);
     PatientProfileObj.insert("sex", patientProfile.sex);
-    PatientProfileObj.insert("birthDate", patientProfile.birthDate);
+    PatientProfileObj.insert("birthdate", patientProfile.birthDate);
     PatientProfileObj.insert("address", patientProfile.address);
-    PatientProfileObj.insert("birthDate", patientProfile.birthDate);
     PatientProfileObj.insert("phoneNumber", patientProfile.phoneNumber);
     PatientProfileObj.insert("occupation", patientProfile.occupation);
     PatientProfileObj.insert("diagnosis", patientProfile.currentDiagnosis);

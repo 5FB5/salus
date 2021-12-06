@@ -70,7 +70,7 @@ Page {
 
         onAccepted: {
             console.log("Salus: [QML](ComboBox 'combobox_patients') - Patiend accepted\n")
-            find(editText) !== -1 ? openCurrentMedicalCard(currentText) : registerMedicalCard(editText)
+            find(editText) !== -1 ? openCurrentMedicalCard(editText) : registerMedicalCard(editText)
         }
     }
 }
