@@ -95,6 +95,7 @@ Window {
             }
 
             onRegisterMedicalCard: {
+                console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n")
                 page_patient_registration.patientFullName = fullname
                 stack_content_main.currentIndex = 4
             }
@@ -107,8 +108,14 @@ Window {
             height: parent.height
 
             onPatientRegistered: {
-                page_medical_card_search.namesArray.push(fullname)
+                page_patient_medical_card_main.patientFullName = patientFullName
+                page_patient_medical_card_main.patientAge = patientAge
+                page_patient_medical_card_main.patientBirthDate = patientBirthDate
+                page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
+                page_patient_medical_card_main.patientOccupation = patientOccupation
+
                 stack_content_main.currentIndex = 5
+                clearTextFields()
             }
 
         }
@@ -160,6 +167,7 @@ Window {
 
             onClicked: {
                 stack_content_main.currentIndex = 0
+                page_patient_registration.clearTextFields()
             }
         }
 
@@ -178,6 +186,7 @@ Window {
 
             onClicked: {
                 stack_content_main.currentIndex = 3
+                page_patient_registration.clearTextFields()
             }
         }
 
@@ -196,6 +205,7 @@ Window {
 
             onClicked: {
                 stack_content_main.currentIndex = 1
+                page_patient_registration.clearTextFields()
             }
         }
 
@@ -214,6 +224,7 @@ Window {
 
             onClicked: {
                 stack_content_main.currentIndex = 2
+                page_patient_registration.clearTextFields()
             }
         }
     }

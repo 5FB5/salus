@@ -70,11 +70,7 @@ Page {
 
         onAccepted: {
             console.log("Salus: [QML](ComboBox 'combobox_patients') - Patiend accepted\n")
-            // передавать значение индекса в backend
-            // если возвращается NULL - открыть окно регистрации, после чего поставить номер страховки как текущий
-            // иначе, выставить номер страховки по выбранному пациенту, открыть окно карты и подставить поля из значения страховки
             find(editText) !== -1 ? openCurrentMedicalCard(currentText) : registerMedicalCard(editText)
-
         }
     }
 }

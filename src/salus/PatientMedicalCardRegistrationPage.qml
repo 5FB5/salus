@@ -8,15 +8,28 @@ Page {
     id: root
 
     // Поля для базовой регистрации
-    property string patientFullName
-    property string patientAge
+    property string patientFullName: ""
+    property int patientAge: 0
     property bool patientSex
-    property string patientBirthData
-    property string patientAddress
-    property string patientPhoneNumber
-    property string patientOccupation
+    property string patientBirthDate: ""
+    property string patientAddress: ""
+    property string patientPhoneNumber: ""
+    property string patientOccupation: ""
 
     signal patientRegistered(string fullname)
+
+    function clearTextFields() {
+        if (textEditFullName.text !== "" || textEditAge.text !== "" || textEditBirthDate.text !== "" || textEditAddress ||
+                textEditPhoneNumber.text !== "" || textEditOccupation.text !== "")
+        {
+            textEditFullName.text = ""
+            textEditAge.text = ""
+            textEditBirthDate.text = ""
+            textEditAddress.text = ""
+            textEditPhoneNumber.text = ""
+            textEditOccupation.text = ""
+        }
+    }
 
     Backend {
         id: backend
@@ -59,7 +72,7 @@ Page {
 
         anchors.centerIn: parent
 
-        spacing: 30//25
+        spacing: 30
 
        TextField {
            id: textEditFullName
@@ -142,8 +155,8 @@ Page {
                    ListElement { text: "Женский" }
                }
 
-               onAccepted: {
-                   patientSex = find(editText === "Мужской") ? false : true
+               onActivated: {
+                   patientSex = index === 0 ? false : true
                }
            }
        }
@@ -264,7 +277,13 @@ Page {
                 backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
                                       textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
 
-                patientRegistered(patientFullName)
+                patientFullName = textEditFullName.text.toString()
+                patientAge = textEditAge.text
+                patientBirthDate = textEditBirthDate.text
+                patientPhoneNumber = textEditPhoneNumber.text
+                patientOccupation = textEditOccupation.text.toString()
+
+                patientRegistered(textEditFullName.text.toString())
             }
         }
     }

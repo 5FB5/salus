@@ -10,15 +10,15 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    property string patientFullName
-    property int patientAge
-    property bool patientSex
-    property string patientBirthDate
-    property string patientAddress
-    property int patientPhoneNumber
-    property string patientOccupation
+    property string patientFullName: backend.currentPatientFullName
+    property int patientAge: 0
+    property bool patientSex: false
+    property string patientBirthDate: ""
+    property string patientAddress: ""
+    property int patientPhoneNumber: 0
+    property string patientOccupation: ""
     property var patientComplaints: []
-    property string patientDiagnosis
+    property string patientDiagnosis: ""
     property var patientDiseases: []
     property string patientAnamnesis
 

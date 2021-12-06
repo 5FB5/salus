@@ -33,6 +33,7 @@ class Backend : public QObject
     Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
     Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
     Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
+    Q_PROPERTY(quint16 currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
     Q_PROPERTY(QList<QString> currentPatientComplaints READ getCurrentPatientComplaints);
     Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
     Q_PROPERTY(QList<QString> currentPatientDiseases READ getCurrentPatientDiseases);
@@ -65,6 +66,7 @@ public:
 
     QString getCurrentPatientFullName();
     QString getCurrentPatientBirthDate();
+    quint16 getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
     QString getCurrentPatientDiagnosis();
@@ -80,7 +82,6 @@ public:
     bool getIsDoctorDbExists();
 
 signals:
-    void setPatientProfile(QString insuranceNumber);
     void changeDoctorProfile();
 
 public slots:

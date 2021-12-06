@@ -28,15 +28,12 @@ public:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        quint16 phoneNumber, QString occupation);
-//                       QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-//                       QString anamnesis);
 
     void deletePatient(QString birthDate);
 
     QString getFullName(QString birthDate);
     QString getBirthDate(QString birthDate); // FIXME: возможно оно должно возвращать QDate
     QString getAddress(QString birthDate);
-    QString getInsuranceCompany(QString birthDate);
     QString getOccupation(QString birthDate);
     QString getDiagnosis(QString birthDate);
     QString getAnamnesis(QString birthDate);
