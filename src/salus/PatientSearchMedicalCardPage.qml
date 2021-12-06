@@ -10,20 +10,21 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    property int patientInsuranceNumber: 0
 
-    signal openCurrentMedicalCard
+    signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
+
+    property var namesArray: []
 
     function getPatientNames() {
         var array = backend.patientListNames
         var names = []
 
         for (var i in array) {
-            names[i] = array[i]
-            console.log("Salus: [QML](PatientSearchMedicalCardPage) - Patient ", i, " is ", names[i])
+            namesArray[i] = array[i]
+            console.log("Salus: [QML](PatientSearchMedicalCardPage) - Patient ", i, " is ", namesArray[i])
         }
-        return names
+        return namesArray
     }
 
     Backend {
@@ -68,11 +69,11 @@ Page {
         currentIndex: -1
 
         onAccepted: {
-            console.log("Patiend accepted!")
+            console.log("Salus: [QML](ComboBox 'combobox_patients') - Patiend accepted\n")
             // передавать значение индекса в backend
             // если возвращается NULL - открыть окно регистрации, после чего поставить номер страховки как текущий
             // иначе, выставить номер страховки по выбранному пациенту, открыть окно карты и подставить поля из значения страховки
-            patientInsuranceNumber = find(editText) !== -1 ? console.log("Yes") : registerMedicalCard(editText) //openCurrentMedicalCard() : registerMedicalCard(editText)
+            find(editText) !== -1 ? openCurrentMedicalCard(currentText) : registerMedicalCard(editText)
 
         }
     }

@@ -27,15 +27,15 @@ class Backend : public QObject
     Q_PROPERTY(QList<QString> patientListNames READ getPatientListNames);
 
     Q_PROPERTY(QString currentPatientFullName READ getCurrentPatientFullName);
-//    Q_PROPERTY(quint16 currentPatientAge READ getCurrentPatientAge);
-//    Q_PROPERTY(bool currentPatientSex READ getCurrentPatientSex);
-//    Q_PROPERTY(QString currentPatientBirthData READ getCurrentPatientBirthDate); // используется как первичный ключ
-//    Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
-//    Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
-//    Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
-//    Q_PROPERTY(QString currentPatientComplaints READ getCurrentPatientComplaints);
-//    Q_PROPERTY(QString currentPatientDiseases READ getCurrentPatientDiseases);
-//    Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
+    Q_PROPERTY(quint16 currentPatientAge READ getCurrentPatientAge);
+    Q_PROPERTY(bool currentPatientSex READ getCurrentPatientSex);
+    Q_PROPERTY(QString currentPatientBirthDate READ getCurrentPatientBirthDate); // используется как первичный ключ
+    Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
+    Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
+    Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
+    Q_PROPERTY(QList<QString> currentPatientComplaints READ getCurrentPatientComplaints);
+    Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
+    Q_PROPERTY(QList<QString> currentPatientDiseases READ getCurrentPatientDiseases);
 
 
 public:
@@ -63,9 +63,18 @@ public:
     QString getCurrentDoctorLicenseInfo();
     QString getCurrentDoctorInitials();
 
-    QList<QString> getPatientListNames();
-
     QString getCurrentPatientFullName();
+    QString getCurrentPatientBirthDate();
+    QString getCurrentPatientAddress();
+    QString getCurrentPatientOccupation();
+    QString getCurrentPatientDiagnosis();
+    QString getCurrentPatientAnamnesis();
+    QList<QString> getCurrentPatientComplaints();
+    QList<QString> getCurrentPatientDiseases();
+    QList<QString> getPatientListNames(); // Используется для отображения имён в выпадающем списке в QML
+    quint16 getCurrentPatientAge();
+    bool getCurrentPatientSex();
+
 
     /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();
@@ -78,15 +87,6 @@ public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        quint16 phoneNumber, QString occupation);
-                       /*QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-                       QString anamnesis*/
-
-
-//    void addNewPatient(QString fullName, quint16 age, bool sex,
-//                       QString birthDate, QString address,
-//                       quint16 phoneNumber, QString occupation,
-//                       QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-//                       QString anamnesis);
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, quint16 doctorInstitutionCode,
@@ -95,7 +95,7 @@ public slots:
 
     void setCurrentDoctorInn(quint16 inn);
 
-    QString setPatient(QString fullName);
+    void setPatient(QString fullName);
 };
 
 #endif // BACKEND_H

@@ -27,6 +27,8 @@ Window {
     property string doctorInn
     property string doctorLicenseInfo
 
+    property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
+
     Backend {
         id: backend
     }
@@ -73,14 +75,27 @@ Window {
             width: parent.width
             height: parent.height
 
-//            onOpenCurrentMedicalCard: {
-//                stack_content_main.currentIndex = 3
+            onOpenCurrentMedicalCard: {
+                console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
-//            }
+                backend.setPatient(fullname)
+
+                page_patient_medical_card_main.patientFullName = backend.currentPatientFullName
+                page_patient_medical_card_main.patientAge = backend.currentPatientAge
+                page_patient_medical_card_main.patientSex = backend.currentPatientSex
+                page_patient_medical_card_main.patientBirthDate = backend.currentPatientBirthDate
+                page_patient_medical_card_main.patientAddress = backend.currentPatientAddress
+                page_patient_medical_card_main.patientOccupation = backend.currentPatientOccupation
+                page_patient_medical_card_main.patientDiagnosis = backend.currentPatientDiagnosis
+                page_patient_medical_card_main.patientComplaints = backend.currentPatientComplaints
+                page_patient_medical_card_main.patientDiseases = backend.currentPatientDiseases
+                page_patient_medical_card_main.patientAnamnesis = backend.currentPatientAnamnesis
+
+                stack_content_main.currentIndex = 5
+            }
 
             onRegisterMedicalCard: {
                 page_patient_registration.patientFullName = fullname
-
                 stack_content_main.currentIndex = 4
             }
         }
@@ -90,6 +105,11 @@ Window {
 
             width: parent.width
             height: parent.height
+
+            onPatientRegistered: {
+                page_medical_card_search.namesArray.push(fullname)
+                stack_content_main.currentIndex = 5
+            }
 
         }
 
@@ -134,6 +154,7 @@ Window {
             height: 60
 
             anchors.top: parent.top
+            anchors.topMargin: buttonsTopMargin
 
             text: doctorFullName
 
@@ -151,7 +172,7 @@ Window {
             height: 60
 
             anchors.top: parent.top
-            anchors.topMargin: 250
+            anchors.topMargin: buttonsTopMargin + 100
 
             text: "Амбулаторная карта"
 
@@ -169,7 +190,7 @@ Window {
             height: 60
 
             anchors.top: parent.top
-            anchors.topMargin: 400
+            anchors.topMargin: buttonsTopMargin + 200
 
             text: "База диагнозов"
 
@@ -187,7 +208,7 @@ Window {
             height: 60
 
             anchors.top: parent.top
-            anchors.topMargin: 480
+            anchors.topMargin: buttonsTopMargin + 300
 
             text: "База вариантов лечения"
 

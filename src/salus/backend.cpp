@@ -69,9 +69,54 @@ QList<QString> Backend::getPatientListNames()
     return names;
 }
 
+quint16 Backend::getCurrentPatientAge()
+{
+    return patientsDb.getAge(currentPatientBirthDate);
+}
+
+bool Backend::getCurrentPatientSex()
+{
+    return patientsDb.getSex(currentPatientBirthDate);
+}
+
 QString Backend::getCurrentPatientFullName()
 {
     return patientsDb.getFullName(currentPatientBirthDate);
+}
+
+QString Backend::getCurrentPatientBirthDate()
+{
+    return patientsDb.getBirthDate(currentPatientBirthDate);
+}
+
+QString Backend::getCurrentPatientAddress()
+{
+    return patientsDb.getAddress(currentPatientBirthDate);
+}
+
+QString Backend::getCurrentPatientOccupation()
+{
+    return patientsDb.getOccupation(currentPatientBirthDate);
+}
+
+QString Backend::getCurrentPatientDiagnosis()
+{
+    return patientsDb.getDiagnosis(currentPatientBirthDate);
+}
+
+QString Backend::getCurrentPatientAnamnesis()
+{
+    return patientsDb.getAnamnesis(currentPatientBirthDate);
+}
+
+QList<QString> Backend::getCurrentPatientComplaints()
+{
+    return patientsDb.getComplaintsList(currentPatientBirthDate);
+}
+
+QList<QString> Backend::getCurrentPatientDiseases()
+{
+    return patientsDb.getDiseasesList(currentPatientBirthDate);
 }
 
 bool Backend::getIsDoctorDbExists()
@@ -85,15 +130,17 @@ void Backend::setCurrentDoctorInn(quint16 inn)
     currentDoctorInn = inn;
 }
 
-QString Backend::setPatient(QString fullName)
+void Backend::setPatient(QString fullName)
 {
+    qDebug() << "Salus: (Backend::setPatient()) - Set patient " << fullName << "... \n";
+
     foreach(Patient p, *patientsDb.patientsList) {
         if (p.fullName == fullName) {
             currentPatientBirthDate = p.birthDate;
-            return p.birthDate;
         }
     }
-    return nullptr;
+
+    qDebug() << "Salus: (Backend::setPatient()) - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
 }
 
 void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
@@ -108,27 +155,7 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
 void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
                             quint16 phoneNumber, QString occupation)
-                            /*QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-                            QString anamnesis*/
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to DB..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
-//                             diagnosis,  complaints, diseases, anamnesis);
 }
-
-//void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
-//                            QString birthDate, QString address,
-//                            quint16 phoneNumber, QString occupation,
-//                            QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-//                            QString anamnesis)
-//{
-//    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation,
-//                             diagnosis,  complaints, diseases, anamnesis);
-//}
-//QString Backend::getCurrentPatientInsuranceNumber(){
-//    return currentPatientInsuranceNumber;
-//}
-//void Backend::selectPatientProfile(QString insuranceNumber)
-//{
-//    currentPatientInsuranceNumber = insuranceNumber;
-//}

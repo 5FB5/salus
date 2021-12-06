@@ -54,7 +54,7 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
 
     doctorsList->append(newDoctor);
 
-    qDebug() << "Salus: [DoctorDataBase.h] createNewProfile() - Saving new profile...\n";
+    qDebug() << "Salus: [DoctorDataBase.h] createNewProfile() - Saving new profile " << fullName << " ...\n";
     saveProfileToJson(newDoctor);
 }
 

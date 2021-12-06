@@ -13,15 +13,14 @@ Page {
     property string patientFullName
     property int patientAge
     property bool patientSex
-    property string patientBirthData
+    property string patientBirthDate
     property string patientAddress
-    property string patientInsuranceCompany
-    property int patientInsuranceNumber
     property int patientPhoneNumber
     property string patientOccupation
+    property var patientComplaints: []
     property string patientDiagnosis
-    property string patientDiseases
-    property string anamnesis
+    property var patientDiseases: []
+    property string patientAnamnesis
 
     Backend {
         id: backend
@@ -38,5 +37,52 @@ Page {
         anchors.top: parent.top
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Label {
+        id: labelPatientName
+
+        text: "Пациент: " + patientFullName
+
+        font.pointSize: 20
+        font.bold: true
+
+        anchors.top: parent.top
+        anchors.topMargin: 100
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Row {
+            id: buttons_medical_card
+
+            anchors.fill: parent
+            anchors.topMargin: 250
+            anchors.leftMargin: 45 // FIXME: позиционирование по середине должно быть динамическим
+
+            spacing: 50
+
+            Button {
+                id: buttonDiary
+
+                font.pointSize: buttonStandartTextFontSize * 1.1
+                font.bold: false
+
+                width: 200
+                height: 60
+
+                text: "Дневник лечения"
+            }
+
+            Button {
+                id: buttonPrintMedicalCard
+
+                font.pointSize: buttonStandartTextFontSize * 1.1
+                font.bold: false
+
+                width: 200
+                height: 60
+
+                text: "Печать амбулаторной карты"
+            }
+        }
     }
 }

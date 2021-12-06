@@ -16,7 +16,7 @@ Page {
     property string patientPhoneNumber
     property string patientOccupation
 
-    signal patientRegistered
+    signal patientRegistered(string fullname)
 
     Backend {
         id: backend
@@ -59,7 +59,7 @@ Page {
 
         anchors.centerIn: parent
 
-        spacing: 25
+        spacing: 30//25
 
        TextField {
            id: textEditFullName
@@ -118,46 +118,35 @@ Page {
            }
        }
 
-       ComboBox {
-           id: combobox_sex
+       Label {
+           id: label_sex
+
+           text: "Пол: "
 
            font.pointSize: standartTextSize
 
-           width: parent.width
+           ComboBox {
+               id: combobox_sex
 
-           model: ListModel {
-               id: list_sex
+               font.pointSize: 11
 
-               ListElement { text: "Мужской" }
-               ListElement { text: "Женский" }
-           }
+               anchors.top: parent.top
+               anchors.bottom: parent.bottom
+               anchors.left: parent.right
+               anchors.leftMargin: 40
 
-           onAccepted: {
-               patientSex = find(editText === "Мужской") ? false : true
+               model: ListModel {
+                   id: list_sex
+
+                   ListElement { text: "Мужской" }
+                   ListElement { text: "Женский" }
+               }
+
+               onAccepted: {
+                   patientSex = find(editText === "Мужской") ? false : true
+               }
            }
        }
-//       TextField {
-//           id: textEditSex
-//           placeholderText: ("Введите пол")
-//           font.pointSize: 11
-
-//           width: textFieldsWidth
-//           height: 30
-
-//           horizontalAlignment: Text.AlignHCenter
-//           verticalAlignment: Text.AlignVCenter
-
-//           background: {
-//               color: "#0000ffff"
-//           }
-
-//           Rectangle {
-//               anchors.fill: parent
-//               border.width: 1
-//               radius: textFieldBorderRadius
-//               color: "#0000ffff"
-
-//           }
 
        TextField {
            id: textEditBirthDate
@@ -275,7 +264,7 @@ Page {
                 backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
                                       textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
 
-                patientRegistered()
+                patientRegistered(patientFullName)
             }
         }
     }

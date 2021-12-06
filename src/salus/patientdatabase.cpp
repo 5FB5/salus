@@ -232,7 +232,7 @@ void PatientDataBase::getPatientsListFromJson()
             currentProfile.sex = currentObj["sex"].toInt();
             currentProfile.birthDate = currentObj["birthdate"].toString();
             currentProfile.address = currentObj["address"].toString();
-            currentProfile.birthDate = currentObj["birthDate"].toInt();
+            currentProfile.birthDate = currentObj["birthDate"].toString();
             currentProfile.phoneNumber = currentObj["phoneNumber"].toInt();
             currentProfile.occupation = currentObj["occupation"].toString();
             currentProfile.currentDiagnosis = currentObj["diagnosis"].toString();
