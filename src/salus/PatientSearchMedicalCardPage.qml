@@ -63,7 +63,7 @@ Page {
 
         editable: true
 
-        model: getPatientNames()
+        model: PatientListModel {} //getPatientNames()
 
         // Чтобы по умолчанию не выводилось ФИО из списка
         currentIndex: -1

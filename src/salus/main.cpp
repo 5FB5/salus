@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "backend.h"
+#include "patientlistmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +14,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.rootContext();
 
-    qmlRegisterType<Backend>("io.qt.salus", 1, 0, "Backend"); // register backend class to QML
+    qmlRegisterType<Backend>("io.qt.salus", 1, 0, "Backend");
+    qmlRegisterType<PatientListModel>("io.qt.salus", 1, 0, "PatientListModel");
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 
