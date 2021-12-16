@@ -284,6 +284,7 @@ Page {
                 patientOccupation = textEditOccupation.text.toString()
 
                 patientRegistered(textEditFullName.text.toString())
+
             }
         }
     }

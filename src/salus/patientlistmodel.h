@@ -8,11 +8,12 @@
 class PatientListModel : public QAbstractListModel
 {
     Q_OBJECT
+
 public:
     explicit PatientListModel(QObject *parent = nullptr);
 
     enum {
-        patientNameRole = Qt::DisplayRole
+        role_patient_name
     };
 
     PatientDataBase patientDb;
@@ -25,16 +26,14 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    // Add data:
-    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-
-    // Remove data:
-    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-
     virtual QHash<int, QByteArray> roleNames() const override;
 
+public slots:
+    void reloadPatientList();
+
 private:
-    QList<QString> patientNames;
+    QList<Patient> mPatientsList;
+
 };
 
 #endif // PATIENTLISTMODEL_H

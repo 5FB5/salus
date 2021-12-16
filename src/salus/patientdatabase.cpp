@@ -215,7 +215,9 @@ void PatientDataBase::getPatientsListFromJson()
 {
     QJsonDocument doc = loadJson();
 
-    patientsList = new QList<Patient>;
+    if (patientsList == nullptr) {
+        patientsList = new QList<Patient>;
+    }
 
     Patient currentProfile;
 
@@ -223,8 +225,10 @@ void PatientDataBase::getPatientsListFromJson()
     QJsonObject currentObj;
 
     if (array.isEmpty() == false) {
-        foreach(const QJsonValue &v, array) {
+        if (patientsList->isEmpty() != true)
+            patientsList->clear();
 
+        foreach(const QJsonValue &v, array) {
             currentObj = v.toObject();
 
             currentProfile.fullName = currentObj["fullname"].toString();

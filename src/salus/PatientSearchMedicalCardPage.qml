@@ -10,22 +10,10 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property var patientList: PatientListModel {}
 
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
-
-    property var namesArray: []
-
-    function getPatientNames() {
-        var array = backend.patientListNames
-        var names = []
-
-        for (var i in array) {
-            namesArray[i] = array[i]
-            console.log("Salus: [QML](PatientSearchMedicalCardPage) - Patient ", i, " is ", namesArray[i])
-        }
-        return namesArray
-    }
 
     Backend {
         id: backend
@@ -63,7 +51,7 @@ Page {
 
         editable: true
 
-        model: PatientListModel {} //getPatientNames()
+        model: patientList
 
         // Чтобы по умолчанию не выводилось ФИО из списка
         currentIndex: -1

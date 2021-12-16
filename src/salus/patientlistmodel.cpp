@@ -3,10 +3,7 @@
 PatientListModel::PatientListModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    // Берём лист имён пациентов
-    foreach(Patient p, *patientDb.patientsList) {
-        patientNames.append(p.fullName);
-    }
+    reloadPatientList();
 }
 
 QVariant PatientListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -21,42 +18,45 @@ int PatientListModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    // FIXME: Implement me!
-    return patientNames.size();
+    return mPatientsList.size();
 }
 
 QVariant PatientListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || mPatientsList.isEmpty())
         return QVariant();
 
-    switch(role) {
-    case patientNameRole:
-        foreach(QVariant patientName, patientNames) {
-            return patientNames[index.row()];
-        }
+    const Patient currentPatient = mPatientsList.at(index.row());
+
+    return QVariant(currentPatient.fullName);
+}
+
+void PatientListModel::reloadPatientList()
+{
+    qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Reloading patient list...\n";
+    beginResetModel();
+    mPatientsList.clear();
+
+    // взять заного данные из файла
+    patientDb.getPatientsListFromJson();
+
+    foreach(Patient p, *patientDb.patientsList) {
+        mPatientsList.append(p);
     }
 
-    return QVariant();
-}
+    endResetModel();
 
-bool PatientListModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-    beginInsertRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
-    endInsertRows();
-}
+    qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Patient list reloaded!\n";
 
-bool PatientListModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    beginRemoveRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
-    endRemoveRows();
+    qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Current patient list is: ";
+    foreach(Patient p, mPatientsList) {
+        qDebug() << "\t" << p.fullName;
+    }
 }
 
 QHash<int, QByteArray> PatientListModel::roleNames() const
 {
     QHash<int, QByteArray> names;
-    names[patientNameRole] = "patientName";
+    names[role_patient_name] = "role_patient_name";
     return names;
 }
