@@ -34,11 +34,12 @@ QVariant PatientListModel::data(const QModelIndex &index, int role) const
 void PatientListModel::reloadPatientList()
 {
     qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Reloading patient list...\n";
-    beginResetModel();
-    mPatientsList.clear();
-
     // взять заного данные из файла
     patientDb.getPatientsListFromJson();
+
+    beginResetModel();
+
+    mPatientsList.clear();
 
     foreach(Patient p, *patientDb.patientsList) {
         mPatientsList.append(p);

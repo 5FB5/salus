@@ -139,9 +139,24 @@ void Backend::setPatient(QString fullName)
 {
     qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-    foreach(Patient p, *patientsDb.patientsList) {
+    //FIXME: где-то не происходит обновление данных, из-за чего программа не может пробросить данные
+    // поэтому мы гвоздями забиваем получение данных из файла
+    // скорее всего это надо исправлять работу модели и способ получения и обновления данных
+    patientsDb.getPatientsListFromJson();
+    QList<Patient> patients = *patientsDb.patientsList;
+
+    foreach(Patient p, patients) {
         if (p.fullName == fullName) {
-            currentPatientBirthDate = p.birthDate;
+            if (p.birthDate == currentPatientBirthDate) {
+                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
+                return;
+            }
+            else {
+                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
+                currentPatientBirthDate = p.birthDate;
+                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
+                return;
+            }
         }
     }
 
@@ -163,5 +178,11 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
+
+    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
+    foreach(Patient p, *patientsDb.patientsList) {
+        qDebug() << "\t" << p.fullName;
+    }
+
     setPatient(fullName);
 }
