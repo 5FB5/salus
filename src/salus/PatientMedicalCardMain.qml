@@ -20,7 +20,7 @@ Page {
     property var patientComplaints: []
     property string patientDiagnosis: ""
     property var patientDiseases: []
-    property string patientAnamnesis
+    property string patientAnamnesis: ""
 
     Backend {
         id: backend
@@ -45,44 +45,43 @@ Page {
         text: "Пациент: " + patientFullName
 
         font.pointSize: 20
-        font.bold: true
+        font.bold: false
 
         anchors.top: parent.top
         anchors.topMargin: 100
         anchors.horizontalCenter: parent.horizontalCenter
+    }
 
-        Row {
-            id: buttons_medical_card
 
-            anchors.fill: parent
-            anchors.topMargin: 250
-            anchors.leftMargin: 45 // FIXME: позиционирование по середине должно быть динамическим
+    Row {
+        id: buttons_medical_card
 
-            spacing: 50
+        anchors.centerIn: parent
 
-            Button {
-                id: buttonDiary
+        spacing: 50
 
-                font.pointSize: buttonStandartTextFontSize * 1.1
-                font.bold: false
+        Button {
+            id: buttonDiary
 
-                width: 200
-                height: 60
+            font.pointSize: buttonStandartTextFontSize * 1.1
+            font.bold: false
 
-                text: "Дневник лечения"
-            }
+            width: 200
+            height: 60
 
-            Button {
-                id: buttonPrintMedicalCard
+            text: "Дневник лечения"
+        }
 
-                font.pointSize: buttonStandartTextFontSize * 1.1
-                font.bold: false
+        Button {
+            id: buttonPrintMedicalCard
 
-                width: 200
-                height: 60
+            font.pointSize: buttonStandartTextFontSize * 1.1
+            font.bold: false
 
-                text: "Печать амбулаторной карты"
-            }
+            width: 200
+            height: 60
+
+            text: "Печать амбулаторной карты"
         }
     }
 }
