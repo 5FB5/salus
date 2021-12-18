@@ -29,7 +29,7 @@ public:
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
-    void getPatientsListFromJson();
+    void reloadDatabase();
 
     void deletePatient(QString birthDate);
 
@@ -52,6 +52,7 @@ public:
     QString getPhoneNumber(QString birthDate);
 
 private:
+    void getPatientsListFromJson();
     void saveProfileToJson(Patient patientProfile);
 
     QJsonDocument loadJson();

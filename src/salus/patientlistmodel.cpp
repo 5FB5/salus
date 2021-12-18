@@ -27,32 +27,28 @@ QVariant PatientListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     const Patient currentPatient = mPatientsList.at(index.row());
-
     return QVariant(currentPatient.fullName);
 }
 
 void PatientListModel::reloadPatientList()
 {
     qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Reloading patient list...\n";
-    // взять заного данные из файла
-    patientDb.getPatientsListFromJson();
 
     beginResetModel();
+
+    // взять заного данные из файла
+    patientDb.reloadDatabase();
 
     mPatientsList.clear();
 
     foreach(Patient p, *patientDb.patientsList) {
         mPatientsList.append(p);
+        qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Added " << p.fullName << " to mPatientsList!\n";
     }
 
     endResetModel();
 
     qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Patient list reloaded!\n";
-
-    qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Current patient list is: ";
-    foreach(Patient p, mPatientsList) {
-        qDebug() << "\t" << p.fullName;
-    }
 }
 
 QHash<int, QByteArray> PatientListModel::roleNames() const

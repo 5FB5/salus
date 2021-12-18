@@ -29,6 +29,7 @@ Window {
 
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
+    // FIXME: возможно, этот объект является причиной проблемы с передачей необновлённого массива пациентов
     Backend {
         id: backend
     }
@@ -112,21 +113,19 @@ Window {
                 id: model
             }
 
-            onPatientRegistered: {
-                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-                copyList.reloadPatientList()
-                page_medical_card_search.patientList = copyList
-
+            onPatientRegistered: {                
                 page_patient_medical_card_main.patientFullName = patientFullName
                 page_patient_medical_card_main.patientAge = patientAge
                 page_patient_medical_card_main.patientBirthDate = patientBirthDate
                 page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
                 page_patient_medical_card_main.patientOccupation = patientOccupation
 
+                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
+                copyList.reloadPatientList()
+                page_medical_card_search.patientList = copyList
+
                 stack_content_main.currentIndex = 5
-
             }
-
         }
 
         PatientMedicalCardMain { // 5

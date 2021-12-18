@@ -74,9 +74,10 @@ public:
     QList<QString> getCurrentPatientComplaints();
     QList<QString> getCurrentPatientDiseases();
     QList<QString> getPatientListNames(); // Используется для отображения имён в выпадающем списке в QML
-    quint16 getCurrentPatientAge();
-    bool getCurrentPatientSex();
 
+    quint16 getCurrentPatientAge();
+
+    bool getCurrentPatientSex();
 
     /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();

@@ -139,13 +139,17 @@ void Backend::setPatient(QString fullName)
 {
     qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-    //FIXME: где-то не происходит обновление данных, из-за чего программа не может пробросить данные
-    // поэтому мы гвоздями забиваем получение данных из файла
-    // скорее всего это надо исправлять работу модели и способ получения и обновления данных
-    patientsDb.getPatientsListFromJson();
-    QList<Patient> patients = *patientsDb.patientsList;
+    //FIXME: при использовании этого метода из разных QML страниц, где задействуется Backend,
+    //      некоторые объекты имеют необновлённые данные БД пациентов, что странно, так как по идее
+    //      сам класс Backend в QML должен быть глобальным
 
-    foreach(Patient p, patients) {
+    patientsDb.reloadDatabase();
+
+    foreach(Patient p, *patientsDb.patientsList) {
+        qDebug() << p.fullName << "\n";
+    }
+
+    foreach(Patient p, *patientsDb.patientsList) {
         if (p.fullName == fullName) {
             if (p.birthDate == currentPatientBirthDate) {
                 qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
@@ -176,8 +180,14 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
+    int previousDbSize = patientsDb.patientsList->size();
+
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
+
+    int currentDbSize = patientsDb.patientsList->size();
+
+    assert(previousDbSize < currentDbSize);
 
     qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
     foreach(Patient p, *patientsDb.patientsList) {

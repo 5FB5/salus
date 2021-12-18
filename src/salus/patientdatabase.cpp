@@ -36,7 +36,7 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     //          ... следующий профиль
     //    ]
 
-    if (patientsList->isEmpty()){
+    if (patientsList == nullptr){
         patientsList = new QList<Patient>;
     }
     else {
@@ -65,6 +65,11 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     qDebug() << "Salus: [PatientDataBase.h] addNewPatient() - Saving new profile...\n";
     saveProfileToJson(newPatient);
 
+}
+
+void PatientDataBase::reloadDatabase()
+{
+    getPatientsListFromJson();
 }
 
 // TODO: must be tested

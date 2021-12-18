@@ -42,7 +42,7 @@ Page {
     Label {
         id: labelPatientName
 
-        text: "Пациент: " + patientFullName
+        text: "<b>Пациент:</b> " + patientFullName
 
         font.pointSize: 20
         font.bold: false

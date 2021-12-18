@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 
-#include "backend.h"
+#include "patientdatabase.h"
 
 class PatientListModel : public QAbstractListModel
 {
