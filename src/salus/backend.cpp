@@ -139,12 +139,6 @@ void Backend::setPatient(QString fullName)
 {
     qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-    //FIXME: при использовании этого метода из разных QML страниц, где задействуется Backend,
-    //      некоторые объекты имеют необновлённые данные БД пациентов, что странно, так как по идее
-    //      сам класс Backend в QML должен быть глобальным
-
-    patientsDb.reloadDatabase();
-
     foreach(Patient p, *patientsDb.patientsList) {
         qDebug() << p.fullName << "\n";
     }

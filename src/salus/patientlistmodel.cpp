@@ -43,7 +43,7 @@ void PatientListModel::reloadPatientList()
 
     foreach(Patient p, *patientDb.patientsList) {
         mPatientsList.append(p);
-        qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Added " << p.fullName << " to mPatientsList!\n";
+        //qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Added " << p.fullName << " to mPatientsList!\n";
     }
 
     endResetModel();

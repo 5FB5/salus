@@ -31,10 +31,6 @@ Page {
         }
     }
 
-    Backend {
-        id: backend
-    }
-
     width: ScreenInfo.desktopAvailableWidth
     height: ScreenInfo.desktopAvailableHeight
 

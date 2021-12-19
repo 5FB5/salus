@@ -10,7 +10,7 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    property string patientFullName: backend.currentPatientFullName
+    property string patientFullName: ""
     property int patientAge: 0
     property bool patientSex: false
     property string patientBirthDate: ""
@@ -21,10 +21,6 @@ Page {
     property string patientDiagnosis: ""
     property var patientDiseases: []
     property string patientAnamnesis: ""
-
-    Backend {
-        id: backend
-    }
 
     Label {
         id: labelTitle
