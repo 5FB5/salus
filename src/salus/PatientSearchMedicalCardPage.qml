@@ -57,7 +57,7 @@ Page {
         currentIndex: -1
 
         onAccepted: {
-            console.log("Salus: [QML](ComboBox 'combobox_patients') - Patiend accepted\n")
+            console.log("Salus: [QML](ComboBox 'combobox_patients') - Patient accepted " + editText + "\n")
             find(editText) !== -1 ? openCurrentMedicalCard(editText) : registerMedicalCard(editText)
         }
     }

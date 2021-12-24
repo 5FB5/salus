@@ -36,3 +36,5 @@ HEADERS += \
     patientdatabase.h \
     patientlistmodel.h
 
+DISTFILES +=
+

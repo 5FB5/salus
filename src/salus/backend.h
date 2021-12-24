@@ -24,8 +24,6 @@ class Backend : public QObject
 
     Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
 
-    Q_PROPERTY(QList<QString> patientListNames READ getPatientListNames);
-
     Q_PROPERTY(QString currentPatientFullName READ getCurrentPatientFullName);
     Q_PROPERTY(quint16 currentPatientAge READ getCurrentPatientAge);
     Q_PROPERTY(bool currentPatientSex READ getCurrentPatientSex);
@@ -52,6 +50,10 @@ public:
      *  Используется как первичный ключ для доступа к остальным данным
     */
     quint16 currentDoctorInn;
+    /*!
+     *  Хранит дату рождения текущего пациента.
+     *  Используется как первичный ключ для доступа к остальным данным
+    */
     QString currentPatientBirthDate;
 
     quint16 getCurrentDoctorInstitutionCode();
@@ -73,7 +75,6 @@ public:
     QString getCurrentPatientAnamnesis();
     QList<QString> getCurrentPatientComplaints();
     QList<QString> getCurrentPatientDiseases();
-    QList<QString> getPatientListNames(); // Используется для отображения имён в выпадающем списке в QML
 
     quint16 getCurrentPatientAge();
 

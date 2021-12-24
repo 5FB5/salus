@@ -10,6 +10,58 @@ Backend::Backend(QObject *parent) : QObject(parent)
     }
 }
 
+void Backend::setPatient(QString fullName)
+{
+    qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
+
+    foreach(Patient p, *patientsDb.patientsList) {
+        if (p.fullName == fullName) {
+            if (p.birthDate == currentPatientBirthDate) {
+                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
+                return;
+            }
+            else {
+                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
+                currentPatientBirthDate = p.birthDate;
+                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
+                return;
+            }
+        }
+    }
+
+    qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
+}
+
+void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
+                                  QString doctorInstitutionName, quint16 doctorInstitutionCode, QString doctorInstitutionAddress,
+                                  quint16 doctorInn, QString doctorLicenseInfo)
+{
+    doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
+                              doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
+                              doctorInn,  doctorLicenseInfo);
+}
+
+void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
+                            QString birthDate, QString address,
+                            QString phoneNumber, QString occupation)
+{
+    int previousDbSize = patientsDb.patientsList->size();
+
+    qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
+    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
+
+    int currentDbSize = patientsDb.patientsList->size();
+
+    assert(previousDbSize < currentDbSize);
+
+    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
+    foreach(Patient p, *patientsDb.patientsList) {
+        qDebug() << "\t" << p.fullName;
+    }
+
+    setPatient(fullName);
+}
+
 QString Backend::getCurrentDoctorFullName()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorFullName()] - returned " << doctorDb.getFullName(currentDoctorInn) << "\n";
@@ -56,17 +108,6 @@ QString Backend::getCurrentDoctorInitials()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInitials()] - returned " << doctorDb.getProfileInitials(currentDoctorInn) << "\n";
     return doctorDb.getProfileInitials(currentDoctorInn);
-}
-
-QList<QString> Backend::getPatientListNames()
-{
-    QList<QString> names;
-    QList<Patient> list = *patientsDb.patientsList;
-
-    foreach(Patient p, list) {
-        names.append(p.fullName);
-    }
-    return names;
 }
 
 quint16 Backend::getCurrentPatientAge()
@@ -133,60 +174,4 @@ bool Backend::getIsDoctorDbExists()
 void Backend::setCurrentDoctorInn(quint16 inn)
 {
     currentDoctorInn = inn;
-}
-
-void Backend::setPatient(QString fullName)
-{
-    qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
-
-    foreach(Patient p, *patientsDb.patientsList) {
-        qDebug() << p.fullName << "\n";
-    }
-
-    foreach(Patient p, *patientsDb.patientsList) {
-        if (p.fullName == fullName) {
-            if (p.birthDate == currentPatientBirthDate) {
-                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
-                return;
-            }
-            else {
-                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
-                currentPatientBirthDate = p.birthDate;
-                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
-                return;
-            }
-        }
-    }
-
-    qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
-}
-
-void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
-                                  QString doctorInstitutionName, quint16 doctorInstitutionCode, QString doctorInstitutionAddress,
-                                  quint16 doctorInn, QString doctorLicenseInfo)
-{
-    doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
-                              doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
-                              doctorInn,  doctorLicenseInfo);
-}
-
-void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
-                            QString birthDate, QString address,
-                            QString phoneNumber, QString occupation)
-{
-    int previousDbSize = patientsDb.patientsList->size();
-
-    qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
-    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
-
-    int currentDbSize = patientsDb.patientsList->size();
-
-    assert(previousDbSize < currentDbSize);
-
-    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
-    foreach(Patient p, *patientsDb.patientsList) {
-        qDebug() << "\t" << p.fullName;
-    }
-
-    setPatient(fullName);
 }

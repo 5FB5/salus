@@ -9,5 +9,6 @@
         <file>PatientMedicalCardRegistrationPage.qml</file>
         <file>DoctorProfilePage.qml</file>
         <file>PatientMedicalCardMain.qml</file>
+        <file>PatientMedicalCardDiary.qml</file>
     </qresource>
 </RCC>

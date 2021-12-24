@@ -22,6 +22,8 @@ Page {
     property var patientDiseases: []
     property string patientAnamnesis: ""
 
+    signal openDiary()
+
     Label {
         id: labelTitle
 
@@ -66,6 +68,10 @@ Page {
             height: 60
 
             text: "Дневник лечения"
+
+            onClicked: {
+                openDiary()
+            }
         }
 
         Button {
@@ -77,7 +83,23 @@ Page {
             width: 200
             height: 60
 
-            text: "Печать амбулаторной карты"
+            enabled: false
+
+            text: "Печать карты"
+        }
+
+        Button {
+            id: buttonDeletePatient
+
+            font.pointSize: buttonStandartTextFontSize * 1.1
+            font.bold: false
+
+            width: 200
+            height: 60
+
+            enabled: false
+
+            text: "Удалить пациента из БД"
         }
     }
 }

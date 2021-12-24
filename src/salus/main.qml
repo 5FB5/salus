@@ -98,7 +98,6 @@ Window {
                 console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n")
                 page_patient_registration.patientFullName = fullname
                 stack_content_main.currentIndex = 4
-
             }
         }
 
@@ -129,6 +128,25 @@ Window {
 
         PatientMedicalCardMain { // 5
             id: page_patient_medical_card_main
+
+            width: parent.width
+            height: parent.height
+
+            onOpenDiary: {
+                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n")
+                page_patient_medical_card_diary.patientFullName = patientFullName
+                page_patient_medical_card_diary.patientAge = patientAge
+                page_patient_medical_card_diary.patientBirthDate = patientBirthDate
+                page_patient_medical_card_diary.patientPhoneNumber = patientPhoneNumber
+                page_patient_medical_card_diary.patientOccupation = patientOccupation
+
+                stack_content_main.currentIndex = 6
+                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n")
+            }
+        }
+
+        PatientMedicalCardDiary { // 6
+            id: page_patient_medical_card_diary
 
             width: parent.width
             height: parent.height
