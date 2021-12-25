@@ -109,14 +109,11 @@ void PatientDataBase::updateDbToFile()
        jsonFile.open(QFile::WriteOnly);
        jsonFile.write(jsonDocument.toJson());
        jsonFile.close();
-
     }
 
     qDebug() << "Salus: [PatienDataBase.h] updateDbToFile() - Database updated\n";
-    return;
 }
 
-// TODO: must be tested
 bool PatientDataBase::deletePatient(QString birthDate)
 {
     int i = 0;
@@ -286,11 +283,11 @@ void PatientDataBase::getPatientsListFromJson()
 
             currentProfile.fullName = currentObj["fullname"].toString();
             currentProfile.age = currentObj["age"].toInt();
-            currentProfile.sex = currentObj["sex"].toInt();
+            currentProfile.sex = currentObj["sex"].toBool();
             currentProfile.birthDate = currentObj["birthdate"].toString();
             currentProfile.address = currentObj["address"].toString();
             currentProfile.birthDate = currentObj["birthdate"].toString();
-            currentProfile.phoneNumber = currentObj["phoneNumber"].toInt();
+            currentProfile.phoneNumber = currentObj["phoneNumber"].toString();
             currentProfile.occupation = currentObj["occupation"].toString();
             currentProfile.currentDiagnosis = currentObj["diagnosis"].toString();
             currentProfile.anamnesis = currentObj["anamnesis"].toString();
