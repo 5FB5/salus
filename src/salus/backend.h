@@ -39,6 +39,7 @@ class Backend : public QObject
 
 public:
     explicit Backend(QObject *parent = nullptr);
+    ~Backend();
 
     /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
@@ -90,6 +91,8 @@ public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
+
+    void deletePatient();
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                              QString doctorInstitutionName, quint16 doctorInstitutionCode,

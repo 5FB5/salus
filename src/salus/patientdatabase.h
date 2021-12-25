@@ -30,8 +30,9 @@ public:
                        QString phoneNumber, QString occupation);
 
     void reloadDatabase();
+    void updateDbToFile();
 
-    void deletePatient(QString birthDate);
+    bool deletePatient(QString birthDate);
 
     QString getFullName(QString birthDate);
     QString getBirthDate(QString birthDate); // FIXME: возможно оно должно возвращать QDate

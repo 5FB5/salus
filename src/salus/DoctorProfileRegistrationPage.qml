@@ -17,9 +17,9 @@ Page {
     property string registeredDoctorInn
     property string registeredDoctorLicenseInfo
 
-    Backend {
-        id: backend
-    }
+//    Backend {
+//        id: backend
+//    }
 
     width: ScreenInfo.desktopAvailableWidth
     height: ScreenInfo.desktopAvailableHeight

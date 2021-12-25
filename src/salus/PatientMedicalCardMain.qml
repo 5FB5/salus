@@ -23,6 +23,7 @@ Page {
     property string patientAnamnesis: ""
 
     signal openDiary()
+    signal deletePatient()
 
     Label {
         id: labelTitle
@@ -97,9 +98,11 @@ Page {
             width: 200
             height: 60
 
-            enabled: false
-
             text: "Удалить пациента из БД"
+
+            onClicked: {
+                deletePatient()
+            }
         }
     }
 }

@@ -132,6 +132,39 @@ Window {
             width: parent.width
             height: parent.height
 
+            PatientListModel {
+                id: model_patient_list
+            }
+
+            // Диалоговое окно для подтверждения удаления пациента из БД
+            Dialog {
+                id: dialogbox_delete_patient
+
+                width: parent.width / 4
+                height: parent.height / 4
+
+                anchors.centerIn: parent
+
+                title: "Удаление карты пациента '" + page_patient_medical_card_main.patientFullName + "'"
+                standardButtons: Dialog.Yes | Dialog.No
+
+                Text {
+                    id: dialogbox_text
+                    font.pointSize: 14
+                    text: qsTr("Удалить карту?")
+                }
+
+                onAccepted: {
+                    backend.deletePatient()
+
+                    var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
+                    copyList.reloadPatientList()
+                    page_medical_card_search.patientList = copyList
+
+                    stack_content_main.currentIndex = 3
+                }
+            }
+
             onOpenDiary: {
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n")
                 page_patient_medical_card_diary.patientFullName = patientFullName
@@ -142,6 +175,10 @@ Window {
 
                 stack_content_main.currentIndex = 6
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n")
+            }
+
+            onDeletePatient: {
+                dialogbox_delete_patient.open()
             }
         }
 

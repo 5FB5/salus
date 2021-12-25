@@ -10,6 +10,12 @@ Backend::Backend(QObject *parent) : QObject(parent)
     }
 }
 
+Backend::~Backend()
+{
+    qDebug() << "Salus: [Backend::~Backend] - updateDbToFile()\n";
+    patientsDb.updateDbToFile();
+}
+
 void Backend::setPatient(QString fullName)
 {
     qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
@@ -60,6 +66,13 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
     }
 
     setPatient(fullName);
+}
+
+void Backend::deletePatient()
+{
+    qDebug() << "Salus: [Backend::deletePatient] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
+    patientsDb.deletePatient(currentPatientBirthDate);
+    qDebug() << "Salus: [Backend::deletePatient] - Patient deleted from DB\n";
 }
 
 QString Backend::getCurrentDoctorFullName()

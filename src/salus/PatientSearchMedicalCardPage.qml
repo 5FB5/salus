@@ -15,10 +15,6 @@ Page {
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
 
-    Backend {
-        id: backend
-    }
-
     Label {
         id: labelTitle
 

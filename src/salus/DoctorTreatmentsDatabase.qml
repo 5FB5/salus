@@ -7,10 +7,6 @@ import io.qt.salus 1.0
 Page {
     id: root
 
-    Backend {
-        id: backend
-    }
-
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 

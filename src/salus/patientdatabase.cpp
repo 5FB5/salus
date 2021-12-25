@@ -72,18 +72,66 @@ void PatientDataBase::reloadDatabase()
     getPatientsListFromJson();
 }
 
-// TODO: must be tested
-void PatientDataBase::deletePatient(QString birthDate)
+void PatientDataBase::updateDbToFile()
 {
+    QJsonDocument jsonDocument;
+    QJsonArray jsonArray = jsonDocument.array(), patientProfileDiseases, patientProfileComplaints;
+
+    foreach(Patient p, *patientsList) {
+        QJsonObject PatientProfileObj;
+
+        patientProfileDiseases = convertListToJsonArray(p.diseases);
+        patientProfileComplaints = convertListToJsonArray(p.complaints);
+
+        PatientProfileObj.insert("fullname", p.fullName);
+        PatientProfileObj.insert("age", p.age);
+        PatientProfileObj.insert("sex", p.sex);
+        PatientProfileObj.insert("birthdate", p.birthDate);
+        PatientProfileObj.insert("address", p.address);
+        PatientProfileObj.insert("phoneNumber", p.phoneNumber);
+        PatientProfileObj.insert("occupation", p.occupation);
+        PatientProfileObj.insert("diagnosis", p.currentDiagnosis);
+        PatientProfileObj.insert("anamnesis", p.anamnesis);
+
+        PatientProfileObj.insert("diseases", patientProfileDiseases);
+        PatientProfileObj.insert("complaints", patientProfileComplaints);
+
+        jsonArray.append(PatientProfileObj);
+    }
+
+    jsonDocument.setArray(jsonArray);
+
+    QFileInfo fInfo(JSON_PATIENT_FILE_PATH);
+    QFile jsonFile(JSON_PATIENT_FILE_PATH);
+
+    if (fInfo.exists() == true) {
+       jsonFile.remove();
+       jsonFile.open(QFile::WriteOnly);
+       jsonFile.write(jsonDocument.toJson());
+       jsonFile.close();
+
+    }
+
+    qDebug() << "Salus: [PatienDataBase.h] updateDbToFile() - Database updated\n";
+    return;
+}
+
+// TODO: must be tested
+bool PatientDataBase::deletePatient(QString birthDate)
+{
+    int i = 0;
     if (patientsList->isEmpty() == false) {
-        for(int i = 0; i < patientsList->size(); ++i) {
-            foreach(Patient patient, *patientsList) {
-                if (patient.birthDate == birthDate) {
-                    patientsList->removeAt(i);
-                }
+        foreach(Patient patient, *patientsList) {
+            if (patient.birthDate == birthDate) {
+                patientsList->removeAt(i);
+                return true;
+            }
+            else {
+                i++;
             }
         }
     }
+    return false;
 }
 
 QString PatientDataBase::getFullName(QString birthDate)
@@ -283,7 +331,7 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     PatientProfileObj.insert("anamnesis", patientProfile.anamnesis);
 
     PatientProfileObj.insert("diseases", patientProfileDiseases);
-    PatientProfileObj.insert("complaints", patientProfileDiseases);
+    PatientProfileObj.insert("complaints", patientProfileComplaints);
 
     jsonArray.append(PatientProfileObj);
 
