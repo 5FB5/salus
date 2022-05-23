@@ -34,4 +34,27 @@ Page {
         anchors.topMargin: 50
         anchors.horizontalCenter: parent.horizontalCenter
     }
+
+    Row {
+        id: buttons_diary
+
+        anchors.centerIn: parent
+
+        spacing: 50
+
+        Button {
+            id: buttonSaveData
+
+            font.pointSize: buttonStandartTextFontSize * 1.1
+            font.bold: false
+
+            width: 200
+            height: 60
+
+            text: "Сохранить данные"
+
+            onClicked: {
+            }
+        }
+    }
 }

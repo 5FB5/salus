@@ -41,7 +41,7 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     }
     else {
         if (isProfileExists(birthDate) == true) {
-            qDebug() << "Salus: [PatienDataBase.h] addNewPatient() - Patient " << fullName << " already exists. Selecting this profile...\n";
+            qDebug() << "Salus: [PatienDataBase::addNewPatient()] - Patient " << fullName << " already exists. Selecting this profile...\n";
             return;
         }
     }
@@ -62,7 +62,7 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
 
     patientsList->append(newPatient);
 
-    qDebug() << "Salus: [PatientDataBase.h] addNewPatient() - Saving new profile...\n";
+    qDebug() << "Salus: [PatientDataBase::addNewPatient()] - Saving new profile...\n";
     saveProfileToJson(newPatient);
 
 }
@@ -111,7 +111,7 @@ void PatientDataBase::updateDbToFile()
        jsonFile.close();
     }
 
-    qDebug() << "Salus: [PatienDataBase.h] updateDbToFile() - Database updated\n";
+    qDebug() << "Salus: [PatienDataBase::updateDbToFile()] - Database updated\n";
 }
 
 bool PatientDataBase::deletePatient(QString birthDate)
@@ -339,7 +339,7 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     jsonFile.write(jsonDocument.toJson());
     jsonFile.close();
 
-    qDebug() << "\tSalus: [PatienDataBase.h] saveProfileToJson() - Profile saved\n";
+    qDebug() << "\tSalus: [PatienDataBase::saveProfileToJson()] - Profile saved\n";
 }
 
 bool PatientDataBase::isProfileExists(QString birthDate) {

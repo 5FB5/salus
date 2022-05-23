@@ -70,10 +70,10 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
 
 void Backend::deletePatient()
 {
-    qDebug() << "Salus: [Backend::deletePatient] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
+    qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
     patientsDb.deletePatient(currentPatientBirthDate);
     patientsDb.updateDbToFile();
-    qDebug() << "Salus: [Backend::deletePatient] - Patient deleted from DB\n";
+    qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
 }
 
 QString Backend::getCurrentDoctorFullName()
