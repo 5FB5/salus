@@ -3,9 +3,10 @@
 
 #include <QString>
 #include <QObject>
+#include <QDebug>
 
-#include "doctordatabase.h"
-#include "patientdatabase.h"
+#include "doctor/doctordatabase.h"
+#include "patient/patientdatabase.h"
 
 /*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
 class Backend : public QObject

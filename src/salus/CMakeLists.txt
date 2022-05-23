@@ -14,47 +14,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
 
+add_subdirectory(backend)
+add_subdirectory(backend/doctor)
+add_subdirectory(backend/patient)
+
+qt5_add_resources(RESOURCES qml.qrc)
+
 set(PROJECT_SOURCES
         main.cpp
-        patient.cpp
-        doctor.cpp
-        patientdatabase.cpp
-        doctordatabase.cpp
-        patientlistmodel.cpp
-        qml.qrc
 )
 
-add_subdirectory(backend)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${RESOURCES})
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(${PROJECT_NAME}
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-else()
-    if(ANDROID)
-        add_library(${PROJECT_NAME} SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(salus
-          ${PROJECT_SOURCES}
-        )
-    endif()
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC backend)
 
-target_compile_definitions(${PROJECT_NAME}
-  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+#target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Network)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-)
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_import_qml_plugins(${PROJECT_NAME})
-    qt_finalize_executable(${PROJECT_NAME})
-endif()

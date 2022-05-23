@@ -1,25 +1,35 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Controls 2.12
 
 import io.qt.salus 1.0
 
 Page {
     id: root
 
-    signal profileRegistered()
+    // Поля для базовой регистрации
+    property string patientFullName: ""
+    property int patientAge: 0
+    property bool patientSex
+    property string patientBirthDate: ""
+    property string patientAddress: ""
+    property string patientPhoneNumber: ""
+    property string patientOccupation: ""
 
-    property string registeredDoctorFullName
-    property string registeredDoctorSpecialization
-    property string registeredDoctorInstitutionName
-    property string registeredDoctorInstitutionCode
-    property string registeredDoctorInstitutionAddress
-    property string registeredDoctorInn
-    property string registeredDoctorLicenseInfo
+    signal patientRegistered(string fullname)
 
-//    Backend {
-//        id: backend
-//    }
+    function clearTextFields() {
+        if (textEditFullName.text !== "" || textEditAge.text !== "" || textEditBirthDate.text !== "" || textEditAddress ||
+                textEditPhoneNumber.text !== "" || textEditOccupation.text !== "")
+        {
+            textEditFullName.text = ""
+            textEditAge.text = ""
+            textEditBirthDate.text = ""
+            textEditAddress.text = ""
+            textEditPhoneNumber.text = ""
+            textEditOccupation.text = ""
+        }
+    }
 
     width: ScreenInfo.desktopAvailableWidth
     height: ScreenInfo.desktopAvailableHeight
@@ -27,29 +37,45 @@ Page {
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
 
+    property int buttonStandartTextFontSize: 10
+    property int standartTextSize: 14
+
+
     background: Rectangle {
         id: backgroundRect
-        color: "white"
+
+        color: "#FFFFFFFF"
     }
 
     Label {
-        text: "Регистрация нового профиля"
-        anchors.top: registrationFields.top
-        anchors.topMargin: -112
-        anchors.horizontalCenter: parent.horizontalCenter
+        id: labelTitle
+
+        text: "Регистрация новой амбулаторной карты"
+
         font.pointSize: 20
+        font.bold: true
+
+        anchors.top: parent.top
+        anchors.topMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+
     }
 
     Column {
         id: registrationFields
+
         transformOrigin: Item.Center
+
         anchors.centerIn: parent
-        spacing: 15
+
+        spacing: 30
 
        TextField {
            id: textEditFullName
 
            placeholderText: "Введите ФИО"
+           text: patientFullName
+
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -72,8 +98,68 @@ Page {
        }
 
        TextField {
-           id: textEditInn
-           placeholderText: ("Введите ИНН")
+           id: textEditAge
+
+           placeholderText: ("Введите возраст")
+           font.pointSize: 11
+
+           width: textFieldsWidth
+           height: 30
+
+           horizontalAlignment: Text.AlignHCenter
+           verticalAlignment: Text.AlignVCenter
+
+           validator: IntValidator {
+               bottom: 0
+               top: 255
+           }
+
+           background: {
+               color: "#0000ffff"
+           }
+
+           Rectangle {
+               anchors.fill: parent
+               border.width: 1
+               radius: textFieldBorderRadius
+               color: "#0000ffff"
+
+           }
+       }
+
+       Label {
+           id: label_sex
+
+           text: "Пол: "
+
+           font.pointSize: standartTextSize
+
+           ComboBox {
+               id: combobox_sex
+
+               font.pointSize: 11
+
+               anchors.top: parent.top
+               anchors.bottom: parent.bottom
+               anchors.left: parent.right
+               anchors.leftMargin: 40
+
+               model: ListModel {
+                   id: list_sex
+
+                   ListElement { text: "Мужской" }
+                   ListElement { text: "Женский" }
+               }
+
+               onActivated: {
+                   patientSex = index === 0 ? false : true
+               }
+           }
+       }
+
+       TextField {
+           id: textEditBirthDate
+           placeholderText: ("Введите дату рождения")
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -96,8 +182,8 @@ Page {
        }
 
        TextField {
-           id: textEditSpecialization
-           placeholderText: ("Введите специализацию")
+           id: textEditAddress
+           placeholderText: ("Введите адрес проживания")
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -120,8 +206,8 @@ Page {
        }
 
        TextField {
-           id: textEditLicenseInfo
-           placeholderText: ("Введите лицензию")
+           id: textEditPhoneNumber
+           placeholderText: ("Введите номер телефона")
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -144,56 +230,8 @@ Page {
        }
 
        TextField {
-           id: textEditInstitutionName
-           placeholderText: ("Введите название организации")
-           font.pointSize: 11
-
-           width: textFieldsWidth
-           height: 30
-
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-
-           background: {
-               color: "#0000ffff"
-           }
-
-           Rectangle {
-               anchors.fill: parent
-               border.width: 1
-               radius: textFieldBorderRadius
-               color: "#0000ffff"
-
-           }
-       }
-
-       TextField {
-           id: textEditInstitutionAddress
-           placeholderText: ("Введите адрес организации")
-           font.pointSize: 11
-
-           width: textFieldsWidth
-           height: 30
-
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-
-           background: {
-               color: "#0000ffff"
-           }
-
-           Rectangle {
-               anchors.fill: parent
-               border.width: 1
-               radius: textFieldBorderRadius
-               color: "#0000ffff"
-
-           }
-       }
-
-       TextField {
-           id: textEditInstitutionCode
-           placeholderText: ("Введите код организации")
+           id: textEditOccupation
+           placeholderText: ("Введите профессию")
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -216,9 +254,9 @@ Page {
        }
 
         Button {
-            id: buttonRegisterProfile
+            id: buttonRegisterPatient
 
-            text: "Зарегистрироваться"
+            text: "Зарегистрировать новую карту"
 
             font.pointSize: 10
 
@@ -232,28 +270,18 @@ Page {
             height: 50
 
             onClicked: {
-                backend.addNewDoctorProfile(textEditFullName.text.toString(), textEditSpecialization.text.toString(),
-                                            textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
-                                            textEditInstitutionAddress.text.toString(), textEditInn.text.toString(),
-                                            textEditLicenseInfo.text.toString()
-                                            )
+                backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
+                                      textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
 
-                registeredDoctorFullName = textEditFullName.text.toString()
-                registeredDoctorSpecialization = textEditSpecialization.text.toString()
-                registeredDoctorInstitutionName = textEditInstitutionName.text.toString()
-                registeredDoctorInstitutionCode = textEditInstitutionCode.text.toString()
-                registeredDoctorInstitutionAddress = textEditInstitutionAddress.text.toString()
-                registeredDoctorInn = textEditInn.text.toString()
-                registeredDoctorLicenseInfo = textEditLicenseInfo.text.toString()
+                patientFullName = textEditFullName.text.toString()
+                patientAge = textEditAge.text
+                patientBirthDate = textEditBirthDate.text
+                patientPhoneNumber = textEditPhoneNumber.text
+                patientOccupation = textEditOccupation.text.toString()
 
-                profileRegistered()
+                patientRegistered(textEditFullName.text.toString())
+
             }
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.75}
-}
-##^##*/
