@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Controls 2.12
 
 import io.qt.salus 1.0
 
@@ -17,9 +17,9 @@ Page {
     property string registeredDoctorInn
     property string registeredDoctorLicenseInfo
 
-    Backend {
-        id: backend
-    }
+//    Backend {
+//        id: backend
+//    }
 
     width: ScreenInfo.desktopAvailableWidth
     height: ScreenInfo.desktopAvailableHeight
@@ -59,14 +59,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -83,14 +83,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -107,14 +107,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -131,14 +131,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -155,14 +155,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -179,14 +179,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }
@@ -203,14 +203,14 @@ Page {
            verticalAlignment: Text.AlignVCenter
 
            background: {
-               color: "transparent"
+               color: "#0000ffff"
            }
 
            Rectangle {
                anchors.fill: parent
                border.width: 1
                radius: textFieldBorderRadius
-               color: "transparent"
+               color: "#0000ffff"
 
            }
        }

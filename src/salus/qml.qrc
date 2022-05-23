@@ -1,12 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>LoginPage.qml</file>
-        <file>DoctorProfileRegistrationPage.qml</file>
-        <file>PatientMedicalCardPage.qml</file>
-        <file>DoctorDiagnosesDataBase.qml</file>
-        <file>DoctorTreatmentsDatabase.qml</file>
-        <file>PatientMedicalCardRegistrationPage.qml</file>
-        <file>DoctorProfilePage.qml</file>
+        <file>frontend/patient/PatientSearchMedicalCardPage.qml</file>
+        <file>frontend/patient/PatientMedicalCardRegistrationPage.qml</file>
+        <file>frontend/patient/PatientMedicalCardMain.qml</file>
+        <file>frontend/patient/PatientMedicalCardDiary.qml</file>
+        <file>frontend/doctor/LoginPage.qml</file>
+        <file>frontend/doctor/DoctorTreatmentsDatabase.qml</file>
+        <file>frontend/doctor/DoctorProfileRegistrationPage.qml</file>
+        <file>frontend/doctor/DoctorProfilePage.qml</file>
+        <file>frontend/doctor/DoctorDiagnosesDataBase.qml</file>
+        <file>frontend/main.qml</file>
     </qresource>
 </RCC>
