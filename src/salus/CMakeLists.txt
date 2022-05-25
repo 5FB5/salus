@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.22)
 
 project(salus VERSION 0.1 LANGUAGES CXX)
 
@@ -18,7 +18,7 @@ add_subdirectory(backend)
 add_subdirectory(backend/doctor)
 add_subdirectory(backend/patient)
 
-qt5_add_resources(RESOURCES qml.qrc)
+qt_add_resources(RESOURCES qml.qrc)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -28,8 +28,7 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${RESOURCES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC backend)
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Network)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Quick)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
