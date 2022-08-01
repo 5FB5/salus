@@ -27,9 +27,9 @@ Page {
         color: "white"
     }
 
-    Label {
+    Text {
         text: "Регистрация нового профиля"
-        anchors.top: root.top
+        anchors.top: parent.top
         anchors.topMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
         font.pointSize: 20
@@ -60,14 +60,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -92,14 +88,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -124,14 +116,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -156,14 +144,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -188,14 +172,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -219,14 +199,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -251,14 +227,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }

@@ -16,6 +16,8 @@ Page {
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
 
+    property int fontSize: 11
+
     signal patientRegistered(string fullname)
 
     function clearTextFields() {
@@ -31,8 +33,8 @@ Page {
         }
     }
 
-    width: ScreenInfo.desktopAvailableWidth
-    height: ScreenInfo.desktopAvailableHeight
+//    width: ScreenInfo.desktopAvailableWidth
+//    height: ScreenInfo.desktopAvailableHeight
 
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
@@ -40,11 +42,13 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    Rectangle
+    {
+        id: background
 
-    background: Rectangle {
-        id: backgroundRect
+        anchors.fill: parent
 
-        color: "#FFFFFFFF"
+        color: "#ffffff"
     }
 
     Label {
@@ -64,19 +68,33 @@ Page {
     Column {
         id: registrationFields
 
-        transformOrigin: Item.Center
+        anchors
+        {
+            top: labelTitle.bottom
+            topMargin: 30
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
 
-        anchors.centerIn: parent
+        spacing: 15
 
-        spacing: 30
+        Text {
+            id: labelFullName
+            text: "Введите ФИО"
+            font.pointSize: fontSize
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
 
        TextField {
            id: textEditFullName
 
+           anchors.horizontalCenter: parent.horizontalCenter
+
            placeholderText: "Введите ФИО"
            text: patientFullName
 
-           font.pointSize: 11
+           font.pointSize: fontSize
 
            width: textFieldsWidth
            height: 30
@@ -84,24 +102,28 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
        }
 
+       Text {
+           id: labelAge
+           text: "Введите возраст"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
+       }
+
        TextField {
            id: textEditAge
 
-           placeholderText: ("Введите возраст")
-           font.pointSize: 11
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
 
            width: textFieldsWidth
            height: 30
@@ -114,53 +136,56 @@ Page {
                top: 255
            }
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
        }
 
-       Label {
-           id: label_sex
+       Text {
+           id: labelSex
+           text: "Пол"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
+       }
 
-           text: "Пол: "
+       ComboBox {
+           id: combobox_sex
 
-           font.pointSize: standartTextSize
+           font.pointSize: fontSize
 
-           ComboBox {
-               id: combobox_sex
+           anchors.horizontalCenter: parent.horizontalCenter
 
-               font.pointSize: 11
+           model: ListModel {
+               id: list_sex
 
-               anchors.top: parent.top
-               anchors.bottom: parent.bottom
-               anchors.left: parent.right
-               anchors.leftMargin: 40
-
-               model: ListModel {
-                   id: list_sex
-
-                   ListElement { text: "Мужской" }
-                   ListElement { text: "Женский" }
-               }
-
-               onActivated: {
-                   patientSex = index === 0 ? false : true
-               }
+               ListElement { text: "Мужской" }
+               ListElement { text: "Женский" }
            }
+
+           onActivated: {
+               patientSex = index === 0 ? false : true
+           }
+       }
+
+       Text {
+           id: labelBirthDate
+           text: "Введите дату рождения"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
        }
 
        TextField {
            id: textEditBirthDate
-           placeholderText: ("Введите дату рождения")
-           font.pointSize: 11
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           placeholderText: "12.12.1985"
+
+           font.pointSize: fontSize
 
            width: textFieldsWidth
            height: 30
@@ -168,23 +193,30 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
+       }
+
+       Text {
+           id: labelAddress
+           text: "Введите адрес проживания"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
        }
 
        TextField {
            id: textEditAddress
-           placeholderText: ("Введите адрес проживания")
-           font.pointSize: 11
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           placeholderText: "г. Краснодар, ул. 40 лет Победы"
+
+           font.pointSize: fontSize
 
            width: textFieldsWidth
            height: 30
@@ -192,23 +224,28 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
+       }
+
+       Text {
+           id: labelPhoneNumber
+           text: "Введите номер телефона"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
        }
 
        TextField {
            id: textEditPhoneNumber
-           placeholderText: ("Введите номер телефона")
-           font.pointSize: 11
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
 
            width: textFieldsWidth
            height: 30
@@ -216,22 +253,28 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
        }
 
+       Text {
+           id: labelOccupation
+           text: "Введите профессию"
+           font.pointSize: fontSize
+           anchors.horizontalCenter: parent.horizontalCenter
+       }
+
        TextField {
            id: textEditOccupation
-           placeholderText: ("Введите профессию")
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           placeholderText: "Аналитик"
            font.pointSize: 11
 
            width: textFieldsWidth
@@ -240,14 +283,10 @@ Page {
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           background: {
-               color: "#0000ffff"
-           }
-
            Rectangle {
                anchors.fill: parent
                border.width: 1
-               radius: textFieldBorderRadius
+//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
@@ -260,13 +299,15 @@ Page {
 
             font.pointSize: 10
 
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors.horizontalCenter: parent.horizontalCenter
 
-            anchors.leftMargin: 30
-            anchors.rightMargin: 30
+//            anchors.left: parent.left
+//            anchors.right: parent.right
 
-            width: 200
+//            anchors.leftMargin: 30
+//            anchors.rightMargin: 30
+
+            width: 300
             height: 50
 
             onClicked: {

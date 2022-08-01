@@ -64,30 +64,18 @@ ApplicationWindow {
 
         DoctorProfilePage { // 0
             id: page_doctor_profile
-
-            width: parent.width
-            height: parent.height
         }
 
         DoctorDiagnosesDataBase { // 1
             id: page_doctor_diagnoses
-
-            width: parent.width
-            height: parent.height
         }
 
         DoctorTreatmentsDatabase { // 2
             id: page_doctor_treatments
-
-            width: parent.width
-            height: parent.height
         }
 
         PatientSearchMedicalCardPage { // 3
             id: page_medical_card_search
-
-            width: parent.width
-            height: parent.height
 
             onOpenCurrentMedicalCard: {
                 console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
@@ -118,9 +106,6 @@ ApplicationWindow {
         PatientMedicalCardRegistrationPage { // 4
             id: page_patient_registration
 
-            width: parent.width
-            height: parent.height
-
             PatientListModel {
                 id: model
             }
@@ -142,9 +127,6 @@ ApplicationWindow {
 
         PatientMedicalCardMain { // 5
             id: page_patient_medical_card_main
-
-            width: parent.width
-            height: parent.height
 
             PatientListModel {
                 id: model_patient_list
@@ -198,9 +180,6 @@ ApplicationWindow {
 
         PatientMedicalCardDiary { // 6
             id: page_patient_medical_card_diary
-
-            width: parent.width
-            height: parent.height
         }
     }
 
@@ -305,8 +284,6 @@ ApplicationWindow {
     // Страница логина, передающая данные профиля
     LoginPage {
         id: page_login
-
-        anchors.fill: parent
 
         visible: false
 
