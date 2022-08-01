@@ -2,7 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 
-import io.qt.salus 1.0
+import salus 1.0
 
 Page {
     id: root

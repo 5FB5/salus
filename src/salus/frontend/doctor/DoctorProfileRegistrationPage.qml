@@ -2,25 +2,22 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 
-import io.qt.salus 1.0
+import salus 1.0
 
 Page {
     id: root
 
-    signal profileRegistered()
+    //signal profileRegistered()
 
-    property string registeredDoctorFullName
-    property string registeredDoctorSpecialization
-    property string registeredDoctorInstitutionName
-    property string registeredDoctorInstitutionCode
-    property string registeredDoctorInstitutionAddress
-    property string registeredDoctorInn
-    property string registeredDoctorLicenseInfo
+//    property string registeredDoctorFullName
+//    property string registeredDoctorSpecialization
+//    property string registeredDoctorInstitutionName
+//    property string registeredDoctorInstitutionCode
+//    property string registeredDoctorInstitutionAddress
+//    property string registeredDoctorInn
+//    property string registeredDoctorLicenseInfo
 
     property int fontSize: 11
-
-    width: ScreenInfo.desktopAvailableWidth
-    height: ScreenInfo.desktopAvailableHeight
 
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
@@ -280,9 +277,6 @@ Page {
             anchors.leftMargin: 30
             anchors.rightMargin: 30
 
-//            width: 200
-//            height: 50
-
             onClicked: {
                 backend.addNewDoctorProfile(textEditFullName.text.toString(), textEditSpecialization.text.toString(),
                                             textEditInstitutionName.text.toString(), textEditInstitutionCode.text.toString(),
@@ -290,22 +284,16 @@ Page {
                                             textEditLicenseInfo.text.toString()
                                             )
 
-                registeredDoctorFullName = textEditFullName.text.toString()
-                registeredDoctorSpecialization = textEditSpecialization.text.toString()
-                registeredDoctorInstitutionName = textEditInstitutionName.text.toString()
-                registeredDoctorInstitutionCode = textEditInstitutionCode.text.toString()
-                registeredDoctorInstitutionAddress = textEditInstitutionAddress.text.toString()
-                registeredDoctorInn = textEditInn.text.toString()
-                registeredDoctorLicenseInfo = textEditLicenseInfo.text.toString()
+//                registeredDoctorFullName = textEditFullName.text.toString()
+//                registeredDoctorSpecialization = textEditSpecialization.text.toString()
+//                registeredDoctorInstitutionName = textEditInstitutionName.text.toString()
+//                registeredDoctorInstitutionCode = textEditInstitutionCode.text.toString()
+//                registeredDoctorInstitutionAddress = textEditInstitutionAddress.text.toString()
+//                registeredDoctorInn = textEditInn.text.toString()
+//                registeredDoctorLicenseInfo = textEditLicenseInfo.text.toString()
 
-                profileRegistered()
+                //profileRegistered()
             }
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.75}
-}
-##^##*/

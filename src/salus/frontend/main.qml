@@ -6,18 +6,18 @@ import QtQuick.Layouts 1.12
 import "../frontend/doctor"
 import "../frontend/patient"
 
-import io.qt.salus 1.0
+import salus 1.0
 
 Window {
     id: applicationWindow
 
-    width: ScreenInfo.desktopAvailableWidth
-    height: ScreenInfo.desktopAvailableHeight
+//    width: 1280
+//    height: 720
 
-    minimumWidth: 1366
-    minimumHeight: 768
+    minimumWidth: 1280
+    minimumHeight: 720
 
-    visibility: "Maximized"
+    visibility: "Windowed"
 
     title: qsTr("Салюс")
 
@@ -32,8 +32,22 @@ Window {
 
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
-    Backend {
-        id: backend
+    function updateProfilePage()
+    {
+        page_doctor_profile.doctorName = backend.currentDoctorFullName
+        page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization
+        page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName
+        page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress
+        page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode
+        page_doctor_profile.doctorInn = backend.currentDoctorInn
+        page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo
+    }
+
+    Component.onCompleted:
+    {
+        doctorFullName = backend.currentDoctorFullName
+
+        updateProfilePage()
     }
 
     // Окно, отображающее контент на основной странице
@@ -295,25 +309,18 @@ Window {
     LoginPage {
         id: page_login
 
+        anchors.fill: parent
+
         visible: false;
 
         onLogIn: {
-            doctorFullName = page_login.logInDoctorName.toString()
-            doctorSpecialization = page_login.logInDoctorSpecialization.toString()
-            doctorInstitutionName = page_login.logInDoctorInstitutionName.toString()
-            doctorInstitutionCode = page_login.logInDoctorInstitutionCode.toString()
-            doctorInstitutionAddress = page_login.logInDoctorInstitutionAddress.toString()
-            doctorInn = page_login.logInDoctorInn.toString()
-            doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
-
-            // Передаём данные на страницу профиля
-            page_doctor_profile.doctorName = doctorFullName
-            page_doctor_profile.doctorSpecialization = doctorSpecialization
-            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
-            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
-            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
-            page_doctor_profile.doctorInn = doctorInn
-            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
+//            doctorFullName = backend.currentDoctorFullName
+//            doctorSpecialization = page_login.logInDoctorSpecialization.toString()
+//            doctorInstitutionName = page_login.logInDoctorInstitutionName.toString()
+//            doctorInstitutionCode = page_login.logInDoctorInstitutionCode.toString()
+//            doctorInstitutionAddress = page_login.logInDoctorInstitutionAddress.toString()
+//            doctorInn = page_login.logInDoctorInn.toString()
+//            doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
 
             stackview_startup.push(menu_bar)
         }
@@ -323,34 +330,49 @@ Window {
     DoctorProfileRegistrationPage {
         id: page_doctor_registration
 
+        anchors.fill: parent
+
         visible: false;
 
-        onProfileRegistered: {
-            doctorFullName = page_doctor_registration.registeredDoctorFullName.toString()
-            doctorSpecialization = page_doctor_registration.registeredDoctorSpecialization.toString()
-            doctorInstitutionName = page_doctor_registration.registeredDoctorInstitutionName.toString()
-            doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
-            doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
-            doctorInn = page_doctor_registration.registeredDoctorInn.toString()
-            doctorLicenseInfo = page_doctor_registration.registeredDoctorLicenseInfo.toString()
+        Connections
+        {
+            target: backend
 
-            // Передаём данные на страницу профиля
-            page_doctor_profile.doctorName = doctorFullName
-            page_doctor_profile.doctorSpecialization = doctorSpecialization
-            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
-            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
-            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
-            page_doctor_profile.doctorInn = doctorInn
-            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
+            onProfileAdded:
+            {
+                doctorFullName = backend.currentDoctorFullName
 
-            stackview_startup.push(menu_bar)
+                page_doctor_profile.doctorName = backend.currentDoctorFullName
+                page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization
+                page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName
+                page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress
+                page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode
+                page_doctor_profile.doctorInn = backend.currentDoctorInn
+                page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo
+
+                stackview_startup.push(menu_bar)
+            }
         }
+
+//        onProfileRegistered: {
+//            doctorFullName = page_doctor_registration.registeredDoctorFullName.toString()
+//            doctorSpecialization = page_doctor_registration.registeredDoctorSpecialization.toString()
+//            doctorInstitutionName = page_doctor_registration.registeredDoctorInstitutionName.toString()
+//            doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
+//            doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
+//            doctorInn = page_doctor_registration.registeredDoctorInn.toString()
+//            doctorLicenseInfo = page_doctor_registration.registeredDoctorLicenseInfo.toString()
+
+//            // Передаём данные на страницу профиля
+//            page_doctor_profile.doctorName = doctorFullName
+//            page_doctor_profile.doctorSpecialization = doctorSpecialization
+//            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
+//            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
+//            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
+//            page_doctor_profile.doctorInn = doctorInn
+//            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
+
+//            stackview_startup.push(menu_bar)
+//        }
     }
 }
-
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.75}
-}
-##^##*/

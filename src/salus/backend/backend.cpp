@@ -1,4 +1,7 @@
 #include "backend.h"
+#include "QtQml/qqml.h"
+#include "QtQml/qqmlcontext.h"
+#include "patientlistmodel.h"
 
 Backend::Backend(QObject *parent) : QObject(parent)
 {
@@ -14,6 +17,15 @@ Backend::~Backend()
 {
     qDebug() << "Salus: [Backend::~Backend] - updateDbToFile()\n";
     patientsDb.updateDbToFile();
+}
+
+void Backend::addPropertiesToContext(QQmlContext *context)
+{
+    qmlRegisterType<Backend>("salus", 1, 0, "Backend");
+    context->setContextProperty("backend", this);
+
+    qmlRegisterType<PatientListModel>("salus", 1, 0, "PatientListModel");
+//    context->setContextProperty("patientListModel", PatientListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -45,6 +57,10 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     doctorDb.createNewProfile(doctorFullName, doctorSpecialization,
                               doctorInstitutionName,  doctorInstitutionCode,  doctorInstitutionAddress,
                               doctorInn,  doctorLicenseInfo);
+
+    currentDoctorInn = doctorInn;
+
+    emit profileAdded();
 }
 
 void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
@@ -74,6 +90,12 @@ void Backend::deletePatient()
     patientsDb.deletePatient(currentPatientBirthDate);
     patientsDb.updateDbToFile();
     qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
+}
+
+bool Backend::getIsDoctorDbExists()
+{
+    qDebug() << "Salus: [Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
+    return doctorDb.doctorsList->isEmpty();
 }
 
 QString Backend::getCurrentDoctorFullName()
@@ -177,12 +199,6 @@ QList<QString> Backend::getCurrentPatientComplaints()
 QList<QString> Backend::getCurrentPatientDiseases()
 {
     return patientsDb.getDiseasesList(currentPatientBirthDate);
-}
-
-bool Backend::getIsDoctorDbExists()
-{
-    qDebug() << "Salus: [Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
-    return doctorDb.doctorsList->isEmpty();
 }
 
 void Backend::setCurrentDoctorInn(quint16 inn)

@@ -2,24 +2,31 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 
+import salus 1.0
+
 Page {
     id: root
-
-    width: ScreenInfo.desktopAvailableWidth
-    height: ScreenInfo.desktopAvailableHeight
 
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
     signal logIn();
 
-    property string logInDoctorName: backend.currentDoctorFullName
-    property string logInDoctorSpecialization: backend.currentDoctorSpecialization
-    property string logInDoctorInstitutionName: backend.currentDoctorInstitutionName
-    property string logInDoctorInstitutionCode: backend.currentDoctorInstitutionCode
-    property string logInDoctorInstitutionAddress: backend.currentDoctorInstitutionAddress
-    property string logInDoctorInn: backend.currentDoctorInn
-    property string logInDoctorLicenseInfo: backend.currentDoctorLicenseInfo
+//    property string logInDoctorName: backend.currentDoctorFullName
+//    property string logInDoctorSpecialization: backend.currentDoctorSpecialization
+//    property string logInDoctorInstitutionName: backend.currentDoctorInstitutionName
+//    property string logInDoctorInstitutionCode: backend.currentDoctorInstitutionCode
+//    property string logInDoctorInstitutionAddress: backend.currentDoctorInstitutionAddress
+//    property string logInDoctorInn: backend.currentDoctorInn
+//    property string logInDoctorLicenseInfo: backend.currentDoctorLicenseInfo
+
+    Rectangle
+    {
+        id: background
+        anchors.fill: parent
+
+        color: "#ffffff"
+    }
 
     Label {
         text: "Войти как..."
@@ -36,18 +43,13 @@ Page {
     Label {
         id: doctorName
 
-        text: logInDoctorName
+        text: backend.currentDoctorFullName
 
         font.pointSize: standartTextSize
 
         anchors.top: rowButtons.top
         anchors.topMargin: -112
         anchors.horizontalCenter: parent.horizontalCenter
-    }
-
-    background: Rectangle {
-        id: backgroundRect
-        color: "white"
     }
 
     Row {
