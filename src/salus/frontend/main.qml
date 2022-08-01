@@ -8,11 +8,8 @@ import "../frontend/patient"
 
 import salus 1.0
 
-Window {
+ApplicationWindow {
     id: applicationWindow
-
-//    width: 1280
-//    height: 720
 
     minimumWidth: 1280
     minimumHeight: 720
@@ -311,7 +308,7 @@ Window {
 
         anchors.fill: parent
 
-        visible: false;
+        visible: false
 
         onLogIn: {
 //            doctorFullName = backend.currentDoctorFullName
