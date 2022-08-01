@@ -1,6 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include <QtQml/QQmlContext>
 #include <QString>
 #include <QObject>
 #include <QDebug>
@@ -41,6 +42,8 @@ class Backend : public QObject
 public:
     explicit Backend(QObject *parent = nullptr);
     ~Backend();
+
+    void addPropertiesToContext(QQmlContext *context);
 
     /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
@@ -85,9 +88,6 @@ public:
     /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();
 
-signals:
-    void changeDoctorProfile();
-
 public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
@@ -103,6 +103,12 @@ public slots:
     void setCurrentDoctorInn(quint16 inn);
 
     void setPatient(QString fullName);
+
+signals:
+    void profileAdded();
+    void changeDoctorProfile();
+
 };
+
 
 #endif // BACKEND_H

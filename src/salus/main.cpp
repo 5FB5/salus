@@ -12,10 +12,12 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    Backend backend;
+
     engine.rootContext();
 
-    qmlRegisterType<Backend>("io.qt.salus", 1, 0, "Backend");
-    qmlRegisterType<PatientListModel>("io.qt.salus", 1, 0, "PatientListModel");
+    backend.addPropertiesToContext(engine.rootContext());
 
     const QUrl url(QStringLiteral("qrc:/frontend/main.qml"));
 
