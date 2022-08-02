@@ -106,30 +106,44 @@ ApplicationWindow {
         PatientMedicalCardRegistrationPage { // 4
             id: page_patient_registration
 
-            PatientListModel {
-                id: model
+            Connections
+            {
+                target: backend
+
+                onPatientAdded:
+                {
+                    patientListModel.reloadPatientList()
+
+                    stack_content_main.currentIndex = 5
+                }
             }
 
-            onPatientRegistered: {                
-                page_patient_medical_card_main.patientFullName = patientFullName
-                page_patient_medical_card_main.patientAge = patientAge
-                page_patient_medical_card_main.patientBirthDate = patientBirthDate
-                page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
-                page_patient_medical_card_main.patientOccupation = patientOccupation
+//            onPatientRegistered: {
+////                page_patient_medical_card_main.patientFullName = patientFullName
+////                page_patient_medical_card_main.patientAge = patientAge
+////                page_patient_medical_card_main.patientBirthDate = patientBirthDate
+////                page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
+////                page_patient_medical_card_main.patientOccupation = patientOccupation
 
-                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-                copyList.reloadPatientList()
-                page_medical_card_search.patientList = copyList
+//                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
+//                copyList.reloadPatientList()
+//                page_medical_card_search.patientList = copyList
 
-                stack_content_main.currentIndex = 5
-            }
+//                stack_content_main.currentIndex = 5
+//            }
         }
 
         PatientMedicalCardMain { // 5
             id: page_patient_medical_card_main
 
-            PatientListModel {
-                id: model_patient_list
+            Connections
+            {
+                target: patientListModel
+
+                onModelReloaded:
+                {
+                    page_patient_medical_card_main.updatePatientData()
+                }
             }
 
             // Диалоговое окно для подтверждения удаления пациента из БД
@@ -153,9 +167,15 @@ ApplicationWindow {
                 onAccepted: {
                     backend.deletePatient()
 
-                    var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-                    copyList.reloadPatientList()
-                    page_medical_card_search.patientList = copyList
+//                    var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
+//                    copyList.reloadPatientList()
+
+//                    model.reloadPatientList()
+//                    var copyList = model
+
+//                    page_medical_card_search.patientList = copyList
+
+                    patientListModel.reloadPatientList()
 
                     stack_content_main.currentIndex = 3
                 }

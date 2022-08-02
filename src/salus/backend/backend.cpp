@@ -1,7 +1,4 @@
 #include "backend.h"
-#include "QtQml/qqml.h"
-#include "QtQml/qqmlcontext.h"
-#include "patientlistmodel.h"
 
 Backend::Backend(QObject *parent) : QObject(parent)
 {
@@ -11,12 +8,15 @@ Backend::Backend(QObject *parent) : QObject(parent)
             currentDoctorInn = doctorDb.getInn(); //FIXME: сейчас это работает только для одного профиля в БД
         }
     }
+
+    patientListModel = new PatientListModel;
 }
 
 Backend::~Backend()
 {
     qDebug() << "Salus: [Backend::~Backend] - updateDbToFile()\n";
     patientsDb.updateDbToFile();
+    delete patientListModel;
 }
 
 void Backend::addPropertiesToContext(QQmlContext *context)
@@ -25,7 +25,7 @@ void Backend::addPropertiesToContext(QQmlContext *context)
     context->setContextProperty("backend", this);
 
     qmlRegisterType<PatientListModel>("salus", 1, 0, "PatientListModel");
-//    context->setContextProperty("patientListModel", PatientListModel);
+    context->setContextProperty("patientListModel", patientListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -67,21 +67,23 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
-    int previousDbSize = patientsDb.patientsList->size();
+//    int previousDbSize = patientsDb.patientsList->size();
 
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
 
-    int currentDbSize = patientsDb.patientsList->size();
-
-    assert(previousDbSize < currentDbSize);
-
-    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
-    foreach(Patient p, *patientsDb.patientsList) {
-        qDebug() << "\t" << p.fullName;
-    }
-
     setPatient(fullName);
+
+    emit patientAdded();
+
+//    int currentDbSize = patientsDb.patientsList->size();
+
+//    assert(previousDbSize < currentDbSize);
+
+//    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
+//    foreach(Patient p, *patientsDb.patientsList) {
+//        qDebug() << "\t" << p.fullName;
+//    }
 }
 
 void Backend::deletePatient()

@@ -10,7 +10,7 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    property var patientList: PatientListModel {}
+//    property var patientList: PatientListModel {}
 
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
@@ -47,7 +47,7 @@ Page {
 
         editable: true
 
-        model: patientList
+        model: patientListModel
 
         // Чтобы по умолчанию не выводилось ФИО из списка
         currentIndex: -1

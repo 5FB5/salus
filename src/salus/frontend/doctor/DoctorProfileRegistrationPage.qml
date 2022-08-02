@@ -22,9 +22,10 @@ Page {
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
 
-    background: Rectangle {
+    Rectangle {
         id: backgroundRect
-        color: "white"
+        anchors.fill: parent
+        color: "#ffffff"
     }
 
     Text {

@@ -49,6 +49,8 @@ void PatientListModel::reloadPatientList()
     endResetModel();
 
     qDebug() << "Salus: [PatientListModel::reloadPatientList()] - Patient list reloaded!\n";
+
+    emit modelReloaded();
 }
 
 QHash<int, QByteArray> PatientListModel::roleNames() const

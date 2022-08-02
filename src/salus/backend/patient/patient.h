@@ -6,26 +6,32 @@
 #include <QFileInfo>
 //#include <QDate>
 
-enum class SexType {
-    MAN,
-    WOMAN
-};
-
 class Patient
 {
 
 public:
     Patient();
-    //      ФИО         Адрес      Профессия   Текущий диагноз, Анамнез
-    QString fullName, address, occupation, currentDiagnosis, anamnesis, phoneNumber;
-    QString birthDate; // TODO: это должно быть QDate, но непонятно где это использовать
 
-    QList<QString> complaints; // жалобы
-    QList<QString> diseases; // перенесённые заболевания
+    enum SexType
+    {
+        MAN,
+        WOMAN
+    };
+
+    QString fullName;
+    QString address;
+    QString occupation;
+    QString currentDiagnosis;
+    QString anamnesis;
+    QString phoneNumber;
+    QString birthDate; // TODO: это должно быть QDate, но непонятно где это использовать
 
     bool sex;
 
     quint16 age;
+
+    QList<QString> complaints; // жалобы
+    QList<QString> diseases; // перенесённые заболевания
 
 };
 

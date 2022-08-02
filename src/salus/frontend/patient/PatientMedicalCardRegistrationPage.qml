@@ -314,13 +314,13 @@ Page {
                 backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
                                       textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
 
-                patientFullName = textEditFullName.text.toString()
-                patientAge = textEditAge.text
-                patientBirthDate = textEditBirthDate.text
-                patientPhoneNumber = textEditPhoneNumber.text
-                patientOccupation = textEditOccupation.text.toString()
+//                patientFullName = textEditFullName.text.toString()
+//                patientAge = textEditAge.text
+//                patientBirthDate = textEditBirthDate.text
+//                patientPhoneNumber = textEditPhoneNumber.text
+//                patientOccupation = textEditOccupation.text.toString()
 
-                patientRegistered(textEditFullName.text.toString())
+//                patientRegistered(textEditFullName.text.toString())
 
             }
         }

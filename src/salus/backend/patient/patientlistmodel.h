@@ -9,6 +9,9 @@ class PatientListModel : public QAbstractListModel
 {
     Q_OBJECT
 
+private:
+    QList<Patient> mPatientsList;
+
 public:
     explicit PatientListModel(QObject *parent = nullptr);
 
@@ -31,8 +34,8 @@ public:
 public slots:
     void reloadPatientList();
 
-private:
-    QList<Patient> mPatientsList;
+signals:
+    void modelReloaded();
 
 };
 

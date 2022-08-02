@@ -15,7 +15,7 @@ Page {
     property bool patientSex: false
     property string patientBirthDate: ""
     property string patientAddress: ""
-    property int patientPhoneNumber: 0
+    property string patientPhoneNumber: ""
     property string patientOccupation: ""
     property var patientComplaints: []
     property string patientDiagnosis: ""
@@ -24,6 +24,21 @@ Page {
 
     signal openDiary()
     signal deletePatient()
+
+    function updatePatientData()
+    {
+        patientFullName = backend.currentPatientFullName
+        patientAge = backend.currentPatientAge
+        patientSex = backend.currentPatientSex
+        patientBirthDate = backend.currentPatientBirthDate
+        patientAddress = backend.currentPatientAddress
+        patientPhoneNumber = backend.currentPatientPhoneNumber
+        patientOccupation = backend.currentPatientOccupation
+        patientComplaints = backend.currentPatientComplaints
+        patientDiagnosis = backend.currentPatientDiagnosis
+        patientDiseases = backend.currentPatientDiseases
+        patientAnamnesis = backend.currentPatientAnamnesis
+    }
 
     Label {
         id: labelTitle
