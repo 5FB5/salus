@@ -77,6 +77,16 @@ ApplicationWindow {
         PatientSearchMedicalCardPage { // 3
             id: page_medical_card_search
 
+            Connections
+            {
+                target: backend
+
+                onPatientDeleted:
+                {
+                    patientListModel.reloadPatientList()
+                }
+            }
+
             onOpenCurrentMedicalCard: {
                 console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
@@ -175,7 +185,7 @@ ApplicationWindow {
 
 //                    page_medical_card_search.patientList = copyList
 
-                    patientListModel.reloadPatientList()
+//                    patientListModel.reloadPatientList()
 
                     stack_content_main.currentIndex = 3
                 }

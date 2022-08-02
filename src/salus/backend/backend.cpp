@@ -91,6 +91,7 @@ void Backend::deletePatient()
     qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
     patientsDb.deletePatient(currentPatientBirthDate);
     patientsDb.updateDbToFile();
+    emit patientDeleted();
     qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
 }
 

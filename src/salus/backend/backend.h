@@ -111,6 +111,7 @@ public slots:
 signals:
     void profileAdded();
     void patientAdded();
+    void patientDeleted();
     void changeDoctorProfile();
 
 };
