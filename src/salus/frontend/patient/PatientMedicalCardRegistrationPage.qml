@@ -20,17 +20,14 @@ Page {
 
     signal patientRegistered(string fullname)
 
-    function clearTextFields() {
-        if (textEditFullName.text !== "" || textEditAge.text !== "" || textEditBirthDate.text !== "" || textEditAddress ||
-                textEditPhoneNumber.text !== "" || textEditOccupation.text !== "")
-        {
-            textEditFullName.text = ""
-            textEditAge.text = ""
-            textEditBirthDate.text = ""
-            textEditAddress.text = ""
-            textEditPhoneNumber.text = ""
-            textEditOccupation.text = ""
-        }
+    function clearTextFields()
+    {
+        textEditFullName.clear()
+        textEditAge.clear()
+        textEditBirthDate.clear()
+        textEditAddress.clear()
+        textEditPhoneNumber.clear()
+        textEditOccupation.clear()
     }
 
 //    width: ScreenInfo.desktopAvailableWidth

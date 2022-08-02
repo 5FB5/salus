@@ -124,24 +124,12 @@ ApplicationWindow {
                 {
                     patientListModel.reloadPatientList()
 
+                    page_patient_registration.clearTextFields()
+
                     stack_content_main.currentIndex = 5
                 }
             }
-
-//            onPatientRegistered: {
-////                page_patient_medical_card_main.patientFullName = patientFullName
-////                page_patient_medical_card_main.patientAge = patientAge
-////                page_patient_medical_card_main.patientBirthDate = patientBirthDate
-////                page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
-////                page_patient_medical_card_main.patientOccupation = patientOccupation
-
-//                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-//                copyList.reloadPatientList()
-//                page_medical_card_search.patientList = copyList
-
-//                stack_content_main.currentIndex = 5
-//            }
-        }
+       }
 
         PatientMedicalCardMain { // 5
             id: page_patient_medical_card_main
@@ -176,17 +164,6 @@ ApplicationWindow {
 
                 onAccepted: {
                     backend.deletePatient()
-
-//                    var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-//                    copyList.reloadPatientList()
-
-//                    model.reloadPatientList()
-//                    var copyList = model
-
-//                    page_medical_card_search.patientList = copyList
-
-//                    patientListModel.reloadPatientList()
-
                     stack_content_main.currentIndex = 3
                 }
             }
@@ -317,15 +294,8 @@ ApplicationWindow {
 
         visible: false
 
-        onLogIn: {
-//            doctorFullName = backend.currentDoctorFullName
-//            doctorSpecialization = page_login.logInDoctorSpecialization.toString()
-//            doctorInstitutionName = page_login.logInDoctorInstitutionName.toString()
-//            doctorInstitutionCode = page_login.logInDoctorInstitutionCode.toString()
-//            doctorInstitutionAddress = page_login.logInDoctorInstitutionAddress.toString()
-//            doctorInn = page_login.logInDoctorInn.toString()
-//            doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
-
+        onLogIn:
+        {
             stackview_startup.push(menu_bar)
         }
     }
@@ -357,26 +327,5 @@ ApplicationWindow {
                 stackview_startup.push(menu_bar)
             }
         }
-
-//        onProfileRegistered: {
-//            doctorFullName = page_doctor_registration.registeredDoctorFullName.toString()
-//            doctorSpecialization = page_doctor_registration.registeredDoctorSpecialization.toString()
-//            doctorInstitutionName = page_doctor_registration.registeredDoctorInstitutionName.toString()
-//            doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
-//            doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
-//            doctorInn = page_doctor_registration.registeredDoctorInn.toString()
-//            doctorLicenseInfo = page_doctor_registration.registeredDoctorLicenseInfo.toString()
-
-//            // Передаём данные на страницу профиля
-//            page_doctor_profile.doctorName = doctorFullName
-//            page_doctor_profile.doctorSpecialization = doctorSpecialization
-//            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
-//            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
-//            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
-//            page_doctor_profile.doctorInn = doctorInn
-//            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
-
-//            stackview_startup.push(menu_bar)
-//        }
     }
 }
