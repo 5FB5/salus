@@ -88,20 +88,12 @@ ApplicationWindow {
             }
 
             onOpenCurrentMedicalCard: {
+
                 console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
                 backend.setPatient(fullname)
 
-                page_patient_medical_card_main.patientFullName = backend.currentPatientFullName
-                page_patient_medical_card_main.patientAge = backend.currentPatientAge
-                page_patient_medical_card_main.patientSex = backend.currentPatientSex
-                page_patient_medical_card_main.patientBirthDate = backend.currentPatientBirthDate
-                page_patient_medical_card_main.patientAddress = backend.currentPatientAddress
-                page_patient_medical_card_main.patientOccupation = backend.currentPatientOccupation
-                page_patient_medical_card_main.patientDiagnosis = backend.currentPatientDiagnosis
-                page_patient_medical_card_main.patientComplaints = backend.currentPatientComplaints
-                page_patient_medical_card_main.patientDiseases = backend.currentPatientDiseases
-                page_patient_medical_card_main.patientAnamnesis = backend.currentPatientAnamnesis
+                page_patient_medical_card_main.updatePatientData()
 
                 stack_content_main.currentIndex = 5
             }

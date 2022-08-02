@@ -20,6 +20,16 @@ class PatientDataBase : public QObject
 {
     Q_OBJECT
 
+private:
+    void getPatientsListFromJson();
+    void saveProfileToJson(Patient patientProfile);
+
+    QJsonDocument loadJson();
+
+    QJsonArray convertListToJsonArray(const QList<QString> &list);
+
+    bool isProfileExists(QString birthDate);
+
 public:
 
     explicit PatientDataBase(QObject *parent = nullptr);
@@ -52,16 +62,6 @@ public:
 
     quint16 getAge(QString birthDate);
     QString getPhoneNumber(QString birthDate);
-
-private:
-    void getPatientsListFromJson();
-    void saveProfileToJson(Patient patientProfile);
-
-    QJsonDocument loadJson();
-
-    QJsonArray convertListToJsonArray(const QList<QString> &list);
-
-    bool isProfileExists(QString birthDate);
 };
 
 #endif // PATIENTDATABASE_H

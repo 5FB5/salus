@@ -10,8 +10,6 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-//    property var patientList: PatientListModel {}
-
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
 
@@ -50,7 +48,10 @@ Page {
         model: patientListModel
 
         // Чтобы по умолчанию не выводилось ФИО из списка
-        currentIndex: -1
+        Component.onCompleted:
+        {
+            currentIndex = -1
+        }
 
         onAccepted: {
             console.log("Salus: [QML](ComboBox 'combobox_patients') - Patient accepted " + editText + "\n")

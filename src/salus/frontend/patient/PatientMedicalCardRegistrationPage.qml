@@ -30,9 +30,6 @@ Page {
         textEditOccupation.clear()
     }
 
-//    width: ScreenInfo.desktopAvailableWidth
-//    height: ScreenInfo.desktopAvailableHeight
-
     property int textFieldsWidth: 300
     property int textFieldBorderRadius: 10
 
@@ -310,15 +307,6 @@ Page {
             onClicked: {
                 backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
                                       textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
-
-//                patientFullName = textEditFullName.text.toString()
-//                patientAge = textEditAge.text
-//                patientBirthDate = textEditBirthDate.text
-//                patientPhoneNumber = textEditPhoneNumber.text
-//                patientOccupation = textEditOccupation.text.toString()
-
-//                patientRegistered(textEditFullName.text.toString())
-
             }
         }
     }
