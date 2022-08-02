@@ -2,10 +2,10 @@
 
 Backend::Backend(QObject *parent) : QObject(parent)
 {
-    // Check for profiles on startup
+    // Проверка профиля на запуске
     if (doctorDb.doctorsList->size() > 0) {
         if (doctorDb.doctorsList->size() == 1) {
-            currentDoctorInn = doctorDb.getInn(); //FIXME: сейчас это работает только для одного профиля в БД
+            currentDoctorInn = doctorDb.getInn();
         }
     }
 
@@ -67,23 +67,12 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
-//    int previousDbSize = patientsDb.patientsList->size();
-
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
 
     setPatient(fullName);
 
     emit patientAdded();
-
-//    int currentDbSize = patientsDb.patientsList->size();
-
-//    assert(previousDbSize < currentDbSize);
-
-//    qDebug() << "Salus: [Backend::addNewPatient()] Updated list is: ";
-//    foreach(Patient p, *patientsDb.patientsList) {
-//        qDebug() << "\t" << p.fullName;
-//    }
 }
 
 void Backend::deletePatient()
