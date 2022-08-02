@@ -1,13 +1,15 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
-#include <QtQml/QQmlContext>
+#include "QtQml/qqml.h"
+#include "QtQml/qqmlcontext.h"
 #include <QString>
 #include <QObject>
 #include <QDebug>
 
 #include "doctor/doctordatabase.h"
 #include "patient/patientdatabase.h"
+#include "patient/patientlistmodel.h"
 
 /*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
 class Backend : public QObject
@@ -43,12 +45,14 @@ public:
     explicit Backend(QObject *parent = nullptr);
     ~Backend();
 
-    void addPropertiesToContext(QQmlContext *context);
-
     /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
     /*! Глобальный класс для доступа к БД пациента */
     PatientDataBase patientsDb;
+
+    PatientListModel *patientListModel;
+
+    void addPropertiesToContext(QQmlContext *context);
 
     /*!
      *  Хранит значение ИНН текущего профиля врача.
@@ -106,6 +110,8 @@ public slots:
 
 signals:
     void profileAdded();
+    void patientAdded();
+    void patientDeleted();
     void changeDoctorProfile();
 
 };

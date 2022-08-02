@@ -64,46 +64,36 @@ ApplicationWindow {
 
         DoctorProfilePage { // 0
             id: page_doctor_profile
-
-            width: parent.width
-            height: parent.height
         }
 
         DoctorDiagnosesDataBase { // 1
             id: page_doctor_diagnoses
-
-            width: parent.width
-            height: parent.height
         }
 
         DoctorTreatmentsDatabase { // 2
             id: page_doctor_treatments
-
-            width: parent.width
-            height: parent.height
         }
 
         PatientSearchMedicalCardPage { // 3
             id: page_medical_card_search
 
-            width: parent.width
-            height: parent.height
+            Connections
+            {
+                target: backend
+
+                onPatientDeleted:
+                {
+                    patientListModel.reloadPatientList()
+                }
+            }
 
             onOpenCurrentMedicalCard: {
+
                 console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
                 backend.setPatient(fullname)
 
-                page_patient_medical_card_main.patientFullName = backend.currentPatientFullName
-                page_patient_medical_card_main.patientAge = backend.currentPatientAge
-                page_patient_medical_card_main.patientSex = backend.currentPatientSex
-                page_patient_medical_card_main.patientBirthDate = backend.currentPatientBirthDate
-                page_patient_medical_card_main.patientAddress = backend.currentPatientAddress
-                page_patient_medical_card_main.patientOccupation = backend.currentPatientOccupation
-                page_patient_medical_card_main.patientDiagnosis = backend.currentPatientDiagnosis
-                page_patient_medical_card_main.patientComplaints = backend.currentPatientComplaints
-                page_patient_medical_card_main.patientDiseases = backend.currentPatientDiseases
-                page_patient_medical_card_main.patientAnamnesis = backend.currentPatientAnamnesis
+                page_patient_medical_card_main.updatePatientData()
 
                 stack_content_main.currentIndex = 5
             }
@@ -118,36 +108,32 @@ ApplicationWindow {
         PatientMedicalCardRegistrationPage { // 4
             id: page_patient_registration
 
-            width: parent.width
-            height: parent.height
+            Connections
+            {
+                target: backend
 
-            PatientListModel {
-                id: model
+                onPatientAdded:
+                {
+                    patientListModel.reloadPatientList()
+
+                    page_patient_registration.clearTextFields()
+
+                    stack_content_main.currentIndex = 5
+                }
             }
-
-            onPatientRegistered: {                
-                page_patient_medical_card_main.patientFullName = patientFullName
-                page_patient_medical_card_main.patientAge = patientAge
-                page_patient_medical_card_main.patientBirthDate = patientBirthDate
-                page_patient_medical_card_main.patientPhoneNumber = patientPhoneNumber
-                page_patient_medical_card_main.patientOccupation = patientOccupation
-
-                var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-                copyList.reloadPatientList()
-                page_medical_card_search.patientList = copyList
-
-                stack_content_main.currentIndex = 5
-            }
-        }
+       }
 
         PatientMedicalCardMain { // 5
             id: page_patient_medical_card_main
 
-            width: parent.width
-            height: parent.height
+            Connections
+            {
+                target: patientListModel
 
-            PatientListModel {
-                id: model_patient_list
+                onModelReloaded:
+                {
+                    page_patient_medical_card_main.updatePatientData()
+                }
             }
 
             // Диалоговое окно для подтверждения удаления пациента из БД
@@ -170,11 +156,6 @@ ApplicationWindow {
 
                 onAccepted: {
                     backend.deletePatient()
-
-                    var copyList = model // FIXME: пахнет костылём, так делать не стоит, но иначе оно просто не работает
-                    copyList.reloadPatientList()
-                    page_medical_card_search.patientList = copyList
-
                     stack_content_main.currentIndex = 3
                 }
             }
@@ -198,9 +179,6 @@ ApplicationWindow {
 
         PatientMedicalCardDiary { // 6
             id: page_patient_medical_card_diary
-
-            width: parent.width
-            height: parent.height
         }
     }
 
@@ -306,19 +284,10 @@ ApplicationWindow {
     LoginPage {
         id: page_login
 
-        anchors.fill: parent
-
         visible: false
 
-        onLogIn: {
-//            doctorFullName = backend.currentDoctorFullName
-//            doctorSpecialization = page_login.logInDoctorSpecialization.toString()
-//            doctorInstitutionName = page_login.logInDoctorInstitutionName.toString()
-//            doctorInstitutionCode = page_login.logInDoctorInstitutionCode.toString()
-//            doctorInstitutionAddress = page_login.logInDoctorInstitutionAddress.toString()
-//            doctorInn = page_login.logInDoctorInn.toString()
-//            doctorLicenseInfo = page_login.logInDoctorLicenseInfo.toString()
-
+        onLogIn:
+        {
             stackview_startup.push(menu_bar)
         }
     }
@@ -350,26 +319,5 @@ ApplicationWindow {
                 stackview_startup.push(menu_bar)
             }
         }
-
-//        onProfileRegistered: {
-//            doctorFullName = page_doctor_registration.registeredDoctorFullName.toString()
-//            doctorSpecialization = page_doctor_registration.registeredDoctorSpecialization.toString()
-//            doctorInstitutionName = page_doctor_registration.registeredDoctorInstitutionName.toString()
-//            doctorInstitutionCode = page_doctor_registration.registeredDoctorInstitutionCode.toString()
-//            doctorInstitutionAddress = page_doctor_registration.registeredDoctorInstitutionAddress.toString()
-//            doctorInn = page_doctor_registration.registeredDoctorInn.toString()
-//            doctorLicenseInfo = page_doctor_registration.registeredDoctorLicenseInfo.toString()
-
-//            // Передаём данные на страницу профиля
-//            page_doctor_profile.doctorName = doctorFullName
-//            page_doctor_profile.doctorSpecialization = doctorSpecialization
-//            page_doctor_profile.doctorInstitutionName = doctorInstitutionName
-//            page_doctor_profile.doctorInstitutionCode = doctorInstitutionCode
-//            page_doctor_profile.doctorInstitutionAddress = doctorInstitutionAddress
-//            page_doctor_profile.doctorInn = doctorInn
-//            page_doctor_profile.doctorLicenseInfo = doctorLicenseInfo
-
-//            stackview_startup.push(menu_bar)
-//        }
     }
 }
