@@ -34,10 +34,6 @@ Page {
         patientAddress = backend.currentPatientAddress
         patientPhoneNumber = backend.currentPatientPhoneNumber
         patientOccupation = backend.currentPatientOccupation
-        patientComplaints = backend.currentPatientComplaints
-        patientDiagnosis = backend.currentPatientDiagnosis
-        patientDiseases = backend.currentPatientDiseases
-        patientAnamnesis = backend.currentPatientAnamnesis
     }
 
     Label {

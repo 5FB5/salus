@@ -15,6 +15,7 @@
 #include <QJsonObject>
 
 #include "patient.h"
+#include "patientcardrecord.h"
 
 class PatientDataBase : public QObject
 {
@@ -27,6 +28,7 @@ private:
     QJsonDocument loadJson();
 
     QJsonArray convertListToJsonArray(const QList<QString> &list);
+    QJsonArray convertRecordsToJsonArray(const QList<Record> &records);
 
     bool isProfileExists(QString birthDate);
 

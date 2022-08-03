@@ -55,7 +55,7 @@ Page {
 
         text: "Записи"
 
-        font.pointSize: 16
+        font.pointSize: 17
         font.bold: true
 
         anchors.top: labelTitle.bottom
@@ -95,7 +95,7 @@ Page {
         anchors
         {
             top: labelRecords.bottom
-            topMargin: 50
+            topMargin: 10
 
             bottom: parent.bottom
             bottomMargin: 200
@@ -126,13 +126,14 @@ Page {
             }
         }
         highlight: Rectangle {
+
             anchors
             {
                 left: parent.left
-                leftMargin: 250
+                leftMargin: 300
 
                 right: parent.right
-                rightMargin: 250
+                rightMargin: 300
             }
 
             color: "lightsteelblue";

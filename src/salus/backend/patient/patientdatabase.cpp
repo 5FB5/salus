@@ -10,11 +10,9 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
                                     QString birthDate, QString address,
                                     QString phoneNumber, QString occupation)
-//                                    QString diagnosis, QList<QString> complaints, QList<QString> diseases,
-//                                    QString anamnesis)
 {
 
-    // Структура профиля в patients.json. Представлен, как массив объектов со внутренними полями типа "ключ->значение"
+    // Структура профиля в patients.json
     // [
     //        {
     //
@@ -25,13 +23,20 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     //            "address": "ул. Пролетарская 25 д.222"
     //            "phoneNumber": "8 989 330 1309",
     //            "occupation": "Слесарь 4 разряда" профессия
-    //            "diagnosis": "Острый пульпит" диагноз
-    //            "complaints": [                                           // Список жалоб
-    //              ]
-    //            "diseases": [                                             // Список перенесенных заболеваний
-    //                "Парадонтоз"
-    //            ]
-    //            "anamnesis": "текст"                                      // Анамнез
+    //
+    //            "records": [
+    //              {
+    //                  "data": "12.12.2020                                // Дата составления записи
+    //                  "diagnosis": "Острый пульпит" диагноз
+    //                  "complaints": [                                           // Список жалоб
+    //                  ]
+    //                  "diseases": [                                             // Список перенесенных заболеваний
+    //                      "Парадонтоз"
+    //                  ]
+    //                  "anamnesis": "текст"                                      // Анамнез
+    //                  "treatment": "текст"
+    //               ]
+    //
     //        },
     //          ... следующий профиль
     //    ]
@@ -55,10 +60,6 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     newPatient.address = address;
     newPatient.phoneNumber = phoneNumber;
     newPatient.occupation = occupation;
-//    newPatient.currentDiagnosis = diagnosis;
-//    newPatient.complaints = complaints;
-//    newPatient.diseases = diseases;
-//    newPatient.anamnesis = anamnesis;
 
     patientsList->append(newPatient);
 
@@ -75,13 +76,14 @@ void PatientDataBase::reloadDatabase()
 void PatientDataBase::updateDbToFile()
 {
     QJsonDocument jsonDocument;
-    QJsonArray jsonArray = jsonDocument.array(), patientProfileDiseases, patientProfileComplaints;
+
+    QJsonArray jsonArray = jsonDocument.array();
+    QJsonArray patientProfileRecords;
 
     foreach(Patient p, *patientsList) {
         QJsonObject PatientProfileObj;
 
-        patientProfileDiseases = convertListToJsonArray(p.diseases);
-        patientProfileComplaints = convertListToJsonArray(p.complaints);
+        patientProfileRecords = convertRecordsToJsonArray(p.cardRecords);
 
         PatientProfileObj.insert("fullname", p.fullName);
         PatientProfileObj.insert("age", p.age);
@@ -90,11 +92,8 @@ void PatientDataBase::updateDbToFile()
         PatientProfileObj.insert("address", p.address);
         PatientProfileObj.insert("phoneNumber", p.phoneNumber);
         PatientProfileObj.insert("occupation", p.occupation);
-        PatientProfileObj.insert("diagnosis", p.currentDiagnosis);
-        PatientProfileObj.insert("anamnesis", p.anamnesis);
 
-        PatientProfileObj.insert("diseases", patientProfileDiseases);
-        PatientProfileObj.insert("complaints", patientProfileComplaints);
+        PatientProfileObj.insert("records", patientProfileRecords);
 
         jsonArray.append(PatientProfileObj);
     }
@@ -148,7 +147,7 @@ bool PatientDataBase::getSex(QString birthDate)
     if (patientsList->isEmpty() == false) {
         foreach(Patient patient, *patientsList) {
             if (patient.birthDate == birthDate) {
-                return patient.sex;
+                return patient.sex == Patient::SexType::MAN ? Patient::SexType::MAN : Patient::SexType::WOMAN;
             }
         }
     }
@@ -191,51 +190,51 @@ QString PatientDataBase::getOccupation(QString birthDate)
     return nullptr;
 }
 
-QString PatientDataBase::getDiagnosis(QString birthDate)
-{
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.currentDiagnosis;
-            }
-        }
-    }
-    return nullptr;
-}
+//QString PatientDataBase::getDiagnosis(QString birthDate)
+//{
+//    if (patientsList->isEmpty() == false) {
+//        foreach(Patient patient, *patientsList) {
+//            if (patient.birthDate == birthDate) {
+//                return patient.currentDiagnosis;
+//            }
+//        }
+//    }
+//    return nullptr;
+//}
 
-QString PatientDataBase::getAnamnesis(QString birthDate)
-{
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.anamnesis;
-            }
-        }
-    }
-    return nullptr;
-}
+//QString PatientDataBase::getAnamnesis(QString birthDate)
+//{
+//    if (patientsList->isEmpty() == false) {
+//        foreach(Patient patient, *patientsList) {
+//            if (patient.birthDate == birthDate) {
+//                return patient.anamnesis;
+//            }
+//        }
+//    }
+//    return nullptr;
+//}
 
-QList<QString> PatientDataBase::getDiseasesList(QString birthDate)
-{
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.diseases;
-            }
-        }
-    }
-}
+//QList<QString> PatientDataBase::getDiseasesList(QString birthDate)
+//{
+//    if (patientsList->isEmpty() == false) {
+//        foreach(Patient patient, *patientsList) {
+//            if (patient.birthDate == birthDate) {
+//                return patient.diseases;
+//            }
+//        }
+//    }
+//}
 
-QList<QString> PatientDataBase::getComplaintsList(QString birthDate)
-{
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.complaints;
-            }
-        }
-    }
-}
+//QList<QString> PatientDataBase::getComplaintsList(QString birthDate)
+//{
+//    if (patientsList->isEmpty() == false) {
+//        foreach(Patient patient, *patientsList) {
+//            if (patient.birthDate == birthDate) {
+//                return patient.complaints;
+//            }
+//        }
+//    }
+//}
 
 quint16 PatientDataBase::getAge(QString birthDate)
 {
@@ -271,7 +270,9 @@ void PatientDataBase::getPatientsListFromJson()
 
     Patient currentProfile;
 
-    QJsonArray array = doc.array(), currentObjDiseases, currentObjComplaints;
+    QJsonArray array = doc.array();
+    QJsonArray currentObjDiseases, currentObjComplaints;
+
     QJsonObject currentObj;
 
     if (array.isEmpty() == false) {
@@ -289,19 +290,9 @@ void PatientDataBase::getPatientsListFromJson()
             currentProfile.birthDate = currentObj["birthdate"].toString();
             currentProfile.phoneNumber = currentObj["phoneNumber"].toString();
             currentProfile.occupation = currentObj["occupation"].toString();
-            currentProfile.currentDiagnosis = currentObj["diagnosis"].toString();
-            currentProfile.anamnesis = currentObj["anamnesis"].toString();
 
-            currentObjDiseases = currentObj["diseases"].toArray();
-            currentObjComplaints = currentObj["complaints"].toArray();
-
-            foreach(QJsonValue v, currentObjDiseases) {
-                currentProfile.diseases.append(v.toString());
-            }
-
-            foreach(QJsonValue v, currentObjComplaints) {
-                currentProfile.complaints.append(v.toString());
-            }
+            // TODO: сконвертировать Json array в QList<Records>
+//            currentProfile.cardRecords = currentObj["records"].toArray();
 
             patientsList->append(currentProfile);
         }
@@ -311,11 +302,13 @@ void PatientDataBase::getPatientsListFromJson()
 void PatientDataBase::saveProfileToJson(Patient patientProfile)
 {
     QJsonDocument jsonDocument = loadJson();
-    QJsonArray jsonArray = jsonDocument.array(), patientProfileDiseases, patientProfileComplaints;
+
+    QJsonArray jsonArray = jsonDocument.array();
+
+    QJsonArray patientProfileRecords;
     QJsonObject PatientProfileObj;
 
-    patientProfileDiseases = convertListToJsonArray(patientProfile.diseases);
-    patientProfileComplaints = convertListToJsonArray(patientProfile.complaints);
+    patientProfileRecords = convertRecordsToJsonArray(patientProfile.cardRecords);
 
     PatientProfileObj.insert("fullname", patientProfile.fullName);
     PatientProfileObj.insert("age", patientProfile.age);
@@ -324,11 +317,8 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     PatientProfileObj.insert("address", patientProfile.address);
     PatientProfileObj.insert("phoneNumber", patientProfile.phoneNumber);
     PatientProfileObj.insert("occupation", patientProfile.occupation);
-    PatientProfileObj.insert("diagnosis", patientProfile.currentDiagnosis);
-    PatientProfileObj.insert("anamnesis", patientProfile.anamnesis);
 
-    PatientProfileObj.insert("diseases", patientProfileDiseases);
-    PatientProfileObj.insert("complaints", patientProfileComplaints);
+    PatientProfileObj.insert("records", patientProfileRecords);
 
     jsonArray.append(PatientProfileObj);
 
@@ -383,6 +373,34 @@ QJsonArray PatientDataBase::convertListToJsonArray(const QList<QString> &list)
     for (auto &data : list) {
         array.append(data);
     }
+    return array;
+}
 
+QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record> &records)
+{
+    QJsonArray array, arrayComplaints, arrayDiseases;
+    QJsonObject recordObject;
+
+    for (auto &data : records) {
+
+        for (auto &complaintsData : data.complaints) {
+            arrayComplaints.append(complaintsData);
+        }
+
+
+        for (auto &diseasesData : data.diseases) {
+            arrayDiseases.append(diseasesData);
+        }
+
+        recordObject.insert("data", data.data);
+        recordObject.insert("diagnosis", data.currentDiagnosis);
+        recordObject.insert("anamnesis", data.anamnesis);
+        recordObject.insert("treatment", data.treatment);
+
+        recordObject.insert("complaints", arrayComplaints);
+        recordObject.insert("diseases", arrayDiseases);
+
+        array.append(recordObject);
+    }
     return array;
 }

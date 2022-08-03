@@ -182,25 +182,25 @@ QString Backend::getCurrentPatientOccupation()
     return patientsDb.getOccupation(currentPatientBirthDate);
 }
 
-QString Backend::getCurrentPatientDiagnosis()
-{
-    return patientsDb.getDiagnosis(currentPatientBirthDate);
-}
+//QString Backend::getCurrentPatientDiagnosis()
+//{
+//    return patientsDb.getDiagnosis(currentPatientBirthDate);
+//}
 
-QString Backend::getCurrentPatientAnamnesis()
-{
-    return patientsDb.getAnamnesis(currentPatientBirthDate);
-}
+//QString Backend::getCurrentPatientAnamnesis()
+//{
+//    return patientsDb.getAnamnesis(currentPatientBirthDate);
+//}
 
-QList<QString> Backend::getCurrentPatientComplaints()
-{
-    return patientsDb.getComplaintsList(currentPatientBirthDate);
-}
+//QList<QString> Backend::getCurrentPatientComplaints()
+//{
+//    return patientsDb.getComplaintsList(currentPatientBirthDate);
+//}
 
-QList<QString> Backend::getCurrentPatientDiseases()
-{
-    return patientsDb.getDiseasesList(currentPatientBirthDate);
-}
+//QList<QString> Backend::getCurrentPatientDiseases()
+//{
+//    return patientsDb.getDiseasesList(currentPatientBirthDate);
+//}
 
 void Backend::setCurrentDoctorInn(quint16 inn)
 {
