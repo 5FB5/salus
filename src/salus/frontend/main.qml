@@ -164,11 +164,7 @@ ApplicationWindow {
 
             onOpenDiary: {
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n")
-                page_patient_medical_card_diary.patientFullName = patientFullName
-                page_patient_medical_card_diary.patientAge = patientAge
-                page_patient_medical_card_diary.patientBirthDate = patientBirthDate
-                page_patient_medical_card_diary.patientPhoneNumber = patientPhoneNumber
-                page_patient_medical_card_diary.patientOccupation = patientOccupation
+                page_patient_medical_card_diary.updatePatientData()
 
                 stack_content_main.currentIndex = 6
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n")
