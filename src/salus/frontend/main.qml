@@ -88,14 +88,16 @@ ApplicationWindow {
             }
 
             onOpenCurrentMedicalCard: {
+                if (!backend.isPatientDbEmpty)
+                {
+                    console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
-                console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
+                    backend.setPatient(fullname)
 
-                backend.setPatient(fullname)
+                    page_patient_medical_card_main.updatePatientData()
 
-                page_patient_medical_card_main.updatePatientData()
-
-                stack_content_main.currentIndex = 5
+                    stack_content_main.currentIndex = 5
+                }
             }
 
             onRegisterMedicalCard: {

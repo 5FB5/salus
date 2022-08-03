@@ -10,6 +10,7 @@ Backend::Backend(QObject *parent) : QObject(parent)
     }
 
     patientListModel = new PatientListModel;
+    patientListModel->patientDb.patientsList = patientsDb.patientsList;
 }
 
 Backend::~Backend()
@@ -30,24 +31,25 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
 void Backend::setPatient(QString fullName)
 {
-    qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
+    if (!patientsDb.patientsList->isEmpty()) {
+        qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-    foreach(Patient p, *patientsDb.patientsList) {
-        if (p.fullName == fullName) {
-            if (p.birthDate == currentPatientBirthDate) {
-                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
-                return;
-            }
-            else {
-                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
-                currentPatientBirthDate = p.birthDate;
-                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
-                return;
+        foreach(Patient p, *patientsDb.patientsList) {
+            if (p.fullName == fullName) {
+                if (p.birthDate == currentPatientBirthDate) {
+                    qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
+                    return;
+                }
+                else {
+                    qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
+                    currentPatientBirthDate = p.birthDate;
+                    qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
+                    return;
+                }
             }
         }
+        qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
     }
-
-    qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
 }
 
 void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
@@ -77,17 +79,24 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
 
 void Backend::deletePatient()
 {
-    qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
-    patientsDb.deletePatient(currentPatientBirthDate);
-    patientsDb.updateDbToFile();
-    emit patientDeleted();
-    qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
+    if (!patientsDb.patientsList->isEmpty()) {
+        qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
+        patientsDb.deletePatient(currentPatientBirthDate);
+        patientsDb.updateDbToFile();
+        emit patientDeleted();
+        qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
+    }
 }
 
 bool Backend::getIsDoctorDbExists()
 {
     qDebug() << "Salus: [Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
     return doctorDb.doctorsList->isEmpty();
+}
+
+bool Backend::getIsPatientDbEmpty()
+{
+    return patientsDb.patientsList->isEmpty();
 }
 
 QString Backend::getCurrentDoctorFullName()

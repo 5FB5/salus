@@ -27,6 +27,7 @@ class Backend : public QObject
     Q_PROPERTY(quint16 currentDoctorInn READ getCurrentDoctorInn) // WRITE setCurrentDoctorInn)
 
     Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
+    Q_PROPERTY(bool isPatientDbEmpty READ getIsPatientDbEmpty)
 
     Q_PROPERTY(QString currentPatientFullName READ getCurrentPatientFullName);
     Q_PROPERTY(quint16 currentPatientAge READ getCurrentPatientAge);
@@ -91,6 +92,8 @@ public:
 
     /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();
+
+    bool getIsPatientDbEmpty();
 
 public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
