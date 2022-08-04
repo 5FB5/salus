@@ -29,7 +29,7 @@ public:
 
     quint16 age;
 
-    QList<Record> cardRecords;
+    QList<Record_t> cardRecords;
 
 };
 

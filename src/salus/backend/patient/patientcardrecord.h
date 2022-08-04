@@ -4,9 +4,9 @@
 #include <QString>
 #include <QList>
 
-struct Record
+struct Record_t
 {
-    Record() {}
+    Record_t() {}
 
     QString data; // дата записи
     QString currentDiagnosis; // диагноз

@@ -28,7 +28,9 @@ private:
     QJsonDocument loadJson();
 
     QJsonArray convertListToJsonArray(const QList<QString> &list);
-    QJsonArray convertRecordsToJsonArray(const QList<Record> &records);
+    QJsonArray convertRecordsToJsonArray(const QList<Record_t> &records);
+
+    QList<Record_t> convertJsonRecordsToList(const QJsonArray recordsArray);
 
     bool isProfileExists(QString birthDate);
 

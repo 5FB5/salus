@@ -17,26 +17,29 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
     //        {
     //
     //            "fullname": "Иванов Иван Иванович",
-    //            "age": ,                                                  // количество полных лет
-    //            "sex": "0",                                               // (enum MAN = 0 / WOMAN = 1)
+    //            "age": 22,                                                // количество полных лет
+    //            "sex": false,                                             // MAN = 0 / WOMAN = 1
     //            "birthdate": "20.11.2000",                                // day.month.year
     //            "address": "ул. Пролетарская 25 д.222"
     //            "phoneNumber": "8 989 330 1309",
     //            "occupation": "Слесарь 4 разряда" профессия
     //
-    //            "records": [
-    //              {
-    //                  "data": "12.12.2020                                // Дата составления записи
-    //                  "diagnosis": "Острый пульпит" диагноз
-    //                  "complaints": [                                           // Список жалоб
-    //                  ]
-    //                  "diseases": [                                             // Список перенесенных заболеваний
-    //                      "Парадонтоз"
-    //                  ]
-    //                  "anamnesis": "текст"                                      // Анамнез
-    //                  "treatment": "текст"
-    //               ]
+    //            "records":
+    //              [
+    //                  {
+    //                      "data": "12.12.2020                             // Дата составления записи
+    //                      "diagnosis": "Острый пульпит" диагноз
+    //                      "complaints": [                                 // Список жалоб
+    //                      ]
+    //                      "diseases": [                                   // Список перенесенных заболеваний
+    //                        "Парадонтоз"
+    //                      ]
+    //                      "anamnesis": "текст"                            // Анамнез
+    //                      "treatment": "текст"
     //
+    //                  },
+    //                  ... следующая запись
+    //              ]
     //        },
     //          ... следующий профиль
     //    ]
@@ -271,7 +274,6 @@ void PatientDataBase::getPatientsListFromJson()
     Patient currentProfile;
 
     QJsonArray array = doc.array();
-    QJsonArray currentObjDiseases, currentObjComplaints;
 
     QJsonObject currentObj;
 
@@ -291,8 +293,7 @@ void PatientDataBase::getPatientsListFromJson()
             currentProfile.phoneNumber = currentObj["phoneNumber"].toString();
             currentProfile.occupation = currentObj["occupation"].toString();
 
-            // TODO: сконвертировать Json array в QList<Records>
-//            currentProfile.cardRecords = currentObj["records"].toArray();
+            currentProfile.cardRecords = convertJsonRecordsToList(currentObj["records"].toArray());
 
             patientsList->append(currentProfile);
         }
@@ -304,8 +305,8 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     QJsonDocument jsonDocument = loadJson();
 
     QJsonArray jsonArray = jsonDocument.array();
-
     QJsonArray patientProfileRecords;
+
     QJsonObject PatientProfileObj;
 
     patientProfileRecords = convertRecordsToJsonArray(patientProfile.cardRecords);
@@ -370,25 +371,24 @@ QJsonArray PatientDataBase::convertListToJsonArray(const QList<QString> &list)
 {
     QJsonArray array;
 
-    for (auto &data : list) {
+    for (const auto &data : list) {
         array.append(data);
     }
     return array;
 }
 
-QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record> &records)
+QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &records)
 {
     QJsonArray array, arrayComplaints, arrayDiseases;
     QJsonObject recordObject;
 
-    for (auto &data : records) {
+    for (const auto &data : records) {
 
-        for (auto &complaintsData : data.complaints) {
+        for (const auto &complaintsData : data.complaints) {
             arrayComplaints.append(complaintsData);
         }
 
-
-        for (auto &diseasesData : data.diseases) {
+        for (const auto &diseasesData : data.diseases) {
             arrayDiseases.append(diseasesData);
         }
 
@@ -403,4 +403,34 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record> &recor
         array.append(recordObject);
     }
     return array;
+}
+
+QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recordsArray)
+{
+    QJsonArray jsonDiseases, jsonComplaints;
+    QList<Record_t> tmpArray;
+    Record_t tmpRecord;
+
+    for (const auto &record : recordsArray) {
+
+        jsonDiseases = record["diseases"].toArray();
+        jsonComplaints = record["complaints"].toArray();
+
+        for (const auto &d : jsonDiseases) {
+            tmpRecord.diseases.append(d.toString());
+        }
+
+        for (const auto &c : jsonComplaints) {
+            tmpRecord.diseases.append(c.toString());
+        }
+
+        tmpRecord.data = record["data"].toString();
+        tmpRecord.anamnesis = record["anamnesis"].toString();
+        tmpRecord.currentDiagnosis = record["diagnosis"].toString();
+        tmpRecord.treatment = record["treatment"].toString();
+
+        tmpArray.append(tmpRecord);
+    }
+
+    return tmpArray;
 }
