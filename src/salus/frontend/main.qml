@@ -177,6 +177,15 @@ ApplicationWindow {
 
         PatientMedicalCardDiary { // 6
             id: page_patient_medical_card_diary
+
+            onOpenAddRecordPage:
+            {
+                stack_content_main.currentIndex = 7
+            }
+        }
+
+        PatientAddRecordPage { // 7
+            id: page_patient_add_record
         }
     }
 

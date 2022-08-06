@@ -3,13 +3,14 @@
 
 #include "QtQml/qqml.h"
 #include "QtQml/qqmlcontext.h"
-#include <QString>
 #include <QObject>
 #include <QDebug>
+#include <QString>
 
 #include "doctor/doctordatabase.h"
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
+#include "patient/patientrecordslistmodel.h"
 
 /*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
 class Backend : public QObject
@@ -35,23 +36,21 @@ class Backend : public QObject
     Q_PROPERTY(QString currentPatientBirthDate READ getCurrentPatientBirthDate); // используется как первичный ключ
     Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
     Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
-//    Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
     Q_PROPERTY(QString currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
-//    Q_PROPERTY(QList<QString> currentPatientComplaints READ getCurrentPatientComplaints);
-//    Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
-//    Q_PROPERTY(QList<QString> currentPatientDiseases READ getCurrentPatientDiseases);
 
-
-public:
-    explicit Backend(QObject *parent = nullptr);
-    ~Backend();
-
+private:
     /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
     /*! Глобальный класс для доступа к БД пациента */
     PatientDataBase patientsDb;
 
     PatientListModel *patientListModel;
+
+    PatientRecordsListModel *patientRecordsListModel;
+
+public:
+    explicit Backend(QObject *parent = nullptr);
+    ~Backend();
 
     void addPropertiesToContext(QQmlContext *context);
 
@@ -81,6 +80,8 @@ public:
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
+
+    QList<Record_t>getCurrentPatientRecords();
 //    QString getCurrentPatientDiagnosis();
 //    QString getCurrentPatientAnamnesis();
 //    QList<QString> getCurrentPatientComplaints();

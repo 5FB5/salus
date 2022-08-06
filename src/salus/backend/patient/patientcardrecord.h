@@ -6,9 +6,7 @@
 
 struct Record_t
 {
-    Record_t() {}
-
-    QString data; // дата записи
+    QString date; // дата записи
     QString currentDiagnosis; // диагноз
     QString anamnesis; // анамнез
     QString treatment; // лечение

@@ -17,10 +17,8 @@ Page {
     property string patientAddress: ""
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
-    property var patientComplaints: []
-    property string patientDiagnosis: ""
-    property var patientDiseases: []
-    property string patientAnamnesis: ""
+
+    signal openAddRecordPage()
 
     function updatePatientData()
     {
@@ -31,6 +29,7 @@ Page {
         patientAddress = backend.currentPatientAddress
         patientPhoneNumber = backend.currentPatientPhoneNumber
         patientOccupation = backend.currentPatientOccupation
+//        patientRecords = backend.currentPatientRecords
 //        patientComplaints = backend.currentPatientComplaints
 //        patientDiagnosis = backend.currentPatientDiagnosis
 //        patientDiseases = backend.currentPatientDiseases
@@ -82,13 +81,43 @@ Page {
         {
             test: "Record3"
         }
+
+        ListElement
+        {
+            test: "Record4"
+        }
+
+        ListElement
+        {
+            test: "Record5"
+        }
+
+        ListElement
+        {
+            test: "Record6"
+        }
+
+        ListElement
+        {
+            test: "Record7"
+        }
+
+        ListElement
+        {
+            test: "Record8"
+        }
+
+        ListElement
+        {
+            test: "Record9"
+        }
     }
 
     ListView
     {
         id: recordsListView
 
-        model: testModel
+        model: patientRecordsListModel//testModel
 
         spacing: 15
 
@@ -125,8 +154,8 @@ Page {
                 }
             }
         }
-        highlight: Rectangle {
 
+        highlight: Rectangle {
             anchors
             {
                 left: parent.left
@@ -141,6 +170,12 @@ Page {
 
         clip: true
         focus: true
+
+        Component.onCompleted:
+        {
+//            highlightMoveVelocity = 0
+            highlightMoveDuration = 0
+        }
     }
 
     Row {
@@ -169,6 +204,7 @@ Page {
 
             onClicked:
             {
+                openAddRecordPage()
             }
         }
 

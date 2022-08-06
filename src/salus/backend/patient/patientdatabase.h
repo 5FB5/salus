@@ -56,6 +56,8 @@ public:
     QString getDiagnosis(QString birthDate);
     QString getAnamnesis(QString birthDate);
 
+    QList<Record_t> getRecordsList(QString birthDate);
+
     QList<QString> getDiseasesList(QString birthDate);
     QList<QString> getComplaintsList(QString birthDate);
     // QString getAnamnesis(QString insuranceNumber);

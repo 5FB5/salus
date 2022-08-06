@@ -10,7 +10,11 @@ Backend::Backend(QObject *parent) : QObject(parent)
     }
 
     patientListModel = new PatientListModel;
+    patientRecordsListModel = new PatientRecordsListModel;
+
     patientListModel->patientDb.patientsList = patientsDb.patientsList;
+//    patientRecordsListModel->recordsList = getCurrentPatientRecords();
+
 }
 
 Backend::~Backend()
@@ -27,6 +31,9 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
     qmlRegisterType<PatientListModel>("salus", 1, 0, "PatientListModel");
     context->setContextProperty("patientListModel", patientListModel);
+
+    qmlRegisterType<PatientRecordsListModel>("salus", 1, 0, "PatientRecordsListModel");
+    context->setContextProperty("patientRecordsListModel", patientRecordsListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -43,6 +50,7 @@ void Backend::setPatient(QString fullName)
                 else {
                     qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
                     currentPatientBirthDate = p.birthDate;
+                    patientRecordsListModel->recordsList = getCurrentPatientRecords();
                     qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
                     return;
                 }
@@ -86,6 +94,11 @@ void Backend::deletePatient()
         emit patientDeleted();
         qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
     }
+}
+
+void Backend::setCurrentDoctorInn(quint16 inn)
+{
+    currentDoctorInn = inn;
 }
 
 bool Backend::getIsDoctorDbExists()
@@ -182,6 +195,11 @@ QString Backend::getCurrentPatientOccupation()
     return patientsDb.getOccupation(currentPatientBirthDate);
 }
 
+QList<Record_t> Backend::getCurrentPatientRecords()
+{
+    return patientsDb.getRecordsList(currentPatientBirthDate);
+}
+
 //QString Backend::getCurrentPatientDiagnosis()
 //{
 //    return patientsDb.getDiagnosis(currentPatientBirthDate);
@@ -201,8 +219,3 @@ QString Backend::getCurrentPatientOccupation()
 //{
 //    return patientsDb.getDiseasesList(currentPatientBirthDate);
 //}
-
-void Backend::setCurrentDoctorInn(quint16 inn)
-{
-    currentDoctorInn = inn;
-}

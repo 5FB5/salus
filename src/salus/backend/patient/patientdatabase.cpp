@@ -193,6 +193,18 @@ QString PatientDataBase::getOccupation(QString birthDate)
     return nullptr;
 }
 
+QList<Record_t> PatientDataBase::getRecordsList(QString birthDate)
+{
+    if (patientsList->isEmpty() == false) {
+        foreach(Patient patient, *patientsList) {
+            if (patient.birthDate == birthDate) {
+                return patient.cardRecords;
+            }
+        }
+    }
+    return QList<Record_t>(); // TODO: проверить, правильно ли это
+}
+
 //QString PatientDataBase::getDiagnosis(QString birthDate)
 //{
 //    if (patientsList->isEmpty() == false) {
@@ -392,7 +404,7 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &rec
             arrayDiseases.append(diseasesData);
         }
 
-        recordObject.insert("data", data.data);
+        recordObject.insert("data", data.date);
         recordObject.insert("diagnosis", data.currentDiagnosis);
         recordObject.insert("anamnesis", data.anamnesis);
         recordObject.insert("treatment", data.treatment);
@@ -424,7 +436,7 @@ QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recor
             tmpRecord.diseases.append(c.toString());
         }
 
-        tmpRecord.data = record["data"].toString();
+        tmpRecord.date = record["data"].toString();
         tmpRecord.anamnesis = record["anamnesis"].toString();
         tmpRecord.currentDiagnosis = record["diagnosis"].toString();
         tmpRecord.treatment = record["treatment"].toString();
