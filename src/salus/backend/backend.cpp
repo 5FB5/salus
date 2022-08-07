@@ -9,10 +9,12 @@ Backend::Backend(QObject *parent) : QObject(parent)
         }
     }
 
+    patientsDb = new PatientDataBase;
+
     patientListModel = new PatientListModel;
     patientRecordsListModel = new PatientRecordsListModel;
 
-    patientListModel->patientDb.patientsList = patientsDb.patientsList;
+    patientListModel->patientDb.patientsList = patientsDb->patientsList;
 //    patientRecordsListModel->recordsList = getCurrentPatientRecords();
 
 }
@@ -20,8 +22,11 @@ Backend::Backend(QObject *parent) : QObject(parent)
 Backend::~Backend()
 {
     qDebug() << "Salus: [Backend::~Backend] - updateDbToFile()\n";
-    patientsDb.updateDbToFile();
+    patientsDb->updateDbToFile();
+
     delete patientListModel;
+    delete patientRecordsListModel;
+    delete patientsDb;
 }
 
 void Backend::addPropertiesToContext(QQmlContext *context)
@@ -38,10 +43,10 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
 void Backend::setPatient(QString fullName)
 {
-    if (!patientsDb.patientsList->isEmpty()) {
+    if (!patientsDb->patientsList->isEmpty()) {
         qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-        foreach(Patient p, *patientsDb.patientsList) {
+        foreach(Patient p, *patientsDb->patientsList) {
             if (p.fullName == fullName) {
                 if (p.birthDate == currentPatientBirthDate) {
                     qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
@@ -78,19 +83,26 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString phoneNumber, QString occupation)
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
-    patientsDb.addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
+    patientsDb->addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
 
     setPatient(fullName);
 
     emit patientAdded();
 }
 
+void Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+{
+    patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment);
+    patientsDb->updateDbToFile();
+    emit recordAdded();
+}
+
 void Backend::deletePatient()
 {
-    if (!patientsDb.patientsList->isEmpty()) {
+    if (!patientsDb->patientsList->isEmpty()) {
         qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
-        patientsDb.deletePatient(currentPatientBirthDate);
-        patientsDb.updateDbToFile();
+        patientsDb->deletePatient(currentPatientBirthDate);
+        patientsDb->updateDbToFile();
         emit patientDeleted();
         qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
     }
@@ -109,7 +121,7 @@ bool Backend::getIsDoctorDbExists()
 
 bool Backend::getIsPatientDbEmpty()
 {
-    return patientsDb.patientsList->isEmpty();
+    return patientsDb->patientsList->isEmpty();
 }
 
 QString Backend::getCurrentDoctorFullName()
@@ -162,42 +174,42 @@ QString Backend::getCurrentDoctorInitials()
 
 quint16 Backend::getCurrentPatientAge()
 {
-    return patientsDb.getAge(currentPatientBirthDate);
+    return patientsDb->getAge(currentPatientBirthDate);
 }
 
 bool Backend::getCurrentPatientSex()
 {
-    return patientsDb.getSex(currentPatientBirthDate);
+    return patientsDb->getSex(currentPatientBirthDate);
 }
 
 QString Backend::getCurrentPatientFullName()
 {
-    return patientsDb.getFullName(currentPatientBirthDate);
+    return patientsDb->getFullName(currentPatientBirthDate);
 }
 
 QString Backend::getCurrentPatientBirthDate()
 {
-    return patientsDb.getBirthDate(currentPatientBirthDate);
+    return patientsDb->getBirthDate(currentPatientBirthDate);
 }
 
 QString Backend::getCurrentPatientPhoneNumber()
 {
-    return patientsDb.getPhoneNumber(currentPatientBirthDate);
+    return patientsDb->getPhoneNumber(currentPatientBirthDate);
 }
 
 QString Backend::getCurrentPatientAddress()
 {
-    return patientsDb.getAddress(currentPatientBirthDate);
+    return patientsDb->getAddress(currentPatientBirthDate);
 }
 
 QString Backend::getCurrentPatientOccupation()
 {
-    return patientsDb.getOccupation(currentPatientBirthDate);
+    return patientsDb->getOccupation(currentPatientBirthDate);
 }
 
 QList<Record_t> Backend::getCurrentPatientRecords()
 {
-    return patientsDb.getRecordsList(currentPatientBirthDate);
+    return patientsDb->getRecordsList(currentPatientBirthDate);
 }
 
 //QString Backend::getCurrentPatientDiagnosis()

@@ -35,7 +35,6 @@ private:
     bool isProfileExists(QString birthDate);
 
 public:
-
     explicit PatientDataBase(QObject *parent = nullptr);
 
     QList<Patient>* patientsList = nullptr;
@@ -43,6 +42,9 @@ public:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
+
+    void addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
+                      QString diseases, QString diagnosis, QString treatment);
 
     void reloadDatabase();
     void updateDbToFile();
@@ -55,19 +57,22 @@ public:
     QString getOccupation(QString birthDate);
     QString getDiagnosis(QString birthDate);
     QString getAnamnesis(QString birthDate);
-
-    QList<Record_t> getRecordsList(QString birthDate);
-
-    QList<QString> getDiseasesList(QString birthDate);
-    QList<QString> getComplaintsList(QString birthDate);
-    // QString getAnamnesis(QString insuranceNumber);
-
-    // QString getPatientInitials(QString insuranceNumber);
+    QString getPhoneNumber(QString birthDate);
 
     bool getSex(QString birthDate);
 
     quint16 getAge(QString birthDate);
-    QString getPhoneNumber(QString birthDate);
+
+    QList<Record_t> getRecordsList(QString birthDate);
+
+signals:
+    void recordAdded();
+
+//    QList<QString> getDiseasesList(QString birthDate);
+//    QList<QString> getComplaintsList(QString birthDate);
+    // QString getAnamnesis(QString insuranceNumber);
+
+    // QString getPatientInitials(QString insuranceNumber);
 };
 
 #endif // PATIENTDATABASE_H

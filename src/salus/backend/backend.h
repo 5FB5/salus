@@ -42,7 +42,7 @@ private:
     /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
     /*! Глобальный класс для доступа к БД пациента */
-    PatientDataBase patientsDb;
+    PatientDataBase *patientsDb;
 
     PatientListModel *patientListModel;
 
@@ -101,6 +101,9 @@ public slots:
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
+    void addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases,
+                      QString diagnosis, QString treatment);
+
     void deletePatient();
 
     void addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
@@ -116,6 +119,7 @@ signals:
     void profileAdded();
     void patientAdded();
     void patientDeleted();
+    void recordAdded();
     void changeDoctorProfile();
 
 };

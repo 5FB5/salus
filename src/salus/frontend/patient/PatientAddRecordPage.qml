@@ -287,7 +287,8 @@ Page {
             height: 50
 
             onClicked: {
-                console.log("TODO: Добавление записи в БД")
+                backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
+                                     textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
             }
         }
     }
