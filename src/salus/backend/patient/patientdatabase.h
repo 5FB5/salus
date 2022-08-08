@@ -4,6 +4,7 @@
 #define JSON_PATIENT_FILE_PATH QCoreApplication::applicationDirPath() + "/patients.json"
 
 #include <QCoreApplication>
+#include <QStringList>
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
@@ -63,7 +64,7 @@ public:
 
     quint16 getAge(QString birthDate);
 
-    QList<Record_t> getRecordsList(QString birthDate);
+    QStringList getRecordsList(QString birthDate);
 
 signals:
     void recordAdded();

@@ -232,16 +232,21 @@ QString PatientDataBase::getOccupation(QString birthDate)
     return nullptr;
 }
 
-QList<Record_t> PatientDataBase::getRecordsList(QString birthDate)
+QStringList PatientDataBase::getRecordsList(QString birthDate)
 {
+    QStringList list;
+
     if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
+        for (const auto &patient : *patientsList) {
             if (patient.birthDate == birthDate) {
-                return patient.cardRecords;
+                for (const auto &record : patient.cardRecords) {
+                    list.append(record.date);
+                }
+                return list;
             }
         }
     }
-    return QList<Record_t>(); // TODO: проверить, правильно ли это
+    return QStringList();
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)

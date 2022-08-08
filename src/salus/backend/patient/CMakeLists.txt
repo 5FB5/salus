@@ -3,8 +3,7 @@ project(patient LANGUAGES CXX)
 
 set(SOURCES patient.cpp
             patientdatabase.cpp
-            patientlistmodel.cpp
-            patientrecordslistmodel.cpp)
+            patientlistmodel.cpp)
 
 add_library(${PROJECT_NAME} ${SOURCES})
 

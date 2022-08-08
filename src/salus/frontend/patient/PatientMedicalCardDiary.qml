@@ -18,17 +18,20 @@ Page {
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
 
+    property var patientRecords: []
+
     signal openAddRecordPage()
 
     function updatePatientData()
     {
-        patientFullName = backend.currentPatientFullName
-        patientAge = backend.currentPatientAge
-        patientSex = backend.currentPatientSex
-        patientBirthDate = backend.currentPatientBirthDate
-        patientAddress = backend.currentPatientAddress
-        patientPhoneNumber = backend.currentPatientPhoneNumber
-        patientOccupation = backend.currentPatientOccupation
+        patientFullName = backend.currentPatientFullName;
+        patientAge = backend.currentPatientAge;
+        patientSex = backend.currentPatientSex;
+        patientBirthDate = backend.currentPatientBirthDate;
+        patientAddress = backend.currentPatientAddress;
+        patientPhoneNumber = backend.currentPatientPhoneNumber;
+        patientOccupation = backend.currentPatientOccupation;
+        patientRecords = backend.getCurrentPatientRecords();
 //        patientRecords = backend.currentPatientRecords
 //        patientComplaints = backend.currentPatientComplaints
 //        patientDiagnosis = backend.currentPatientDiagnosis
@@ -145,7 +148,7 @@ Page {
                     Text
                     {
                         font.pointSize: 15
-                        text: test // TODO: поставить модель из БД
+                        text: display
                     }
                 }
                 MouseArea {

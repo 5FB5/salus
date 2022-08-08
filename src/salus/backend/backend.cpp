@@ -10,13 +10,11 @@ Backend::Backend(QObject *parent) : QObject(parent)
     }
 
     patientsDb = new PatientDataBase;
-
     patientListModel = new PatientListModel;
-    patientRecordsListModel = new PatientRecordsListModel;
+    patientRecordsListModel = new QStringListModel();
 
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
-//    patientRecordsListModel->recordsList = getCurrentPatientRecords();
-
+    patientRecordsListModel->setStringList(getCurrentPatientRecords());
 }
 
 Backend::~Backend()
@@ -37,7 +35,7 @@ void Backend::addPropertiesToContext(QQmlContext *context)
     qmlRegisterType<PatientListModel>("salus", 1, 0, "PatientListModel");
     context->setContextProperty("patientListModel", patientListModel);
 
-    qmlRegisterType<PatientRecordsListModel>("salus", 1, 0, "PatientRecordsListModel");
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("patientRecordsListModel", patientRecordsListModel);
 }
 
@@ -55,7 +53,7 @@ void Backend::setPatient(QString fullName)
                 else {
                     qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
                     currentPatientBirthDate = p.birthDate;
-                    patientRecordsListModel->recordsList = getCurrentPatientRecords();
+                    patientRecordsListModel->setStringList(getCurrentPatientRecords());
                     qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
                     return;
                 }
@@ -207,7 +205,7 @@ QString Backend::getCurrentPatientOccupation()
     return patientsDb->getOccupation(currentPatientBirthDate);
 }
 
-QList<Record_t> Backend::getCurrentPatientRecords()
+QStringList Backend::getCurrentPatientRecords()
 {
     return patientsDb->getRecordsList(currentPatientBirthDate);
 }

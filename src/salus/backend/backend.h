@@ -3,6 +3,7 @@
 
 #include "QtQml/qqml.h"
 #include "QtQml/qqmlcontext.h"
+#include <QStringListModel>
 #include <QObject>
 #include <QDebug>
 #include <QString>
@@ -10,7 +11,6 @@
 #include "doctor/doctordatabase.h"
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
-#include "patient/patientrecordslistmodel.h"
 
 /*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
 class Backend : public QObject
@@ -46,7 +46,7 @@ private:
 
     PatientListModel *patientListModel;
 
-    PatientRecordsListModel *patientRecordsListModel;
+    QStringListModel *patientRecordsListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -80,8 +80,6 @@ public:
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
-
-    QList<Record_t>getCurrentPatientRecords();
 //    QString getCurrentPatientDiagnosis();
 //    QString getCurrentPatientAnamnesis();
 //    QList<QString> getCurrentPatientComplaints();
@@ -114,6 +112,8 @@ public slots:
     void setCurrentDoctorInn(quint16 inn);
 
     void setPatient(QString fullName);
+
+    QStringList getCurrentPatientRecords();
 
 signals:
     void profileAdded();
