@@ -58,61 +58,11 @@ Page {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    ListModel
-    {
-        id: testModel
-
-        ListElement
-        {
-            test: "Record1"
-        }
-
-        ListElement
-        {
-            test: "Record2"
-        }
-
-        ListElement
-        {
-            test: "Record3"
-        }
-
-        ListElement
-        {
-            test: "Record4"
-        }
-
-        ListElement
-        {
-            test: "Record5"
-        }
-
-        ListElement
-        {
-            test: "Record6"
-        }
-
-        ListElement
-        {
-            test: "Record7"
-        }
-
-        ListElement
-        {
-            test: "Record8"
-        }
-
-        ListElement
-        {
-            test: "Record9"
-        }
-    }
-
     ListView
     {
         id: recordsListView
 
-        model: patientRecordsListModel//testModel
+        model: patientRecordsListModel
 
         spacing: 15
 

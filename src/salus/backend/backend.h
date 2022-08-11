@@ -12,7 +12,9 @@
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
 
-/*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
+/*!
+ * \brief Backend класс для работы с frontend частью приложения
+ */
 class Backend : public QObject
 {
     Q_OBJECT
@@ -39,9 +41,8 @@ class Backend : public QObject
     Q_PROPERTY(QString currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
 
 private:
-    /*! Глобальный класс для доступа к БД врача */
     DoctorDataBase doctorDb;
-    /*! Глобальный класс для доступа к БД пациента */
+
     PatientDataBase *patientsDb;
 
     PatientListModel *patientListModel;
@@ -55,12 +56,13 @@ public:
     void addPropertiesToContext(QQmlContext *context);
 
     /*!
-     *  Хранит значение ИНН текущего профиля врача.
+     *  @brief Хранит значение ИНН текущего профиля врача.
      *  Используется как первичный ключ для доступа к остальным данным
     */
     quint16 currentDoctorInn;
+
     /*!
-     *  Хранит дату рождения текущего пациента.
+     *  @brief Хранит дату рождения текущего пациента.
      *  Используется как первичный ключ для доступа к остальным данным
     */
     QString currentPatientBirthDate;
@@ -89,7 +91,6 @@ public:
 
     bool getCurrentPatientSex();
 
-    /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();
 
     bool getIsPatientDbEmpty();
@@ -99,8 +100,8 @@ public slots:
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
-    void addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases,
-                      QString diagnosis, QString treatment);
+    void addNewRecord(QString date, QString anamnesis, QString complaints,
+                      QString diseases, QString diagnosis, QString treatment);
 
     void deletePatient();
 

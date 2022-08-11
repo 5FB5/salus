@@ -5,6 +5,11 @@
 
 #include "patientdatabase.h"
 
+/*!
+ *  @brief Глобальный класс List модели пациентов
+ *
+ *  Используется для вывода списка пациентов, добавленных в приложение
+*/
 class PatientListModel : public QAbstractListModel
 {
     Q_OBJECT

@@ -6,7 +6,16 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
     getPatientsListFromJson();
 }
 
-
+/*!
+ * \brief Добавляет нового пациента в БД
+ * \param fullName ФИО
+ * \param age Возраст
+ * \param sex Пол
+ * \param birthDate Дата рождения
+ * \param address Адрес проживания
+ * \param phoneNumber Номер телефона
+ * \param occupation Профессия
+ */
 void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
                                     QString birthDate, QString address,
                                     QString phoneNumber, QString occupation)
@@ -71,6 +80,16 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
 
 }
 
+/*!
+ * \brief Добавляет новую запись в амбулаторную карту пациента
+ * \param birthDate Дата рождения. Используется для поиска пациента
+ * \param recordDate Дата записи
+ * \param anamnesis Анамнез
+ * \param complaints Жалобы
+ * \param diseases Перенесённые заболевания
+ * \param diagnosis Текущий диагноз
+ * \param treatment Наименование лечения
+ */
 void PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
                                    QString diseases, QString diagnosis, QString treatment)
 {
@@ -111,12 +130,17 @@ void PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
     }
 }
 
+/*!
+ * \brief Перезагружает БД
+ */
 void PatientDataBase::reloadDatabase()
 {
     getPatientsListFromJson();
 }
 
-// FIXME: при вводе записей бд не обновляется
+/*!
+ * \brief Обновляет данные БД пациентов в patients.json
+ */
 void PatientDataBase::updateDbToFile()
 {
     QJsonDocument jsonDocument;
@@ -155,6 +179,11 @@ void PatientDataBase::updateDbToFile()
     qDebug() << "Salus: [PatienDataBase::updateDbToFile()] - Database updated\n";
 }
 
+/*!
+ * \brief Удаляет пациента из БД по указанному параметру
+ * \param birthDate
+ * \return true, если удаление прошло успешно
+ */
 bool PatientDataBase::deletePatient(QString birthDate)
 {
     int i = 0;
@@ -172,6 +201,10 @@ bool PatientDataBase::deletePatient(QString birthDate)
     return false;
 }
 
+/*!
+ * \param birthDate
+ * \return ФИО пациента по указанному параметру
+ */
 QString PatientDataBase::getFullName(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -184,6 +217,10 @@ QString PatientDataBase::getFullName(QString birthDate)
     return nullptr;
 }
 
+/*!
+ * \param birthDate
+ * \return Пол пациента по указанному параметру в соответствии с Patient::SexType
+ */
 bool PatientDataBase::getSex(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -196,6 +233,10 @@ bool PatientDataBase::getSex(QString birthDate)
     return false;
 }
 
+/*!
+ * \param birthDate
+ * \return Дату рождения пациента по указанному параметру, если профиль существует
+ */
 QString PatientDataBase::getBirthDate(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -208,6 +249,10 @@ QString PatientDataBase::getBirthDate(QString birthDate)
     return nullptr;
 }
 
+/*!
+ * \param birthDate
+ * \return Адрес проживания пациента по указанному параметру
+ */
 QString PatientDataBase::getAddress(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -220,6 +265,10 @@ QString PatientDataBase::getAddress(QString birthDate)
     return nullptr;
 }
 
+/*!
+ * \param birthDate
+ * \return Возвращает профессию пациента по указанному параметру
+ */
 QString PatientDataBase::getOccupation(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -232,6 +281,10 @@ QString PatientDataBase::getOccupation(QString birthDate)
     return nullptr;
 }
 
+/*!
+ * \param birthDate
+ * \return Список записей амбулаторной карты пациента по указанному параметру
+ */
 QStringList PatientDataBase::getRecordsList(QString birthDate)
 {
     QStringList list;
@@ -295,6 +348,10 @@ QStringList PatientDataBase::getRecordsList(QString birthDate)
 //    }
 //}
 
+/*!
+ * \param birthDate
+ * \return Возраст пациента по указанному параметру
+ */
 quint16 PatientDataBase::getAge(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -307,6 +364,10 @@ quint16 PatientDataBase::getAge(QString birthDate)
     return 0;
 }
 
+/*!
+ * \param birthDate
+ * \return Номер телефона пациента по указанному параметру
+ */
 QString PatientDataBase::getPhoneNumber(QString birthDate)
 {
     if (patientsList->isEmpty() == false) {
@@ -319,6 +380,9 @@ QString PatientDataBase::getPhoneNumber(QString birthDate)
     return 0;
 }
 
+/*!
+ * \brief Загружает список пациентов из patients.json
+ */
 void PatientDataBase::getPatientsListFromJson()
 {
     QJsonDocument doc = loadJson();
@@ -356,6 +420,10 @@ void PatientDataBase::getPatientsListFromJson()
     }
 }
 
+/*!
+ * \brief Сохраняет профиль пациента в patients.json по указанному параметру
+ * \param patientProfile
+ */
 void PatientDataBase::saveProfileToJson(Patient patientProfile)
 {
     QJsonDocument jsonDocument = loadJson();
@@ -389,7 +457,10 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     qDebug() << "\tSalus: [PatienDataBase::saveProfileToJson()] - Profile saved\n";
 }
 
-
+/*!
+ * \param birthDate
+ * \return true, если профиль по указанному параметру существует
+ */
 bool PatientDataBase::isProfileExists(QString birthDate) {
     if (patientsList->isEmpty() == false) {
         foreach (Patient currentDoctor, *patientsList) {
@@ -404,6 +475,10 @@ bool PatientDataBase::isProfileExists(QString birthDate) {
     return false;
 }
 
+/*!
+ * \brief Загружает содержимое файла patients.json
+ * \return Содержимое файла как QJsonDocument
+ */
 QJsonDocument PatientDataBase::loadJson()
 {
     QFileInfo fInfo(JSON_PATIENT_FILE_PATH);
@@ -424,6 +499,10 @@ QJsonDocument PatientDataBase::loadJson()
     }
 }
 
+/*!
+ * \param list
+ * \return Список пациентов в формате QJsonArray по указанному параметру
+ */
 QJsonArray PatientDataBase::convertListToJsonArray(const QList<QString> &list)
 {
     QJsonArray array;
@@ -434,6 +513,10 @@ QJsonArray PatientDataBase::convertListToJsonArray(const QList<QString> &list)
     return array;
 }
 
+/*!
+ * \param list
+ * \return Список записей в формате QJsonArray по указанному параметру
+ */
 QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &records)
 {
     QJsonArray array; //, arrayComplaints, arrayDiseases;
@@ -462,6 +545,10 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &rec
     return array;
 }
 
+/*!
+ * \param recordsArray
+ * \return JSON массив записей в QList<Record_t> по указанному параметру
+ */
 QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recordsArray)
 {
 //    QJsonArray jsonDiseases, jsonComplaints;

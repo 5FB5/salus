@@ -5,6 +5,16 @@ DoctorDataBase::DoctorDataBase(QObject *parent) : QObject(parent)
     getDoctorsListFromJson();
 }
 
+/*!
+ * \brief Создаёт новый профиль врача в БД
+ * \param fullName ФИО
+ * \param specialization Специализация
+ * \param institutionName Наименование учреждения
+ * \param institutionCode Код учреждения
+ * \param institutionAddress Адрес учреждения
+ * \param inn ИНН
+ * \param licenseInfo Номер лицензии
+ */
 void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
                                       QString institutionName, quint16 institutionCode, QString institutionAddress,
                                       quint16 inn, QString licenseInfo)
@@ -58,6 +68,10 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
     saveProfileToJson(newDoctor);
 }
 
+/*!
+ * \param inn
+ * \return ФИО врача по указанному параметру
+ */
 QString DoctorDataBase::getFullName(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -70,6 +84,10 @@ QString DoctorDataBase::getFullName(quint16 inn)
     return nullptr;
 }
 
+/*!
+ * \param inn
+ * \return Специализацию врача по указанному параметру
+ */
 QString DoctorDataBase::getSpecialization(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -82,6 +100,10 @@ QString DoctorDataBase::getSpecialization(quint16 inn)
     return nullptr;
 }
 
+/*!
+ * \param inn
+ * \return Наименование учреждения по указанному параметру
+ */
 QString DoctorDataBase::getInstitutionName(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -94,6 +116,10 @@ QString DoctorDataBase::getInstitutionName(quint16 inn)
     return nullptr;
 }
 
+/*!
+ * \param inn
+ * \return Код учреждения по указанному параметру
+ */
 quint16 DoctorDataBase::getInstitutionCode(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -106,6 +132,10 @@ quint16 DoctorDataBase::getInstitutionCode(quint16 inn)
     return 0;
 }
 
+/*!
+ * \param inn
+ * \return Адрес учреждения по указанному параметру
+ */
 QString DoctorDataBase::getInstitutionAddress(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -118,6 +148,9 @@ QString DoctorDataBase::getInstitutionAddress(quint16 inn)
     return nullptr;
 }
 
+/*!
+ * \return Все ИНН из списка
+ */
 quint16 DoctorDataBase::getInn()
 {
     if (doctorsList->isEmpty() == false) {
@@ -128,6 +161,10 @@ quint16 DoctorDataBase::getInn()
     return 0;
 }
 
+/*!
+ * \param inn
+ * \return Номер лицензии по указанному параметру
+ */
 QString DoctorDataBase::getLicenseInfo(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {
@@ -140,12 +177,21 @@ QString DoctorDataBase::getLicenseInfo(quint16 inn)
     return nullptr;
 }
 
+/*!
+ * \param inn
+ * \warning На данный момент не имеет реализации
+ * \return Возвращает инициалы врача по указанному параметру
+ */
 QString DoctorDataBase::getProfileInitials(quint16 inn)
 {
     //TODO: get initials from full name
     return nullptr;
 }
 
+/*!
+ * \brief Загружает содержимое файла doctors.json
+ * \return Содержимое файла как QJsonDocument
+ */
 QJsonDocument DoctorDataBase::loadJson()
 {
     QFileInfo fInfo(JSON_DOCTOR_FILE_PATH);
@@ -166,6 +212,11 @@ QJsonDocument DoctorDataBase::loadJson()
     }
 }
 
+/*!
+ * \brief Преобразует QList<QString> в формат JSON массива
+ * \param list
+ * \return Массив в формате QJsonArray
+ */
 QJsonArray DoctorDataBase::convertListToJsonArray(const QList<QString> &list)
 {
     QJsonArray array;
@@ -238,6 +289,9 @@ QJsonArray DoctorDataBase::convertListToJsonArray(const QList<QString> &list)
 //    }
 //}
 
+/*!
+ * \brief Загружает профили врачей
+ */
 void DoctorDataBase::getDoctorsListFromJson()
 {
     QJsonDocument doc = loadJson();
@@ -284,6 +338,10 @@ void DoctorDataBase::getDoctorsListFromJson()
 
 //}
 
+/*!
+ * \brief Сохраняет профиль врача в doctors.json
+ * \param doctorProfile Профиль врача
+ */
 void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
 {
     QJsonDocument jsonDocument = loadJson();
@@ -436,6 +494,10 @@ void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
 //    return !shortName.isEmpty() ? shortName : nullptr;
 //}
 
+/*!
+ * \param inn
+ * \return true, если профиль по указанному параметру существует
+ */
 bool DoctorDataBase::isProfileExists(quint16 inn)
 {
     if (doctorsList->isEmpty() == false) {

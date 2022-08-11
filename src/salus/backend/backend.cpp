@@ -27,6 +27,11 @@ Backend::~Backend()
     delete patientsDb;
 }
 
+/*!
+ *  \brief Добавление свойств и типов данных в контекст QML.
+ *  \param context
+ *  \warning Вызов должен происходить до загрузки движком URL
+*/
 void Backend::addPropertiesToContext(QQmlContext *context)
 {
     qmlRegisterType<Backend>("salus", 1, 0, "Backend");
@@ -39,6 +44,10 @@ void Backend::addPropertiesToContext(QQmlContext *context)
     context->setContextProperty("patientRecordsListModel", patientRecordsListModel);
 }
 
+/*!
+ *  \brief Устанавливает выбранного пациента по ФИО в качестве текущего.
+ *  \param fullName ФИО пациента
+*/
 void Backend::setPatient(QString fullName)
 {
     if (!patientsDb->patientsList->isEmpty()) {
@@ -63,6 +72,16 @@ void Backend::setPatient(QString fullName)
     }
 }
 
+/*!
+ *  \brief Добавляет новый профиль врача в БД.
+ *  \param doctorFullName ФИО врача
+ *  \param doctorSpecialization Специализация
+ *  \param doctorInstitutionName Название учреждения
+ *  \param doctorInstitutionCode Код учреждения
+ *  \param doctorInstitutionAddress Адрес учреждения
+ *  \param doctorInn ИНН
+ *  \param doctorLicenseInfo Номер лицензии
+*/
 void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                                   QString doctorInstitutionName, quint16 doctorInstitutionCode, QString doctorInstitutionAddress,
                                   quint16 doctorInn, QString doctorLicenseInfo)
@@ -76,6 +95,16 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     emit profileAdded();
 }
 
+/*!
+ *  \brief Добавляет нового пациента в БД
+ *  \param fullName ФИО пациента
+ *  \param age Возраст
+ *  \param sex Пол
+ *  \param birthDate Дата рождения
+ *  \param address Адрес проживания
+ *  \param phoneNumber Номер телефона
+ *  \param occupation Профессия
+*/
 void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
@@ -88,6 +117,16 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
     emit patientAdded();
 }
 
+/*!
+ *  \brief Добавляет новую запись в список.
+ *  Используется при внесении новой записи в карту текущего пациента в БД и для отображения записей в приложении
+ *  \param date Дата записи
+ *  \param anamnesis Анамнез
+ *  \param complaints Жалобы
+ *  \param diseases Перенесённые болезни
+ *  \param diagnosis Текущий диагноз
+ *  \param treatment Наименование лечения
+*/
 void Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
 {
     patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment);
@@ -95,6 +134,9 @@ void Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     emit recordAdded();
 }
 
+/*!
+ *  \brief Удаляет выбранного пациента из БД.
+*/
 void Backend::deletePatient()
 {
     if (!patientsDb->patientsList->isEmpty()) {
@@ -106,105 +148,165 @@ void Backend::deletePatient()
     }
 }
 
+/*!
+ *  \brief Устанавливает выбранного врача в качестве текущего по ИНН.
+ *  \warning Данная функция неактуальна в использовании, так как предполагалась поддержка нескольких профилей врача в приложении
+ *  \todo Удалить функцию со временем
+*/
 void Backend::setCurrentDoctorInn(quint16 inn)
 {
     currentDoctorInn = inn;
 }
 
+/*!
+ *  \return true, если БД профилей врача пустая.
+*/
 bool Backend::getIsDoctorDbExists()
 {
     qDebug() << "Salus: [Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
     return doctorDb.doctorsList->isEmpty();
 }
 
+/*!
+ *  \return true, если БД пациентов пустая.
+*/
 bool Backend::getIsPatientDbEmpty()
 {
     return patientsDb->patientsList->isEmpty();
 }
 
+/*!
+ *  \return ФИО текущего врача.
+*/
 QString Backend::getCurrentDoctorFullName()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorFullName()] - returned " << doctorDb.getFullName(currentDoctorInn) << "\n";
     return doctorDb.getFullName(currentDoctorInn);
 }
 
+/*!
+ *  \return Специализацию текущего врача.
+*/
 QString Backend::getCurrentDoctorSpecialization()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorSpecialization()] - returned " << doctorDb.getSpecialization(currentDoctorInn) << "\n";
     return doctorDb.getSpecialization(currentDoctorInn);
 }
 
+/*!
+ *  \return Наименование учреждения текущего врача.
+*/
 QString Backend::getCurrentDoctorInstitutionName()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInsitutionName()] - returned " << doctorDb.getInstitutionName(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionName(currentDoctorInn);
 }
 
+/*!
+ *  \return Код учреждения текущего врача.
+*/
 quint16 Backend::getCurrentDoctorInstitutionCode()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInstitutionCode()] - returned " << doctorDb.getInstitutionCode(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionCode(currentDoctorInn);
 }
 
+/*!
+ *  \return Адрес учреждения текущего врача.
+*/
 QString Backend::getCurrentDoctorInstitutionAddress()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInsitutionAddress()] - returned " << doctorDb.getInstitutionAddress(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionAddress(currentDoctorInn);
 }
 
+/*!
+ *  \return ИНН текущего врача.
+*/
 quint16 Backend::getCurrentDoctorInn()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInn()] - returned " << currentDoctorInn << "\n";
     return currentDoctorInn;
 }
 
+/*!
+ *  \return  номер лицензии текущего врача.
+*/
 QString Backend::getCurrentDoctorLicenseInfo()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorLicenseInfo()] - returned " << doctorDb.getLicenseInfo(currentDoctorInn) << "\n";
     return doctorDb.getLicenseInfo(currentDoctorInn);
 }
 
+/*!
+ *  \return Инициалы текущего врача.
+ *  \warning На данный момент не имеет реализации
+*/
 QString Backend::getCurrentDoctorInitials()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorInitials()] - returned " << doctorDb.getProfileInitials(currentDoctorInn) << "\n";
     return doctorDb.getProfileInitials(currentDoctorInn);
 }
 
+/*!
+ *  \return Возраст текущего пациента.
+*/
 quint16 Backend::getCurrentPatientAge()
 {
     return patientsDb->getAge(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Пол текущего пациента.
+*/
 bool Backend::getCurrentPatientSex()
 {
     return patientsDb->getSex(currentPatientBirthDate);
 }
 
+/*!
+ *  \return ФИО текущего пациента.
+*/
 QString Backend::getCurrentPatientFullName()
 {
     return patientsDb->getFullName(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Дату рождения текущего пациента.
+*/
 QString Backend::getCurrentPatientBirthDate()
 {
     return patientsDb->getBirthDate(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Номер телефона текущего пациента.
+*/
 QString Backend::getCurrentPatientPhoneNumber()
 {
     return patientsDb->getPhoneNumber(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Адрес проживания текущего пациента.
+*/
 QString Backend::getCurrentPatientAddress()
 {
     return patientsDb->getAddress(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Профессию текущего пациента.
+*/
 QString Backend::getCurrentPatientOccupation()
 {
     return patientsDb->getOccupation(currentPatientBirthDate);
 }
 
+/*!
+ *  \return Записи амбулаторной карты текущего пациента.
+*/
 QStringList Backend::getCurrentPatientRecords()
 {
     return patientsDb->getRecordsList(currentPatientBirthDate);
