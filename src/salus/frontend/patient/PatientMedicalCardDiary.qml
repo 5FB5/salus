@@ -18,8 +18,6 @@ Page {
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
 
-    property var patientRecords: []
-
     signal openAddRecordPage()
 
     function updatePatientData()
@@ -31,12 +29,6 @@ Page {
         patientAddress = backend.currentPatientAddress;
         patientPhoneNumber = backend.currentPatientPhoneNumber;
         patientOccupation = backend.currentPatientOccupation;
-        patientRecords = backend.getCurrentPatientRecords();
-//        patientRecords = backend.currentPatientRecords
-//        patientComplaints = backend.currentPatientComplaints
-//        patientDiagnosis = backend.currentPatientDiagnosis
-//        patientDiseases = backend.currentPatientDiseases
-//        patientAnamnesis = backend.currentPatientAnamnesis
     }
 
     Label {

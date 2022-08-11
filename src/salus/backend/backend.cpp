@@ -91,7 +91,7 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
 void Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
 {
     patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment);
-    patientsDb->updateDbToFile();
+    patientRecordsListModel->setStringList(getCurrentPatientRecords());
     emit recordAdded();
 }
 
