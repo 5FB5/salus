@@ -46,6 +46,38 @@ Page {
         color: "#ffffff"
     }
 
+    Dialog
+    {
+        id: dialogConfirm
+
+        width: parent.width / 4
+        height: parent.height / 4
+
+        anchors.centerIn: parent
+
+        modal: true
+
+        title: "Подтвердите действие"
+        standardButtons: Dialog.Yes | Dialog.No
+
+        Text {
+            id: dialogboxText
+
+            font.pointSize: 14
+
+            anchors.fill: parent
+
+            wrapMode: Text.WordWrap
+
+            text: qsTr("Сохранить изменения?")
+        }
+
+        onAccepted: {
+            //                backend.updateRecord(recordDate, textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
+            //                                     textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
+        }
+    }
+
     Label {
         id: labelTitle
 
@@ -313,8 +345,7 @@ Page {
             height: 50
 
             onClicked: {
-//                backend.updateRecord(recordDate, textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
-//                                     textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
+                dialogConfirm.open();
             }
         }
     }

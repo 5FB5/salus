@@ -25,6 +25,32 @@ Page {
         textEditTreatment.clear()
     }
 
+    Dialog
+    {
+        id: dialogRecordExists
+
+        width: parent.width / 4
+        height: parent.height / 4
+
+        anchors.centerIn: parent
+
+        modal: true
+
+        title: "Данная запись уже существует"
+        standardButtons: Dialog.Ok
+
+        Text {
+            id: dialogboxText
+            font.pointSize: 14
+
+            anchors.fill: parent
+
+            wrapMode: Text.WordWrap
+
+            text: qsTr("Измените существующую запись, либо укажите иную дату.")
+        }
+    }
+
     Rectangle
     {
         id: background
@@ -296,8 +322,11 @@ Page {
             height: 50
 
             onClicked: {
-                backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
-                                     textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
+                if (backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
+                                     textEditDiagnosis.text.toString(), textEditTreatment.text.toString()) === false)
+                {
+                    dialogRecordExists.open();
+                }
             }
         }
     }

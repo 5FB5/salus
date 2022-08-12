@@ -153,6 +153,11 @@ ApplicationWindow {
                 Text {
                     id: dialogbox_text
                     font.pointSize: 14
+
+                    anchors.fill: parent
+
+                    wrapMode: Text.WordWrap
+
                     text: qsTr("Удалить карту?")
                 }
 

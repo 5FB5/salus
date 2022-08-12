@@ -90,7 +90,7 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
  * \param diagnosis Текущий диагноз
  * \param treatment Наименование лечения
  */
-void PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
+bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
                                    QString diseases, QString diagnosis, QString treatment)
 {
     for (auto &p : *patientsList) {
@@ -107,27 +107,38 @@ void PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 newRecord.treatment = treatment;
 
                 p.cardRecords.append(newRecord);
+
+                return true;
             }
             else {
-                for (auto &r : p.cardRecords) {
+                // Проверяем список на наличие записи по указанной дате
+                for (auto const &r : p.cardRecords) {
                     if (r.date != recordDate) {
-                        Record_t newRecord;
-
-                        newRecord.date = recordDate;
-                        newRecord.currentDiagnosis = diagnosis;
-                        newRecord.anamnesis = anamnesis;
-                        newRecord.complaints = complaints;
-                        newRecord.diseases = diseases;
-                        newRecord.treatment = treatment;
-
-                        p.cardRecords.append(newRecord);
-
-                        break;
+                        continue;
                     }
+                    else {
+                        return false;
+                    }
+                }
+
+                for (auto const &r : p.cardRecords) {
+                    Record_t newRecord;
+
+                    newRecord.date = recordDate;
+                    newRecord.currentDiagnosis = diagnosis;
+                    newRecord.anamnesis = anamnesis;
+                    newRecord.complaints = complaints;
+                    newRecord.diseases = diseases;
+                    newRecord.treatment = treatment;
+
+                    p.cardRecords.append(newRecord);
+
+                    return true;
                 }
             }
         }
     }
+    return false;
 }
 
 /*!

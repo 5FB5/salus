@@ -47,7 +47,7 @@ public:
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
-    void addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
+    bool addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
                       QString diseases, QString diagnosis, QString treatment);
 
     void reloadDatabase();

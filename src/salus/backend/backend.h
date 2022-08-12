@@ -102,7 +102,7 @@ public slots:
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
-    void addNewRecord(QString date, QString anamnesis, QString complaints,
+    bool addNewRecord(QString date, QString anamnesis, QString complaints,
                       QString diseases, QString diagnosis, QString treatment);
 
     void deletePatient();

@@ -34,6 +34,36 @@ Page {
         patientOccupation = backend.currentPatientOccupation;
     }
 
+    Dialog
+    {
+        id: dialogDeleteRecord
+
+        width: parent.width / 3.5
+        height: parent.height / 3.5
+
+        anchors.centerIn: parent
+
+        modal: true
+
+        title: "Подтвердите действие"
+        standardButtons: Dialog.Yes | Dialog.No
+
+        Text {
+            id: dialogboxText
+            font.pointSize: 14
+
+            anchors.fill: parent
+
+            wrapMode: Text.WordWrap
+
+            text: qsTr("Удалить запись " + currentRecord + "?")
+        }
+
+        onAccepted: {
+            console.log("TODO: удаление записи")
+        }
+    }
+
     Label {
         id: labelTitle
 
@@ -197,6 +227,7 @@ Page {
 
             onClicked:
             {
+                dialogDeleteRecord.open();
             }
         }
     }

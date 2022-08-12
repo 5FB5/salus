@@ -127,11 +127,17 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
  *  \param diagnosis Текущий диагноз
  *  \param treatment Наименование лечения
 */
-void Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
 {
-    patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment);
-    patientRecordsListModel->setStringList(getCurrentPatientRecords());
-    emit recordAdded();
+    if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment) == true) {
+        patientRecordsListModel->setStringList(getCurrentPatientRecords());
+        emit recordAdded();
+        return true;
+    }
+    else {
+        return false;
+    }
+    return false;
 }
 
 /*!
