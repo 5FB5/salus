@@ -82,10 +82,12 @@ public:
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
-//    QString getCurrentPatientDiagnosis();
-//    QString getCurrentPatientAnamnesis();
-//    QList<QString> getCurrentPatientComplaints();
-//    QList<QString> getCurrentPatientDiseases();
+//    QString getCurrentPatientRecordDate();
+//    QString getCurrentPatientRecordDiagnosis();
+//    QString getCurrentPatientRecordAnamnesis();
+//    QString getCurrentPatientRecordComplaints();
+//    QString getCurrentPatientRecordDiseases();
+//    QString getCurrentPatientRecordTreatment();
 
     quint16 getCurrentPatientAge();
 
@@ -115,6 +117,12 @@ public slots:
     void setPatient(QString fullName);
 
     QStringList getCurrentPatientRecords();
+
+    QString getRecordAnamnesis(QString recordDate);
+    QString getRecordComplaints(QString recordDate);
+    QString getRecordDiagnosis(QString recordDate);
+    QString getRecordDiseases(QString recordDate);
+    QString getRecordTreatment(QString recordDate);
 
 signals:
     void profileAdded();

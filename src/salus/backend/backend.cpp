@@ -312,6 +312,31 @@ QStringList Backend::getCurrentPatientRecords()
     return patientsDb->getRecordsList(currentPatientBirthDate);
 }
 
+QString Backend::getRecordAnamnesis(QString recordDate)
+{
+    return patientsDb->getAnamnesis(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordComplaints(QString recordDate)
+{
+    return patientsDb->getComplaints(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordDiagnosis(QString recordDate)
+{
+    return patientsDb->getDiagnosis(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordDiseases(QString recordDate)
+{
+    return patientsDb->getDiseases(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordTreatment(QString recordDate)
+{
+    return patientsDb->getTreatment(currentPatientBirthDate, recordDate);
+}
+
 //QString Backend::getCurrentPatientDiagnosis()
 //{
 //    return patientsDb.getDiagnosis(currentPatientBirthDate);

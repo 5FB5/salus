@@ -56,18 +56,22 @@ public:
     bool deletePatient(QString birthDate);
 
     QString getFullName(QString birthDate);
-    QString getBirthDate(QString birthDate); // FIXME: возможно оно должно возвращать QDate
+    QString getBirthDate(QString birthDate);
     QString getAddress(QString birthDate);
-    QString getOccupation(QString birthDate);
-    QString getDiagnosis(QString birthDate);
-    QString getAnamnesis(QString birthDate);
     QString getPhoneNumber(QString birthDate);
+    QString getOccupation(QString birthDate);
 
     bool getSex(QString birthDate);
 
     quint16 getAge(QString birthDate);
 
     QStringList getRecordsList(QString birthDate);
+
+    QString getAnamnesis(QString birthDate, QString recordDate);
+    QString getComplaints(QString birthDate, QString recordDate);
+    QString getDiagnosis(QString birthDate, QString recordDate);
+    QString getDiseases(QString birthDate, QString recordDate);
+    QString getTreatment(QString birthDate, QString recordDate);
 
 signals:
     void recordAdded();

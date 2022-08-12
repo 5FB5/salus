@@ -16,6 +16,27 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string recordDate: ""
+    property string recordComplaints: ""
+    property string recordAnamnesis: ""
+    property string recordDiagnosis: ""
+    property string recordDiseases: ""
+    property string recordTreatment: ""
+
+    function updateRecordData()
+    {
+        if (recordDate !== "")
+        {
+            recordAnamnesis = backend.getRecordAnamnesis(recordDate);
+            recordComplaints = backend.getRecordComplaints(recordDate);
+            recordDiagnosis = backend.getRecordDiagnosis(recordDate);
+            recordDiseases = backend.getRecordDiseases(recordDate);
+            recordTreatment = backend.getRecordTreatment(recordDate);
+
+            console.log(recordAnamnesis, recordComplaints, recordDiagnosis, recordDiseases, recordTreatment);
+        }
+    }
+
     Rectangle
     {
         id: background
@@ -55,7 +76,7 @@ Page {
 
         Text {
             id: labelRecordDate
-            text: "Введите дату новой записи"
+            text: "Дата записи"
             font.pointSize: fontSize
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -66,7 +87,7 @@ Page {
            anchors.horizontalCenter: parent.horizontalCenter
 
            placeholderText: "день.месяц.год"
-           text: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
+           text: recordDate//Qt.formatDateTime(new Date(), "dd.MM.yyyy")
 
            font.pointSize: fontSize
 
@@ -116,6 +137,7 @@ Page {
                    font.pointSize: fontSize
 
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
+                   text: recordAnamnesis
 
                    focus: true
                }
@@ -154,6 +176,7 @@ Page {
                    font.pointSize: fontSize
 
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
+                   text: recordComplaints
 
                    focus: true
                }
@@ -192,6 +215,7 @@ Page {
                    font.pointSize: fontSize
 
                    placeholderText: "Пульпит, Гингивит, ..."
+                   text: recordDiseases
 
                    focus: true
                }
@@ -230,6 +254,7 @@ Page {
                    font.pointSize: fontSize
 
                    placeholderText: "Пародонтоз"
+                   text: recordDiagnosis
 
                    focus: true
                }
@@ -268,6 +293,7 @@ Page {
                    font.pointSize: fontSize
 
                    placeholderText: "Реминерализирующая терапия, ..."
+                   text: recordTreatment
 
                    focus: true
                }
@@ -277,7 +303,7 @@ Page {
         Button {
             id: buttonAddRecord
 
-            text: "Добавить запись"
+            text: "Сохранить запись"
 
             font.pointSize: 10
 
@@ -287,8 +313,8 @@ Page {
             height: 50
 
             onClicked: {
-                backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
-                                     textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
+//                backend.updateRecord(recordDate, textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
+//                                     textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
             }
         }
     }

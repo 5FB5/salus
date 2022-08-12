@@ -171,7 +171,7 @@ ApplicationWindow {
             }
 
             onDeletePatient: {
-                dialogbox_delete_patient.open()
+                dialogbox_delete_patient.open();
             }
         }
 
@@ -186,6 +186,8 @@ ApplicationWindow {
             onOpenEditPage:
             {
                 console.log(currentRecord);
+                page_patient_edit_record.recordDate = currentRecord;
+                page_patient_edit_record.updateRecordData();
                 stack_content_main.currentIndex = 8;
             }
         }

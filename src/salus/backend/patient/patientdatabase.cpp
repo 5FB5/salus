@@ -302,6 +302,76 @@ QStringList PatientDataBase::getRecordsList(QString birthDate)
     return QStringList();
 }
 
+QString PatientDataBase::getAnamnesis(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (const auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    return r.anamnesis;
+                }
+            }
+        }
+    }
+    return "";
+}
+
+QString PatientDataBase::getComplaints(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (const auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    return r.complaints;
+                }
+            }
+        }
+    }
+    return "";
+}
+
+QString PatientDataBase::getDiagnosis(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (const auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    return r.currentDiagnosis;
+                }
+            }
+        }
+    }
+    return "";
+}
+
+QString PatientDataBase::getDiseases(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (const auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    return r.diseases;
+                }
+            }
+        }
+    }
+    return "";
+}
+
+QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (const auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    return r.treatment;
+                }
+            }
+        }
+    }
+    return "";
+}
+
 //QString PatientDataBase::getDiagnosis(QString birthDate)
 //{
 //    if (patientsList->isEmpty() == false) {
