@@ -18,7 +18,10 @@ Page {
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
 
+    property string currentRecord: ""
+
     signal openAddRecordPage()
+    signal openEditPage()
 
     function updatePatientData()
     {
@@ -95,7 +98,11 @@ Page {
                 }
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: recordsListView.currentIndex = index
+                    onClicked:
+                    {
+                        recordsListView.currentIndex = index;
+                        currentRecord = display;
+                    }
                 }
             }
         }
@@ -167,6 +174,12 @@ Page {
 
             onClicked:
             {
+                if (currentRecord !== "") {
+                    openEditPage();
+                }
+                else {
+                    console.log("Запись не выбрана");
+                }
             }
         }
 

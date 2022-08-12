@@ -11,5 +11,6 @@
         <file>frontend/doctor/DoctorDiagnosesDataBase.qml</file>
         <file>frontend/main.qml</file>
         <file>frontend/patient/PatientAddRecordPage.qml</file>
+        <file>frontend/patient/PatientEditRecordPage.qml</file>
     </qresource>
 </RCC>

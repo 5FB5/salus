@@ -16,15 +16,6 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    function clearTextFields()
-    {
-        textEditAnamnesis.clear()
-        textEditComplaints.clear()
-        textEditDiagnosis.clear()
-        textEditDiseases.clear()
-        textEditTreatment.clear()
-    }
-
     Rectangle
     {
         id: background
@@ -37,7 +28,7 @@ Page {
     Label {
         id: labelTitle
 
-        text: "Добавление новой записи"
+        text: "Редактирование записи"
 
         font.pointSize: 20
         font.bold: true

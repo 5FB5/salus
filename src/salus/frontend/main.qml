@@ -180,12 +180,33 @@ ApplicationWindow {
 
             onOpenAddRecordPage:
             {
-                stack_content_main.currentIndex = 7
+                stack_content_main.currentIndex = 7;
+            }
+
+            onOpenEditPage:
+            {
+                console.log(currentRecord);
+                stack_content_main.currentIndex = 8;
             }
         }
 
         PatientAddRecordPage { // 7
             id: page_patient_add_record
+
+            Connections
+            {
+                target: backend
+
+                onRecordAdded:
+                {
+                    stack_content_main.currentIndex = 6
+                    page_patient_add_record.clearTextFields()
+                }
+            }
+        }
+
+        PatientEditRecordPage { // 8
+            id: page_patient_edit_record
         }
     }
 
