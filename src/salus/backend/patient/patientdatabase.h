@@ -52,6 +52,8 @@ public:
 
     void reloadDatabase();
     void updateDbToFile();
+    void updateRecord(QString birthDate, QString recordDate, QString anamnesis,
+                      QString complaints, QString diseases, QString diagnosis, QString treatment);
 
     bool deletePatient(QString birthDate);
 

@@ -95,6 +95,13 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
     emit profileAdded();
 }
 
+void Backend::updateRecord(QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+{
+    patientsDb->updateRecord(currentPatientBirthDate, recordDate, anamnesis, complaints,
+                             diseases, diagnosis, treatment);
+    emit recordUpdated();
+}
+
 /*!
  *  \brief Добавляет нового пациента в БД
  *  \param fullName ФИО пациента

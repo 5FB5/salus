@@ -113,10 +113,7 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
             else {
                 // Проверяем список на наличие записи по указанной дате
                 for (auto const &r : p.cardRecords) {
-                    if (r.date != recordDate) {
-                        continue;
-                    }
-                    else {
+                    if (r.date == recordDate) {
                         return false;
                     }
                 }
@@ -188,6 +185,25 @@ void PatientDataBase::updateDbToFile()
     }
 
     qDebug() << "Salus: [PatienDataBase::updateDbToFile()] - Database updated\n";
+}
+
+void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+{
+    for (auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (auto &r : p.cardRecords) {
+                if (r.date == recordDate) {
+                    r.anamnesis = anamnesis;
+                    r.complaints = complaints;
+                    r.currentDiagnosis = diagnosis;
+                    r.diseases = diseases;
+                    r.treatment = treatment;
+
+                    break;
+                }
+            }
+        }
+    }
 }
 
 /*!

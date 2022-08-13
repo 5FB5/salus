@@ -112,6 +112,9 @@ public slots:
                              QString doctorInstitutionAddress, quint16 doctorInn,
                              QString doctorLicenseInfo);
 
+    void updateRecord(QString recordDate, QString anamnesis, QString complaints,
+                      QString diseases, QString diagnosis, QString treatment);
+
     void setCurrentDoctorInn(quint16 inn);
 
     void setPatient(QString fullName);
@@ -129,6 +132,7 @@ signals:
     void patientAdded();
     void patientDeleted();
     void recordAdded();
+    void recordUpdated();
     void changeDoctorProfile();
 
 };

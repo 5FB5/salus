@@ -23,6 +23,8 @@ Page {
     property string recordDiseases: ""
     property string recordTreatment: ""
 
+    signal recordUpdated()
+
     function updateRecordData()
     {
         if (recordDate !== "")
@@ -73,8 +75,9 @@ Page {
         }
 
         onAccepted: {
-            //                backend.updateRecord(recordDate, textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
-            //                                     textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString())
+            backend.updateRecord(recordDate, textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
+                                 textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString());
+            recordUpdated();
         }
     }
 

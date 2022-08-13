@@ -214,6 +214,11 @@ ApplicationWindow {
 
         PatientEditRecordPage { // 8
             id: page_patient_edit_record
+
+            onRecordUpdated:
+            {
+                stack_content_main.currentIndex = 6;
+            }
         }
     }
 
