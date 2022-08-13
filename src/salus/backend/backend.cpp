@@ -102,6 +102,14 @@ void Backend::updateRecord(QString recordDate, QString anamnesis, QString compla
     emit recordUpdated();
 }
 
+void Backend::deleteRecord(QString recordDate)
+{
+    patientsDb->deleteRecord(currentPatientBirthDate, recordDate);
+    patientsDb->updateDbToFile();
+    patientRecordsListModel->setStringList(getCurrentPatientRecords());
+    emit recordDeleted();
+}
+
 /*!
  *  \brief Добавляет нового пациента в БД
  *  \param fullName ФИО пациента

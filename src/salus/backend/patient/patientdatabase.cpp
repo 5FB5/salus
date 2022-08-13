@@ -206,6 +206,19 @@ void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QStrin
     }
 }
 
+void PatientDataBase::deleteRecord(QString birthDate, QString recordDate)
+{
+    for (auto &p : *patientsList) {
+        if (p.birthDate == birthDate) {
+            for (int i = 0; i < p.cardRecords.size(); i++) {
+                if (p.cardRecords[i].date == recordDate) {
+                    p.cardRecords.removeAt(i);
+                }
+            }
+        }
+    }
+}
+
 /*!
  * \brief Удаляет пациента из БД по указанному параметру
  * \param birthDate

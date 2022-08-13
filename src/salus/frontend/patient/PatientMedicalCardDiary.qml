@@ -22,6 +22,7 @@ Page {
 
     signal openAddRecordPage()
     signal openEditPage()
+    signal recordDeleted()
 
     function updatePatientData()
     {
@@ -60,7 +61,11 @@ Page {
         }
 
         onAccepted: {
-            console.log("TODO: удаление записи")
+            if (currentRecord !== "")
+            {
+                backend.deleteRecord(currentRecord);
+                recordDeleted();
+            }
         }
     }
 

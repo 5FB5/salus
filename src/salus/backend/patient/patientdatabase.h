@@ -55,6 +55,8 @@ public:
     void updateRecord(QString birthDate, QString recordDate, QString anamnesis,
                       QString complaints, QString diseases, QString diagnosis, QString treatment);
 
+    void deleteRecord(QString birthDate, QString recordDate);
+
     bool deletePatient(QString birthDate);
 
     QString getFullName(QString birthDate);
