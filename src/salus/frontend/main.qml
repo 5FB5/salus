@@ -88,14 +88,16 @@ ApplicationWindow {
             }
 
             onOpenCurrentMedicalCard: {
+                if (!backend.isPatientDbEmpty)
+                {
+                    console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
 
-                console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
+                    backend.setPatient(fullname)
 
-                backend.setPatient(fullname)
+                    page_patient_medical_card_main.updatePatientData()
 
-                page_patient_medical_card_main.updatePatientData()
-
-                stack_content_main.currentIndex = 5
+                    stack_content_main.currentIndex = 5
+                }
             }
 
             onRegisterMedicalCard: {
@@ -151,6 +153,11 @@ ApplicationWindow {
                 Text {
                     id: dialogbox_text
                     font.pointSize: 14
+
+                    anchors.fill: parent
+
+                    wrapMode: Text.WordWrap
+
                     text: qsTr("Удалить карту?")
                 }
 
@@ -162,23 +169,56 @@ ApplicationWindow {
 
             onOpenDiary: {
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n")
-                page_patient_medical_card_diary.patientFullName = patientFullName
-                page_patient_medical_card_diary.patientAge = patientAge
-                page_patient_medical_card_diary.patientBirthDate = patientBirthDate
-                page_patient_medical_card_diary.patientPhoneNumber = patientPhoneNumber
-                page_patient_medical_card_diary.patientOccupation = patientOccupation
+                page_patient_medical_card_diary.updatePatientData()
 
                 stack_content_main.currentIndex = 6
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n")
             }
 
             onDeletePatient: {
-                dialogbox_delete_patient.open()
+                dialogbox_delete_patient.open();
             }
         }
 
         PatientMedicalCardDiary { // 6
             id: page_patient_medical_card_diary
+
+            onOpenAddRecordPage:
+            {
+                stack_content_main.currentIndex = 7;
+            }
+
+            onOpenEditPage:
+            {
+                console.log(currentRecord);
+                page_patient_edit_record.recordDate = currentRecord;
+                page_patient_edit_record.updateRecordData();
+                stack_content_main.currentIndex = 8;
+            }
+        }
+
+        PatientAddRecordPage { // 7
+            id: page_patient_add_record
+
+            Connections
+            {
+                target: backend
+
+                onRecordAdded:
+                {
+                    stack_content_main.currentIndex = 6
+                    page_patient_add_record.clearTextFields()
+                }
+            }
+        }
+
+        PatientEditRecordPage { // 8
+            id: page_patient_edit_record
+
+            onRecordUpdated:
+            {
+                stack_content_main.currentIndex = 6;
+            }
         }
     }
 

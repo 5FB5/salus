@@ -4,7 +4,8 @@
 #include <QString>
 #include <QFile>
 #include <QFileInfo>
-//#include <QDate>
+
+#include "patientcardrecord.h"
 
 class Patient
 {
@@ -21,8 +22,6 @@ public:
     QString fullName;
     QString address;
     QString occupation;
-    QString currentDiagnosis;
-    QString anamnesis;
     QString phoneNumber;
     QString birthDate; // TODO: это должно быть QDate, но непонятно где это использовать
 
@@ -30,8 +29,7 @@ public:
 
     quint16 age;
 
-    QList<QString> complaints; // жалобы
-    QList<QString> diseases; // перенесённые заболевания
+    QList<Record_t> cardRecords;
 
 };
 

@@ -16,6 +16,9 @@
 
 #include "doctor.h"
 
+/*!
+ *  @brief Глобальный класс для доступа к БД врача
+*/
 class DoctorDataBase : public QObject
 {
     Q_OBJECT
@@ -65,7 +68,6 @@ public:
 private:
     void getDoctorsListFromJson();
 
-    /*! Возвращает данные из doctors.json */
     QJsonDocument loadJson();
 
     QJsonArray convertListToJsonArray(const QList<QString> &list);

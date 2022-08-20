@@ -3,15 +3,18 @@
 
 #include "QtQml/qqml.h"
 #include "QtQml/qqmlcontext.h"
-#include <QString>
+#include <QStringListModel>
 #include <QObject>
 #include <QDebug>
+#include <QString>
 
 #include "doctor/doctordatabase.h"
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
 
-/*! Класс для работы с QML фронтендом. Объединяет интерфейсы БД врача и пациентов */
+/*!
+ * \brief Backend класс для работы с frontend частью приложения
+ */
 class Backend : public QObject
 {
     Q_OBJECT
@@ -27,6 +30,7 @@ class Backend : public QObject
     Q_PROPERTY(quint16 currentDoctorInn READ getCurrentDoctorInn) // WRITE setCurrentDoctorInn)
 
     Q_PROPERTY(bool isDoctorDbEmpty READ getIsDoctorDbExists)
+    Q_PROPERTY(bool isPatientDbEmpty READ getIsPatientDbEmpty)
 
     Q_PROPERTY(QString currentPatientFullName READ getCurrentPatientFullName);
     Q_PROPERTY(quint16 currentPatientAge READ getCurrentPatientAge);
@@ -34,33 +38,31 @@ class Backend : public QObject
     Q_PROPERTY(QString currentPatientBirthDate READ getCurrentPatientBirthDate); // используется как первичный ключ
     Q_PROPERTY(QString currentPatientAddress READ getCurrentPatientAddress);
     Q_PROPERTY(QString currentPatientOccupation READ getCurrentPatientOccupation);
-    Q_PROPERTY(QString currentPatientDiagnosis READ getCurrentPatientDiagnosis);
     Q_PROPERTY(QString currentPatientPhoneNumber READ getCurrentPatientPhoneNumber);
-    Q_PROPERTY(QList<QString> currentPatientComplaints READ getCurrentPatientComplaints);
-    Q_PROPERTY(QString currentPatientAnamnesis READ getCurrentPatientAnamnesis);
-    Q_PROPERTY(QList<QString> currentPatientDiseases READ getCurrentPatientDiseases);
 
+private:
+    DoctorDataBase doctorDb;
+
+    PatientDataBase *patientsDb;
+
+    PatientListModel *patientListModel;
+
+    QStringListModel *patientRecordsListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
     ~Backend();
 
-    /*! Глобальный класс для доступа к БД врача */
-    DoctorDataBase doctorDb;
-    /*! Глобальный класс для доступа к БД пациента */
-    PatientDataBase patientsDb;
-
-    PatientListModel *patientListModel;
-
     void addPropertiesToContext(QQmlContext *context);
 
     /*!
-     *  Хранит значение ИНН текущего профиля врача.
+     *  @brief Хранит значение ИНН текущего профиля врача.
      *  Используется как первичный ключ для доступа к остальным данным
     */
     quint16 currentDoctorInn;
+
     /*!
-     *  Хранит дату рождения текущего пациента.
+     *  @brief Хранит дату рождения текущего пациента.
      *  Используется как первичный ключ для доступа к остальным данным
     */
     QString currentPatientBirthDate;
@@ -80,22 +82,28 @@ public:
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();
-    QString getCurrentPatientDiagnosis();
-    QString getCurrentPatientAnamnesis();
-    QList<QString> getCurrentPatientComplaints();
-    QList<QString> getCurrentPatientDiseases();
+//    QString getCurrentPatientRecordDate();
+//    QString getCurrentPatientRecordDiagnosis();
+//    QString getCurrentPatientRecordAnamnesis();
+//    QString getCurrentPatientRecordComplaints();
+//    QString getCurrentPatientRecordDiseases();
+//    QString getCurrentPatientRecordTreatment();
 
     quint16 getCurrentPatientAge();
 
     bool getCurrentPatientSex();
 
-    /*! Возвращает true, если в БД врача отсутствуют профили */
     bool getIsDoctorDbExists();
+
+    bool getIsPatientDbEmpty();
 
 public slots:
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
+
+    bool addNewRecord(QString date, QString anamnesis, QString complaints,
+                      QString diseases, QString diagnosis, QString treatment);
 
     void deletePatient();
 
@@ -104,14 +112,30 @@ public slots:
                              QString doctorInstitutionAddress, quint16 doctorInn,
                              QString doctorLicenseInfo);
 
+    void updateRecord(QString recordDate, QString anamnesis, QString complaints,
+                      QString diseases, QString diagnosis, QString treatment);
+
+    void deleteRecord(QString recordDate);
+
     void setCurrentDoctorInn(quint16 inn);
 
     void setPatient(QString fullName);
+
+    QStringList getCurrentPatientRecords();
+
+    QString getRecordAnamnesis(QString recordDate);
+    QString getRecordComplaints(QString recordDate);
+    QString getRecordDiagnosis(QString recordDate);
+    QString getRecordDiseases(QString recordDate);
+    QString getRecordTreatment(QString recordDate);
 
 signals:
     void profileAdded();
     void patientAdded();
     void patientDeleted();
+    void recordAdded();
+    void recordUpdated();
+    void recordDeleted();
     void changeDoctorProfile();
 
 };
