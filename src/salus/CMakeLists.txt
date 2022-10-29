@@ -20,16 +20,14 @@ add_subdirectory(backend/patient)
 
 qt5_add_resources(RESOURCES qml.qrc)
 
-set(PROJECT_SOURCES
-        main.cpp
-)
+set(PROJECT_SOURCES main.cpp)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${RESOURCES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC backend)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}:Gui)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Gui)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Quick)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
