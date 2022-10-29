@@ -4,6 +4,9 @@
 #define JSON_PATIENT_FILE_PATH QCoreApplication::applicationDirPath() + "/patients.json"
 
 #include <QCoreApplication>
+#include <QtGui/QPdfWriter>
+#include <QtGui/QTextDocument>
+#include <QtGui/QPainter>
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
@@ -76,6 +79,8 @@ public:
     QString getDiagnosis(QString birthDate, QString recordDate);
     QString getDiseases(QString birthDate, QString recordDate);
     QString getTreatment(QString birthDate, QString recordDate);
+
+    void saveCardPdf(QString birthDate, QString filePath);
 
 signals:
     void recordAdded();

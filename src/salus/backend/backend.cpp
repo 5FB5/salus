@@ -72,6 +72,17 @@ void Backend::setPatient(QString fullName)
     }
 }
 
+void Backend::printCard(QString path)
+{
+    // Получить из БД пациентов pdf документ, включающий обложку и записи
+    // Сохранить файл по указанному пути (отобразить окно с выбором пути)
+    // Вывести на печать по желанию пользователя
+
+    QString fullPath = path + "/medCard_" + getCurrentPatientFullName() + "_" + getCurrentPatientBirthDate() + ".pdf";
+
+    patientsDb->saveCardPdf(currentPatientBirthDate, fullPath);
+}
+
 /*!
  *  \brief Добавляет новый профиль врача в БД.
  *  \param doctorFullName ФИО врача
@@ -148,9 +159,6 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
         emit recordAdded();
         return true;
-    }
-    else {
-        return false;
     }
     return false;
 }

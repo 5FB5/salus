@@ -121,6 +121,10 @@ public slots:
 
     void setPatient(QString fullName);
 
+    void printCard(QString path);
+
+//    void printDiaryRecord(QString recordDate);
+
     QStringList getCurrentPatientRecords();
 
     QString getRecordAnamnesis(QString recordDate);

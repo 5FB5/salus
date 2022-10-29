@@ -1,6 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
+//import Qt.labs.platform 1.1
+import QtQuick.Dialogs 1.3
 
 import salus 1.0
 
@@ -35,6 +37,24 @@ Page {
         patientPhoneNumber = backend.currentPatientPhoneNumber
         patientOccupation = backend.currentPatientOccupation
     }
+
+    FileDialog
+    {
+        id: fileDialogSaveCard
+
+        title: "Выберите папку сохранения"
+
+        selectFolder: true
+        selectExisting: true
+        selectMultiple: false
+
+        onSelectionAccepted:
+        {
+            console.log(folder);
+            backend.printCard(folder);
+        }
+    }
+
 
     Label {
         id: labelTitle
@@ -95,9 +115,13 @@ Page {
             width: 200
             height: 60
 
-            enabled: false
-
             text: "Печать карты"
+
+            onClicked:
+            {
+                console.log("TODO: Печать карты");
+                fileDialogSaveCard.open();
+            }
         }
 
         Button {

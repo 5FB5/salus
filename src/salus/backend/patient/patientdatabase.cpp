@@ -412,6 +412,12 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
     return "";
 }
 
+void PatientDataBase::saveCardPdf(QString birthDate, QString filePath)
+{
+    QTextDocument doc;
+
+}
+
 //QString PatientDataBase::getDiagnosis(QString birthDate)
 //{
 //    if (patientsList->isEmpty() == false) {
