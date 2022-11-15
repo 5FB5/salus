@@ -414,8 +414,16 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
 
 void PatientDataBase::saveCardPdf(QString birthDate, QString filePath)
 {
-    QTextDocument doc;
+    // открыть файл
+    // прочитать содержимое
+    // найти метки (ФИО и т.д.)
+    // подставить значения
 
+    QFile file("://cards_src/dentist_043_header.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)

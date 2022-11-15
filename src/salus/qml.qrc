@@ -12,5 +12,6 @@
         <file>frontend/main.qml</file>
         <file>frontend/patient/PatientAddRecordPage.qml</file>
         <file>frontend/patient/PatientEditRecordPage.qml</file>
+        <file>cards_src/dentist_043_header.html</file>
     </qresource>
 </RCC>

@@ -42,11 +42,8 @@ class Backend : public QObject
 
 private:
     DoctorDataBase doctorDb;
-
     PatientDataBase *patientsDb;
-
     PatientListModel *patientListModel;
-
     QStringListModel *patientRecordsListModel;
 
 public:

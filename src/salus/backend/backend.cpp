@@ -74,25 +74,24 @@ void Backend::setPatient(QString fullName)
 
 void Backend::printCard(QString path)
 {
-    // Получить из БД пациентов pdf документ, включающий обложку и записи
-    // Сохранить файл по указанному пути (отобразить окно с выбором пути)
-    // Вывести на печать по желанию пользователя
+    QString patientFullName = getCurrentPatientFullName().remove(' ');
+    QString patientBirthDate = getCurrentPatientBirthDate().remove('.');
 
-    QString fullPath = path + "/medCard_" + getCurrentPatientFullName() + "_" + getCurrentPatientBirthDate() + ".pdf";
+    QString fullPath = path + "/medCard_" + patientFullName + patientBirthDate + ".pdf";
 
     patientsDb->saveCardPdf(currentPatientBirthDate, fullPath);
 }
 
-/*!
- *  \brief Добавляет новый профиль врача в БД.
- *  \param doctorFullName ФИО врача
- *  \param doctorSpecialization Специализация
- *  \param doctorInstitutionName Название учреждения
- *  \param doctorInstitutionCode Код учреждения
- *  \param doctorInstitutionAddress Адрес учреждения
- *  \param doctorInn ИНН
- *  \param doctorLicenseInfo Номер лицензии
-*/
+/**
+ * @brief Добавляет новый профиль врача в БД
+ * @param doctorFullName
+ * @param doctorSpecialization
+ * @param doctorInstitutionName
+ * @param doctorInstitutionCode
+ * @param doctorInstitutionAddress
+ * @param doctorInn
+ * @param doctorLicenseInfo
+ */
 void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpecialization,
                                   QString doctorInstitutionName, quint16 doctorInstitutionCode, QString doctorInstitutionAddress,
                                   quint16 doctorInn, QString doctorLicenseInfo)
