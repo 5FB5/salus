@@ -3,6 +3,7 @@
 
 #define JSON_PATIENT_FILE_PATH QCoreApplication::applicationDirPath() + "/patients.json"
 
+#include <QCoreApplication>
 #include <QtGui/QTextDocument>
 #include <QPrinter>
 #include <QFile>

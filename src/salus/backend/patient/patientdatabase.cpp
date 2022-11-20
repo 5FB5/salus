@@ -419,6 +419,19 @@ void PatientDataBase::saveCardPdf(QString birthDate)
     // найти метки (ФИО и т.д.)
     // подставить значения
 
+    QString fileName;
+
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            fileName = p.fullName + p.birthDate;
+            fileName.remove(' ');
+            fileName.replace('.', '_');
+            break;
+        }
+    }
+
     QFile file("://cards_src/dentist_043_header.html");
     file.open(QIODevice::ReadOnly);
 
@@ -427,7 +440,7 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file.close();
 
-    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", "МедКарта", "PDF (*.pdf)");
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName, "PDF (*.pdf)");
 
     if (QFileInfo(path).suffix().isEmpty())
         path.append(".pdf");
