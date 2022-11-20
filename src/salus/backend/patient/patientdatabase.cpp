@@ -412,7 +412,7 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
     return "";
 }
 
-void PatientDataBase::saveCardPdf(QString birthDate, QString filePath)
+void PatientDataBase::saveCardPdf(QString birthDate)
 {
     // открыть файл
     // прочитать содержимое
@@ -424,6 +424,24 @@ void PatientDataBase::saveCardPdf(QString birthDate, QString filePath)
 
     QTextStream input(&file);
     QString html = input.readAll();
+
+    file.close();
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", "МедКарта", "PDF (*.pdf)");
+
+    if (QFileInfo(path).suffix().isEmpty())
+        path.append(".pdf");
+
+    QPrinter printer(QPrinter::PrinterResolution);
+    QTextDocument doc;
+
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName(path);
+
+    doc.setHtml(html);
+    doc.setPageSize(printer.pageRect().size());
+    doc.print(&printer);
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)

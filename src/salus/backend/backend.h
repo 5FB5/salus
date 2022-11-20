@@ -118,7 +118,7 @@ public slots:
 
     void setPatient(QString fullName);
 
-    void printCard(QString path);
+    void printCard();
 
 //    void printDiaryRecord(QString recordDate);
 

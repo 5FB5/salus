@@ -72,14 +72,9 @@ void Backend::setPatient(QString fullName)
     }
 }
 
-void Backend::printCard(QString path)
+void Backend::printCard()
 {
-    QString patientFullName = getCurrentPatientFullName().remove(' ');
-    QString patientBirthDate = getCurrentPatientBirthDate().remove('.');
-
-    QString fullPath = path + "/medCard_" + patientFullName + patientBirthDate + ".pdf";
-
-    patientsDb->saveCardPdf(currentPatientBirthDate, fullPath);
+    patientsDb->saveCardPdf(currentPatientBirthDate);
 }
 
 /**

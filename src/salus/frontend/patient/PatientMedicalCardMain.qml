@@ -38,24 +38,6 @@ Page {
         patientOccupation = backend.currentPatientOccupation
     }
 
-    FileDialog
-    {
-        id: fileDialogSaveCard
-
-        title: "Выберите папку сохранения"
-
-        selectFolder: true
-        selectExisting: true
-        selectMultiple: false
-
-        onSelectionAccepted:
-        {
-            console.log(folder);
-            backend.printCard(folder);
-        }
-    }
-
-
     Label {
         id: labelTitle
 
@@ -120,7 +102,7 @@ Page {
             onClicked:
             {
                 console.log("TODO: Печать карты");
-                fileDialogSaveCard.open();
+                backend.printCard();
             }
         }
 
