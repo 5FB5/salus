@@ -597,7 +597,7 @@ QJsonDocument PatientDataBase::loadJson()
     QFileInfo fInfo(JSON_PATIENT_FILE_PATH);
     QFile f(JSON_PATIENT_FILE_PATH);
 
-    if (!fInfo.exists())
+    if (fInfo.exists() == false)
     {
         f.open(QFile::WriteOnly);
         QJsonDocument jd;

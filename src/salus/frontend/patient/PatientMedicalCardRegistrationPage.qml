@@ -21,14 +21,12 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-
     signal returnBack()
     signal patientRegistered(string fullname)
 
     function clearTextFields()
     {
         textEditFullName.clear();
-        textEditAge.clear();
         textEditBirthDate.clear();
         textEditAddress.clear();
         textEditPhoneNumber.clear();
@@ -127,42 +125,6 @@ Page
 
        Text
        {
-           id: labelAge
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
-           font.pointSize: fontSize
-           text: "Введите возраст"
-       }
-
-       TextField
-       {
-           id: textEditAge
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
-           font.pointSize: fontSize
-           width: textFieldsWidth
-           height: 30
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-
-           validator: IntValidator
-           {
-               bottom: 0
-               top: 255
-           }
-
-           Rectangle
-           {
-               anchors.fill: parent
-               border.width: 1
-               color: "#0000ffff"
-           }
-       }
-
-       Text
-       {
            id: labelSex
 
            anchors.horizontalCenter: parent.horizontalCenter
@@ -187,7 +149,7 @@ Page
                ListElement { text: "Женский" }
            }
 
-           onActivated: function()
+           onActivated:
            {
                patientSex = index === 0 ? false : true;
            }
@@ -331,11 +293,18 @@ Page
             width: 300
             height: 50
 
-            text: "Зарегистрировать новую карту"
+            text: "Добавить карту"
 
             onClicked: function()
             {
-                backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
+                var date = new Date();
+
+                let birthDate = textEditBirthDate.text.split('.');
+                let currentAge = date.getFullYear() - birthDate[2];
+
+                console.log(currentAge);
+
+                backend.addNewPatient(textEditFullName.text.toString(), currentAge, patientSex, textEditBirthDate.text,
                                       textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString());
             }
         }
