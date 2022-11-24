@@ -1,10 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property int buttonStandartTextFontSize: 10
@@ -28,13 +28,13 @@ Page {
 
     function updatePatientData()
     {
-        patientFullName = backend.currentPatientFullName
-        patientAge = backend.currentPatientAge
-        patientSex = backend.currentPatientSex
-        patientBirthDate = backend.currentPatientBirthDate
-        patientAddress = backend.currentPatientAddress
-        patientPhoneNumber = backend.currentPatientPhoneNumber
-        patientOccupation = backend.currentPatientOccupation
+        patientFullName = backend.currentPatientFullName;
+        patientAge = backend.currentPatientAge;
+        patientSex = backend.currentPatientSex;
+        patientBirthDate = backend.currentPatientBirthDate;
+        patientAddress = backend.currentPatientAddress;
+        patientPhoneNumber = backend.currentPatientPhoneNumber;
+        patientOccupation = backend.currentPatientOccupation;
     }
 
     Button
@@ -56,83 +56,88 @@ Page {
         }
     }
 
-    Label {
+    Label
+    {
         id: labelTitle
 
-        text: "Амбулаторная карта"
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
-        font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true        
+        text: "Амбулаторная карта"
     }
 
-    Label {
+    Label
+    {
         id: labelPatientName
 
-        text: "<b>Пациент:</b> " + patientFullName
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 100
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
-        font.bold: false
-
-        anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: false        
+        text: "<b>Пациент:</b> " + patientFullName
     }
 
-
-    Row {
+    Row
+    {
         id: buttons_medical_card
 
         anchors.centerIn: parent
 
         spacing: 50
 
-        Button {
+        Button
+        {
             id: buttonDiary
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
             text: "Дневник лечения"
 
-            onClicked: {
-                openDiary()
+            onClicked: function()
+            {
+                openDiary();
             }
         }
 
-        Button {
+        Button
+        {
             id: buttonPrintMedicalCard
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
-
             enabled: false
 
             text: "Печать карты"
         }
 
-        Button {
+        Button
+        {
             id: buttonDeletePatient
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
             text: "Удалить пациента из БД"
 
-            onClicked: {
-                deletePatient()
+            onClicked: function()
+            {
+                deletePatient();
             }
         }
     }
