@@ -46,31 +46,31 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
 void Backend::setPatient(QString fullName)
 {
-        if (!patientsDb->patientsList->isEmpty() == true)
-            return;
+    if (patientsDb->patientsList->isEmpty() == true)
+        return;
 
-        qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
+    qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
 
-        foreach(Patient p, *patientsDb->patientsList)
+    foreach(Patient p, *patientsDb->patientsList)
+    {
+        if (p.fullName == fullName)
         {
-            if (p.fullName == fullName)
+            if (p.birthDate == currentPatientBirthDate)
             {
-                if (p.birthDate == currentPatientBirthDate)
-                {
-                    qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
-                    return;
-                }
-                else
-                {
-                    qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
-                    currentPatientBirthDate = p.birthDate;
-                    patientRecordsListModel->setStringList(getCurrentPatientRecords());
-                    qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
-                    return;
-                }
+                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
+                return;
+            }
+            else
+            {
+                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
+                currentPatientBirthDate = p.birthDate;
+                patientRecordsListModel->setStringList(getCurrentPatientRecords());
+                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
+                return;
             }
         }
-        qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
+    }
+    qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
 }
 
 /**
