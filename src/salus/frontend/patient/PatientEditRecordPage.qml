@@ -23,6 +23,7 @@ Page {
     property string recordDiseases: ""
     property string recordTreatment: ""
 
+    signal returnBack()
     signal recordUpdated()
 
     function updateRecordData()
@@ -46,6 +47,25 @@ Page {
         anchors.fill: parent
 
         color: "#ffffff"
+    }
+
+    Button
+    {
+        id: buttonReturn
+
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
+
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
     Dialog

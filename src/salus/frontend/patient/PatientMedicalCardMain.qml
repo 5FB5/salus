@@ -22,6 +22,7 @@ Page {
     property var patientDiseases: []
     property string patientAnamnesis: ""
 
+    signal returnBack()
     signal openDiary()
     signal deletePatient()
 
@@ -34,6 +35,25 @@ Page {
         patientAddress = backend.currentPatientAddress
         patientPhoneNumber = backend.currentPatientPhoneNumber
         patientOccupation = backend.currentPatientOccupation
+    }
+
+    Button
+    {
+        id: buttonReturn
+
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
+
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
     Label {

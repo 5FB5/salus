@@ -20,6 +20,7 @@ Page {
 
     property string currentRecord: ""
 
+    signal returnBack()
     signal openAddRecordPage()
     signal openEditPage()
     signal recordDeleted()
@@ -66,6 +67,25 @@ Page {
                 backend.deleteRecord(currentRecord);
                 recordDeleted();
             }
+        }
+    }
+
+    Button
+    {
+        id: buttonReturn
+
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
+
+        onClicked: function()
+        {
+            returnBack();
         }
     }
 
