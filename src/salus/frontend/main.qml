@@ -39,10 +39,45 @@ ApplicationWindow
         page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo;
     }
 
+    function setDataToMainCard()
+    {
+        patientListModel.reloadPatientList();
+        page_patient_registration.clearTextFields();
+        stack_content_main.currentIndex = 5;
+    }
+
+    function setDataToDiary()
+    {
+        stack_content_main.currentIndex = 6;
+        page_patient_add_record.clearTextFields();
+    }
+
+    function addNewProfile()
+    {
+        doctorFullName = backend.currentDoctorFullName;
+
+        page_doctor_profile.doctorName = backend.currentDoctorFullName;
+        page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization;
+        page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName;
+        page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress;
+        page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode;
+        page_doctor_profile.doctorInn = backend.currentDoctorInn;
+        page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo;
+
+        stackview_startup.push(menu_bar);
+    }
+
     Component.onCompleted: function()
     {
         doctorFullName = backend.currentDoctorFullName;
         updateProfilePage();
+
+        backend.patientDeleted.connect(patientListModel.reloadPatientList);
+        backend.patientAdded.connect(setDataToMainCard);
+        backend.recordAdded.connect(setDataToDiary);
+        backend.profileAdded.connect(addNewProfile);
+
+        patientListModel.modelReloaded.connect(page_patient_medical_card_main.updatePatientData);
     }
 
     // Окно, отображающее контент на основной странице
@@ -82,16 +117,6 @@ ApplicationWindow
         {
             id: page_medical_card_search
 
-            Connections
-            {
-                target: backend
-
-                onPatientDeleted: function()
-                {
-                    patientListModel.reloadPatientList()
-                }
-            }
-
             onOpenCurrentMedicalCard: function(fullname)
             {
                 if (backend.isPatientDbEmpty === true)
@@ -105,7 +130,7 @@ ApplicationWindow
 
             }
 
-            onRegisterMedicalCard: function()
+            onRegisterMedicalCard: function(fullname)
             {
                 console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n");
 
@@ -122,18 +147,6 @@ ApplicationWindow
             {
                 stack_content_main.currentIndex = 3;
             }
-
-            Connections
-            {
-                target: backend
-
-                onPatientAdded: function()
-                {
-                    patientListModel.reloadPatientList();
-                    page_patient_registration.clearTextFields();
-                    stack_content_main.currentIndex = 5;
-                }
-            }
        }
 
         PatientMedicalCardMain // 5
@@ -143,16 +156,6 @@ ApplicationWindow
             onReturnBack: function()
             {
                 stack_content_main.currentIndex = 3;
-            }
-
-            Connections
-            {
-                target: patientListModel
-
-                onModelReloaded:
-                {
-                    page_patient_medical_card_main.updatePatientData()
-                }
             }
 
             // Диалоговое окно для подтверждения удаления пациента из БД
@@ -232,17 +235,6 @@ ApplicationWindow
             onReturnBack: function()
             {
                 stack_content_main.currentIndex = 6;
-            }
-
-            Connections
-            {
-                target: backend
-
-                onRecordAdded: function()
-                {
-                    stack_content_main.currentIndex = 6
-                    page_patient_add_record.clearTextFields()
-                }
             }
         }
 
@@ -392,27 +384,6 @@ ApplicationWindow
         id: page_doctor_registration
 
         anchors.fill: parent
-
         visible: false
-
-        Connections
-        {
-            target: backend
-
-            onProfileAdded: function()
-            {
-                doctorFullName = backend.currentDoctorFullName;
-
-                page_doctor_profile.doctorName = backend.currentDoctorFullName;
-                page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization;
-                page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName;
-                page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress;
-                page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode;
-                page_doctor_profile.doctorInn = backend.currentDoctorInn;
-                page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo;
-
-                stackview_startup.push(menu_bar);
-            }
-        }
     }
 }
