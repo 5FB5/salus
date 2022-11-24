@@ -449,7 +449,8 @@ void PatientDataBase::saveCardPdf(QString birthDate)
     QTextDocument doc;
 
     printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setPaperSize(QPrinter::A4);
+    printer.setOrientation(QPrinter::Landscape);
+    printer.setPaperSize(QPrinter::A5);
     printer.setOutputFileName(path);
 
     doc.setHtml(html);

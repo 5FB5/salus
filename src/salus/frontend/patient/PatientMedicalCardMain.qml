@@ -38,7 +38,8 @@ Page {
         patientOccupation = backend.currentPatientOccupation
     }
 
-    Label {
+    Label
+    {
         id: labelTitle
 
         text: "Амбулаторная карта"
@@ -51,7 +52,8 @@ Page {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    Label {
+    Label
+    {
         id: labelPatientName
 
         text: "<b>Пациент:</b> " + patientFullName
@@ -72,7 +74,8 @@ Page {
 
         spacing: 50
 
-        Button {
+        Button
+        {
             id: buttonDiary
 
             font.pointSize: buttonStandartTextFontSize * 1.1
@@ -88,7 +91,8 @@ Page {
             }
         }
 
-        Button {
+        Button
+        {
             id: buttonPrintMedicalCard
 
             font.pointSize: buttonStandartTextFontSize * 1.1
@@ -99,14 +103,14 @@ Page {
 
             text: "Печать карты"
 
-            onClicked:
+            onClicked: function()
             {
-                console.log("TODO: Печать карты");
                 backend.printCard();
             }
         }
 
-        Button {
+        Button
+        {
             id: buttonDeletePatient
 
             font.pointSize: buttonStandartTextFontSize * 1.1
@@ -117,8 +121,9 @@ Page {
 
             text: "Удалить пациента из БД"
 
-            onClicked: {
-                deletePatient()
+            onClicked: function()
+            {
+                deletePatient();
             }
         }
     }
