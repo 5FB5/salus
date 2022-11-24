@@ -6,15 +6,15 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
     getPatientsListFromJson();
 }
 
-/*!
- * \brief Добавляет нового пациента в БД
- * \param fullName ФИО
- * \param age Возраст
- * \param sex Пол
- * \param birthDate Дата рождения
- * \param address Адрес проживания
- * \param phoneNumber Номер телефона
- * \param occupation Профессия
+/**
+ * @brief  Добавляет нового пациента в БД
+ * @param fullName
+ * @param age
+ * @param sex
+ * @param birthDate
+ * @param address
+ * @param phoneNumber
+ * @param occupation
  */
 void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
                                     QString birthDate, QString address,
@@ -77,26 +77,28 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
 
     qDebug() << "Salus: [PatientDataBase::addNewPatient()] - Saving new profile...\n";
     saveProfileToJson(newPatient);
-
 }
 
-/*!
- * \brief Добавляет новую запись в амбулаторную карту пациента
- * \param birthDate Дата рождения. Используется для поиска пациента
- * \param recordDate Дата записи
- * \param anamnesis Анамнез
- * \param complaints Жалобы
- * \param diseases Перенесённые заболевания
- * \param diagnosis Текущий диагноз
- * \param treatment Наименование лечения
+/**
+ * @brief Добавляет новую запись в амбулаторную карту пациента
+ * @param birthDate
+ * @param recordDate
+ * @param anamnesis
+ * @param complaints
+ * @param diseases
+ * @param diagnosis
+ * @param treatment
+ * @return
  */
 bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
                                    QString diseases, QString diagnosis, QString treatment)
 {
-    for (auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-
-            if (p.cardRecords.isEmpty()) {
+    for (auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            if (p.cardRecords.isEmpty())
+            {
                 Record_t newRecord;
 
                 newRecord.date = recordDate;
@@ -110,15 +112,14 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
 
                 return true;
             }
-            else {
+            else
+            {
                 // Проверяем список на наличие записи по указанной дате
-                for (auto const &r : p.cardRecords) {
-                    if (r.date == recordDate) {
+                for (const auto &r : p.cardRecords)
+                {
+                    if (r.date == recordDate)
                         return false;
-                    }
-                }
 
-                for (auto const &r : p.cardRecords) {
                     Record_t newRecord;
 
                     newRecord.date = recordDate;
@@ -138,25 +139,22 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
     return false;
 }
 
-/*!
- * \brief Перезагружает БД
- */
 void PatientDataBase::reloadDatabase()
 {
     getPatientsListFromJson();
 }
 
-/*!
- * \brief Обновляет данные БД пациентов в patients.json
+/**
+ * @brief Обновляет данные БД пациентов в patients.json
  */
 void PatientDataBase::updateDbToFile()
 {
     QJsonDocument jsonDocument;
 
     QJsonArray jsonArray = jsonDocument.array();
-//    QJsonArray patientProfileRecords;
 
-    foreach (Patient p, *patientsList) {
+    foreach (Patient p, *patientsList)
+    {
         QJsonObject PatientProfileObj;
 
         PatientProfileObj.insert("fullname", p.fullName);
@@ -177,7 +175,8 @@ void PatientDataBase::updateDbToFile()
     QFileInfo fInfo(JSON_PATIENT_FILE_PATH);
     QFile jsonFile(JSON_PATIENT_FILE_PATH);
 
-    if (fInfo.exists() == true) {
+    if (fInfo.exists() == true)
+    {
        jsonFile.remove();
        jsonFile.open(QFile::WriteOnly);
        jsonFile.write(jsonDocument.toJson());
@@ -187,18 +186,31 @@ void PatientDataBase::updateDbToFile()
     qDebug() << "Salus: [PatienDataBase::updateDbToFile()] - Database updated\n";
 }
 
+/**
+ * @brief Обновляет запись пациента
+ * @param birthDate
+ * @param recordDate
+ * @param anamnesis
+ * @param complaints
+ * @param diseases
+ * @param diagnosis
+ * @param treatment
+ */
 void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
 {
-    for (auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
+                {
                     r.anamnesis = anamnesis;
                     r.complaints = complaints;
                     r.currentDiagnosis = diagnosis;
                     r.diseases = diseases;
                     r.treatment = treatment;
-
                     break;
                 }
             }
@@ -208,135 +220,124 @@ void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QStrin
 
 void PatientDataBase::deleteRecord(QString birthDate, QString recordDate)
 {
-    for (auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (int i = 0; i < p.cardRecords.size(); i++) {
-                if (p.cardRecords[i].date == recordDate) {
+    for (auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (int i = 0; i < p.cardRecords.size(); i++)
+            {
+                if (p.cardRecords[i].date == recordDate)
                     p.cardRecords.removeAt(i);
-                }
             }
         }
     }
 }
 
-/*!
- * \brief Удаляет пациента из БД по указанному параметру
- * \param birthDate
- * \return true, если удаление прошло успешно
+/**
+ * @brief Удаляет пациента из БД по указанному параметру
+ * @param birthDate
+ * @return true, если удаление прошло успешно
  */
 bool PatientDataBase::deletePatient(QString birthDate)
 {
     int i = 0;
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                patientsList->removeAt(i);
-                return true;
-            }
-            else {
-                i++;
-            }
+
+    if (patientsList->isEmpty() == true)
+        return false;
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+        {
+            patientsList->removeAt(i);
+            return true;
         }
+        else
+            i++;
+
     }
     return false;
 }
 
-/*!
- * \param birthDate
- * \return ФИО пациента по указанному параметру
- */
 QString PatientDataBase::getFullName(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.fullName;
-            }
-        }
+    if (patientsList->isEmpty() == true)
+        return "";
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+            return patient.fullName;
     }
-    return nullptr;
+    return "";
 }
 
-/*!
- * \param birthDate
- * \return Пол пациента по указанному параметру в соответствии с Patient::SexType
- */
 bool PatientDataBase::getSex(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.sex == Patient::SexType::MAN ? Patient::SexType::MAN : Patient::SexType::WOMAN;
-            }
-        }
+    if (patientsList->isEmpty() == true)
+        return false;
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+            return patient.sex == Patient::SexType::MAN ? Patient::SexType::MAN : Patient::SexType::WOMAN;
     }
     return false;
 }
 
-/*!
- * \param birthDate
- * \return Дату рождения пациента по указанному параметру, если профиль существует
- */
 QString PatientDataBase::getBirthDate(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
+    if (patientsList->isEmpty() == true)
+        return "";
+
+        foreach(Patient patient, *patientsList)
+        {
+            if (patient.birthDate == birthDate)
                 return patient.birthDate;
-            }
         }
-    }
-    return nullptr;
+    return "";
 }
 
-/*!
- * \param birthDate
- * \return Адрес проживания пациента по указанному параметру
- */
 QString PatientDataBase::getAddress(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.address;
-            }
-        }
+    if (patientsList->isEmpty() == true)
+        return "";
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+            return patient.address;
     }
-    return nullptr;
+    return "";
 }
 
-/*!
- * \param birthDate
- * \return Возвращает профессию пациента по указанному параметру
- */
 QString PatientDataBase::getOccupation(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.occupation;
-            }
-        }
+    if (patientsList->isEmpty() == true)
+        return "";
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+            return patient.occupation;
     }
-    return nullptr;
+    return "";
 }
 
-/*!
- * \param birthDate
- * \return Список записей амбулаторной карты пациента по указанному параметру
- */
 QStringList PatientDataBase::getRecordsList(QString birthDate)
 {
     QStringList list;
 
-    if (patientsList->isEmpty() == false) {
-        for (const auto &patient : *patientsList) {
-            if (patient.birthDate == birthDate) {
-                for (const auto &record : patient.cardRecords) {
-                    list.append(record.date);
-                }
-                return list;
-            }
+    if (patientsList->isEmpty() == true)
+        return QStringList();
+
+    for (const auto &patient : *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+        {
+            for (const auto &record : patient.cardRecords)
+                list.append(record.date);
+            return list;
         }
     }
     return QStringList();
@@ -344,12 +345,14 @@ QStringList PatientDataBase::getRecordsList(QString birthDate)
 
 QString PatientDataBase::getAnamnesis(QString birthDate, QString recordDate)
 {
-    for (const auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (const auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
                     return r.anamnesis;
-                }
             }
         }
     }
@@ -358,12 +361,14 @@ QString PatientDataBase::getAnamnesis(QString birthDate, QString recordDate)
 
 QString PatientDataBase::getComplaints(QString birthDate, QString recordDate)
 {
-    for (const auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (const auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
                     return r.complaints;
-                }
             }
         }
     }
@@ -372,26 +377,30 @@ QString PatientDataBase::getComplaints(QString birthDate, QString recordDate)
 
 QString PatientDataBase::getDiagnosis(QString birthDate, QString recordDate)
 {
-    for (const auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (const auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
                     return r.currentDiagnosis;
                 }
             }
         }
-    }
     return "";
 }
 
 QString PatientDataBase::getDiseases(QString birthDate, QString recordDate)
 {
-    for (const auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (const auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
                     return r.diseases;
-                }
             }
         }
     }
@@ -400,12 +409,14 @@ QString PatientDataBase::getDiseases(QString birthDate, QString recordDate)
 
 QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
 {
-    for (const auto &p : *patientsList) {
-        if (p.birthDate == birthDate) {
-            for (const auto &r : p.cardRecords) {
-                if (r.date == recordDate) {
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
                     return r.treatment;
-                }
             }
         }
     }
@@ -458,48 +469,41 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
 //    }
 //}
 
-/*!
- * \param birthDate
- * \return Возраст пациента по указанному параметру
- */
 quint16 PatientDataBase::getAge(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
+    if (patientsList->isEmpty() == true)
+        return 0;
+
+        foreach(Patient patient, *patientsList)
+        {
+            if (patient.birthDate == birthDate)
                 return patient.age;
-            }
         }
-    }
     return 0;
 }
 
-/*!
- * \param birthDate
- * \return Номер телефона пациента по указанному параметру
- */
 QString PatientDataBase::getPhoneNumber(QString birthDate)
 {
-    if (patientsList->isEmpty() == false) {
-        foreach(Patient patient, *patientsList) {
-            if (patient.birthDate == birthDate) {
-                return patient.phoneNumber;
-            }
-        }
+    if (patientsList->isEmpty() == true)
+        return "";
+
+    foreach(Patient patient, *patientsList)
+    {
+        if (patient.birthDate == birthDate)
+            return patient.phoneNumber;
     }
-    return 0;
+    return "";
 }
 
-/*!
- * \brief Загружает список пациентов из patients.json
+/**
+ * @brief Получает спислк пациентов из JSON файла
  */
 void PatientDataBase::getPatientsListFromJson()
 {
     QJsonDocument doc = loadJson();
 
-    if (patientsList == nullptr) {
+    if (patientsList == nullptr)
         patientsList = new QList<Patient>;
-    }
 
     Patient currentProfile;
 
@@ -507,32 +511,34 @@ void PatientDataBase::getPatientsListFromJson()
 
     QJsonObject currentObj;
 
-    if (array.isEmpty() == false) {
-        if (patientsList->isEmpty() != true)
-            patientsList->clear();
+    if (array.isEmpty() == true)
+        return;
 
-        foreach(const QJsonValue &v, array) {
-            currentObj = v.toObject();
+    if (patientsList->isEmpty() == false)
+        patientsList->clear();
 
-            currentProfile.fullName = currentObj["fullname"].toString();
-            currentProfile.age = currentObj["age"].toInt();
-            currentProfile.sex = currentObj["sex"].toBool();
-            currentProfile.birthDate = currentObj["birthdate"].toString();
-            currentProfile.address = currentObj["address"].toString();
-            currentProfile.birthDate = currentObj["birthdate"].toString();
-            currentProfile.phoneNumber = currentObj["phoneNumber"].toString();
-            currentProfile.occupation = currentObj["occupation"].toString();
+    foreach(const QJsonValue &v, array)
+    {
+        currentObj = v.toObject();
 
-            currentProfile.cardRecords = convertJsonRecordsToList(currentObj["records"].toArray());
+        currentProfile.fullName = currentObj["fullname"].toString();
+        currentProfile.age = currentObj["age"].toInt();
+        currentProfile.sex = currentObj["sex"].toBool();
+        currentProfile.birthDate = currentObj["birthdate"].toString();
+        currentProfile.address = currentObj["address"].toString();
+        currentProfile.birthDate = currentObj["birthdate"].toString();
+        currentProfile.phoneNumber = currentObj["phoneNumber"].toString();
+        currentProfile.occupation = currentObj["occupation"].toString();
 
-            patientsList->append(currentProfile);
-        }
+        currentProfile.cardRecords = convertJsonRecordsToList(currentObj["records"].toArray());
+
+        patientsList->append(currentProfile);
     }
 }
 
-/*!
- * \brief Сохраняет профиль пациента в patients.json по указанному параметру
- * \param patientProfile
+/**
+ * @brief Сохраняет профиль пациента в patients.json по указанному параметру
+ * @param patientProfile
  */
 void PatientDataBase::saveProfileToJson(Patient patientProfile)
 {
@@ -567,80 +573,78 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     qDebug() << "\tSalus: [PatienDataBase::saveProfileToJson()] - Profile saved\n";
 }
 
-/*!
- * \param birthDate
- * \return true, если профиль по указанному параметру существует
- */
-bool PatientDataBase::isProfileExists(QString birthDate) {
-    if (patientsList->isEmpty() == false) {
-        foreach (Patient currentDoctor, *patientsList) {
-            if (currentDoctor.birthDate == birthDate) {
-                return true;
-            }
-            else {
-                continue;
-            }
-        }
+bool PatientDataBase::isProfileExists(QString birthDate)
+{
+    if (patientsList->isEmpty() == true)
+        return false;
+
+    foreach (Patient currentDoctor, *patientsList)
+    {
+        if (currentDoctor.birthDate == birthDate)
+            return true;
+        else
+            continue;
     }
     return false;
 }
 
-/*!
- * \brief Загружает содержимое файла patients.json
- * \return Содержимое файла как QJsonDocument
+/**
+ * @brief Загружает содержимое файла patients.json
+ * @return
  */
 QJsonDocument PatientDataBase::loadJson()
 {
     QFileInfo fInfo(JSON_PATIENT_FILE_PATH);
     QFile f(JSON_PATIENT_FILE_PATH);
 
-    if (fInfo.exists()) {
-        f.open(QFile::ReadOnly);
-        QJsonDocument jd = QJsonDocument::fromJson(f.readAll());
-        f.close();
-        return jd;
-    }
-    else {
+    if (!fInfo.exists())
+    {
         f.open(QFile::WriteOnly);
         QJsonDocument jd;
         f.write(jd.toJson());
         f.close();
         return jd;
     }
+
+    f.open(QFile::ReadOnly);
+    QJsonDocument jd = QJsonDocument::fromJson(f.readAll());
+    f.close();
+    return jd;
 }
 
-/*!
- * \param list
- * \return Список пациентов в формате QJsonArray по указанному параметру
+/**
+ * @brief Конвертирует QList в массив формата JSON
+ * @param list
+ * @return
  */
 QJsonArray PatientDataBase::convertListToJsonArray(const QList<QString> &list)
 {
     QJsonArray array;
 
-    for (const auto &data : list) {
+    if (list.isEmpty() == true)
+        return array;
+
+    for (const auto &data : list)
         array.append(data);
-    }
+
     return array;
 }
 
-/*!
- * \param list
- * \return Список записей в формате QJsonArray по указанному параметру
+/**
+ * @brief Конвертирует лист записей в массив формата JSON
+ * @param records
+ * @return
  */
 QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &records)
 {
-    QJsonArray array; //, arrayComplaints, arrayDiseases;
+    QJsonArray array;
 
-    for (const auto &data : records) {
+    if (records.isEmpty() == true)
+        return array;
+
+    for (const auto &data : records)
+    {
         QJsonObject recordObject;
-
-//        for (const auto &complaintsData : data.complaints) {
-//            arrayComplaints.append(complaintsData);
-//        }
-
-//        for (const auto &diseasesData : data.diseases) {
-//            arrayDiseases.append(diseasesData);
-//        }
 
         recordObject.insert("data", data.date);
         recordObject.insert("diagnosis", data.currentDiagnosis);
@@ -655,29 +659,18 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &rec
     return array;
 }
 
-/*!
- * \param recordsArray
- * \return JSON массив записей в QList<Record_t> по указанному параметру
+/**
+ * @brief Конвертирует записи формата JSON в QList
+ * @param recordsArray
+ * @return
  */
 QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recordsArray)
 {
-//    QJsonArray jsonDiseases, jsonComplaints;
     QList<Record_t> tmpArray;
     Record_t tmpRecord;
 
-    for (const auto &record : recordsArray) {
-
-//        jsonDiseases = record["diseases"].toArray();
-//        jsonComplaints = record["complaints"].toArray();
-
-//        for (const auto &d : jsonDiseases) {
-//            tmpRecord.diseases.append(d.toString());
-//        }
-
-//        for (const auto &c : jsonComplaints) {
-//            tmpRecord.diseases.append(c.toString());
-//        }
-
+    for (const auto &record : recordsArray)
+    {
         tmpRecord.date = record["data"].toString();
         tmpRecord.anamnesis = record["anamnesis"].toString();
         tmpRecord.diseases = record["diseases"].toString();
@@ -687,6 +680,5 @@ QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recor
 
         tmpArray.append(tmpRecord);
     }
-
     return tmpArray;
 }
