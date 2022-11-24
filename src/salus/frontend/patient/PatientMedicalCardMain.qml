@@ -133,7 +133,7 @@ Page
             width: 200
             height: 60
 
-            text: "Удалить пациента из БД"
+            text: "Удалить пациента"
 
             onClicked: function()
             {
