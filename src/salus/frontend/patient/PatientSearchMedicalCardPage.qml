@@ -1,10 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property int buttonStandartTextFontSize: 10
@@ -13,49 +13,51 @@ Page {
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
 
-    Label {
+    Label
+    {
         id: labelTitle
 
-        text: "Поиск амбулаторной карты"
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
         font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-
+        text: "Поиск амбулаторной карты"
     }
 
-    ComboBox {
+    ComboBox
+    {
         id: combobox_patients
 
-        height: 50
-
-        anchors.top: parent.top
-        anchors.topMargin: 256
-
-        anchors.left: parent.left
-        anchors.leftMargin: 300
-
-        anchors.right: parent.right
-        anchors.rightMargin: 300
-
-        font.pointSize: standartTextSize
-
-        editable: true
-
-        model: patientListModel
-
         // Чтобы по умолчанию не выводилось ФИО из списка
-        Component.onCompleted:
+        Component.onCompleted: function()
         {
-            currentIndex = -1
+            currentIndex = -1;
         }
 
-        onAccepted: {
-            console.log("Salus: [QML](ComboBox 'combobox_patients') - Patient accepted " + editText + "\n")
-            find(editText) !== -1 ? openCurrentMedicalCard(editText) : registerMedicalCard(editText)
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+
+            topMargin: 256
+            leftMargin: 300
+            rightMargin: 300
+        }
+
+        height: 50
+        font.pointSize: standartTextSize
+        editable: true
+        model: patientListModel
+
+        onAccepted: function()
+        {
+            console.log("Salus: [QML](ComboBox 'combobox_patients') - Patient accepted " + editText + "\n");
+            find(editText) !== -1 ? openCurrentMedicalCard(editText) : registerMedicalCard(editText);
         }
     }
 }

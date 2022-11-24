@@ -2,13 +2,13 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import salus 1.0
 
 import "../frontend/doctor"
 import "../frontend/patient"
 
-import salus 1.0
-
-ApplicationWindow {
+ApplicationWindow
+{
     id: applicationWindow
 
     minimumWidth: 1280
@@ -18,7 +18,6 @@ ApplicationWindow {
 
     title: qsTr("Салюс")
 
-    // Здесь хранятся все данные по профилю врача, передающиеся из C++, либо напрямую при регистрации
     property string doctorFullName
     property string doctorSpecialization
     property string doctorInstitutionName
@@ -31,20 +30,54 @@ ApplicationWindow {
 
     function updateProfilePage()
     {
-        page_doctor_profile.doctorName = backend.currentDoctorFullName
-        page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization
-        page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName
-        page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress
-        page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode
-        page_doctor_profile.doctorInn = backend.currentDoctorInn
-        page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo
+        page_doctor_profile.doctorName = backend.currentDoctorFullName;
+        page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization;
+        page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName;
+        page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress;
+        page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode;
+        page_doctor_profile.doctorInn = backend.currentDoctorInn;
+        page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo;
     }
 
-    Component.onCompleted:
+    function setDataToMainCard()
     {
-        doctorFullName = backend.currentDoctorFullName
+        patientListModel.reloadPatientList();
+        page_patient_registration.clearTextFields();
+        stack_content_main.currentIndex = 5;
+    }
 
-        updateProfilePage()
+    function setDataToDiary()
+    {
+        stack_content_main.currentIndex = 6;
+        page_patient_add_record.clearTextFields();
+    }
+
+    function addNewProfile()
+    {
+        doctorFullName = backend.currentDoctorFullName;
+
+        page_doctor_profile.doctorName = backend.currentDoctorFullName;
+        page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization;
+        page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName;
+        page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress;
+        page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode;
+        page_doctor_profile.doctorInn = backend.currentDoctorInn;
+        page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo;
+
+        stackview_startup.push(menu_bar);
+    }
+
+    Component.onCompleted: function()
+    {
+        doctorFullName = backend.currentDoctorFullName;
+        updateProfilePage();
+
+        backend.patientDeleted.connect(patientListModel.reloadPatientList);
+        backend.patientAdded.connect(setDataToMainCard);
+        backend.recordAdded.connect(setDataToDiary);
+        backend.profileAdded.connect(addNewProfile);
+
+        patientListModel.modelReloaded.connect(page_patient_medical_card_main.updatePatientData);
     }
 
     // Окно, отображающее контент на основной странице
@@ -52,13 +85,16 @@ ApplicationWindow {
     {
         id: stack_content_main
 
+        anchors
+        {
+            top: applicationWindow.top
+            bottom: applicationWindow.bottom
+            left: menu_bar.right
+            right: applicationWindow.right
+        }
+
         width: applicationWindow.width - menu_bar.width
         height: applicationWindow.height
-
-        anchors.top: applicationWindow.top
-        anchors.bottom: applicationWindow.bottom
-        anchors.left: menu_bar.right
-        anchors.right: applicationWindow.right
 
         // По умолчанию отображается окно амбулаторной карты
         currentIndex: 3
@@ -81,33 +117,25 @@ ApplicationWindow {
         {
             id: page_medical_card_search
 
-            Connections
+            onOpenCurrentMedicalCard: function(fullname)
             {
-                target: backend
+                if (backend.isPatientDbEmpty === true)
+                    return;
 
-                onPatientDeleted:
-                {
-                    patientListModel.reloadPatientList()
-                }
+                console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n");
+
+                backend.setPatient(fullname);
+                page_patient_medical_card_main.updatePatientData();
+                stack_content_main.currentIndex = 5;
+
             }
 
-            onOpenCurrentMedicalCard: {
-                if (!backend.isPatientDbEmpty)
-                {
-                    console.log("Salus: [QML](openCurrentMedicalCard) - Opening medical card of " + fullname + "...\n")
+            onRegisterMedicalCard: function(fullname)
+            {
+                console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n");
 
-                    backend.setPatient(fullname)
-
-                    page_patient_medical_card_main.updatePatientData()
-
-                    stack_content_main.currentIndex = 5
-                }
-            }
-
-            onRegisterMedicalCard: {
-                console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n")
-                page_patient_registration.patientFullName = fullname
-                stack_content_main.currentIndex = 4
+                page_patient_registration.patientFullName = fullname;
+                stack_content_main.currentIndex = 4;
             }
         }
 
@@ -118,20 +146,6 @@ ApplicationWindow {
             onReturnBack: function()
             {
                 stack_content_main.currentIndex = 3;
-            }
-
-            Connections
-            {
-                target: backend
-
-                onPatientAdded:
-                {
-                    patientListModel.reloadPatientList()
-
-                    page_patient_registration.clearTextFields()
-
-                    stack_content_main.currentIndex = 5
-                }
             }
        }
 
@@ -144,54 +158,48 @@ ApplicationWindow {
                 stack_content_main.currentIndex = 3;
             }
 
-            Connections
-            {
-                target: patientListModel
-
-                onModelReloaded:
-                {
-                    page_patient_medical_card_main.updatePatientData()
-                }
-            }
-
             // Диалоговое окно для подтверждения удаления пациента из БД
-            Dialog {
+            Dialog
+            {
                 id: dialogbox_delete_patient
-
-                width: parent.width / 4
-                height: parent.height / 4
 
                 anchors.centerIn: parent
 
+                width: parent.width / 4
+                height: parent.height / 4
                 title: "Удаление карты пациента '" + page_patient_medical_card_main.patientFullName + "'"
                 standardButtons: Dialog.Yes | Dialog.No
 
-                Text {
+                Text
+                {
                     id: dialogbox_text
-                    font.pointSize: 14
 
                     anchors.fill: parent
 
+                    font.pointSize: 14
                     wrapMode: Text.WordWrap
-
                     text: qsTr("Удалить карту?")
                 }
 
-                onAccepted: {
-                    backend.deletePatient()
-                    stack_content_main.currentIndex = 3
+                onAccepted: function()
+                {
+                    backend.deletePatient();
+                    stack_content_main.currentIndex = 3;
                 }
             }
 
-            onOpenDiary: {
-                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n")
-                page_patient_medical_card_diary.updatePatientData()
+            onOpenDiary: function()
+            {
+                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n");
 
-                stack_content_main.currentIndex = 6
-                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n")
+                page_patient_medical_card_diary.updatePatientData();
+                stack_content_main.currentIndex = 6;
+
+                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n");
             }
 
-            onDeletePatient: {
+            onDeletePatient: function()
+            {
                 dialogbox_delete_patient.open();
             }
         }
@@ -205,14 +213,15 @@ ApplicationWindow {
                 stack_content_main.currentIndex = 5;
             }
 
-            onOpenAddRecordPage:
+            onOpenAddRecordPage: function()
             {
                 stack_content_main.currentIndex = 7;
             }
 
-            onOpenEditPage:
+            onOpenEditPage: function()
             {
                 console.log(currentRecord);
+
                 page_patient_edit_record.recordDate = currentRecord;
                 page_patient_edit_record.updateRecordData();
                 stack_content_main.currentIndex = 8;
@@ -227,17 +236,6 @@ ApplicationWindow {
             {
                 stack_content_main.currentIndex = 6;
             }
-
-            Connections
-            {
-                target: backend
-
-                onRecordAdded:
-                {
-                    stack_content_main.currentIndex = 6
-                    page_patient_add_record.clearTextFields()
-                }
-            }
         }
 
         PatientEditRecordPage // 8
@@ -249,7 +247,7 @@ ApplicationWindow {
                 stack_content_main.currentIndex = 6;
             }
 
-            onRecordUpdated:
+            onRecordUpdated: function()
             {
                 stack_content_main.currentIndex = 6;
             }
@@ -257,141 +255,135 @@ ApplicationWindow {
     }
 
     // Отображается только при запуске системы (открывается окно входа)
-    StackView {
+    StackView
+    {
         id: stackview_startup
 
+        anchors
+        {
+            fill: parent
+            centerIn: parent
+        }
         initialItem: backend.isDoctorDbEmpty === true ? page_doctor_registration : page_login
-
-        anchors.fill: parent
-        anchors.centerIn: parent
     }
 
     // Левая панель управления
     Rectangle {
         id: menu_bar
+
+        anchors
+        {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
         visible: false
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-
         width: 256
-
         color: "#828282"
 
-        Button {
+        Button
+        {
             id: button_profile
+
+            anchors
+            {
+                top: parent.top
+                topMargin: buttonsTopMargin
+            }
 
             font.pointSize: 12
             font.bold: true
-
             width: parent.width
             height: 60
-
-            anchors.top: parent.top
-            anchors.topMargin: buttonsTopMargin
-
             text: doctorFullName
 
-            onClicked: {
-                stack_content_main.currentIndex = 0
+            onClicked: function()
+            {
+                stack_content_main.currentIndex = 0;
             }
         }
 
-        Button {
+        Button
+        {
             id: button_patient_card
 
+            anchors
+            {
+                top: parent.top
+                topMargin: buttonsTopMargin + 100
+            }
             font.pointSize: 12
-
             width: parent.width
             height: 60
-
-            anchors.top: parent.top
-            anchors.topMargin: buttonsTopMargin + 100
-
             text: "Амбулаторная карта"
 
-            onClicked: {
-
-                stack_content_main.currentIndex = 3
+            onClicked: function()
+            {
+                stack_content_main.currentIndex = 3;
             }
         }
 
-        Button {
+        Button
+        {
             id: button_diagnoses_database
 
+            anchors
+            {
+                top: parent.top
+                topMargin: buttonsTopMargin + 200
+            }
             font.pointSize: 12
-
             width: parent.width
             height: 60
-
-            anchors.top: parent.top
-            anchors.topMargin: buttonsTopMargin + 200
-
             text: "База диагнозов"
 
-            onClicked: {
-                stack_content_main.currentIndex = 1
+            onClicked: function()
+            {
+                stack_content_main.currentIndex = 1;
             }
         }
 
-        Button {
+        Button
+        {
             id: button_treatments_database
 
-            font.pointSize: 12
+            anchors
+            {
+                top: parent.top
+                topMargin: buttonsTopMargin + 300
+            }
 
+            font.pointSize: 12
             width: parent.width
             height: 60
-
-            anchors.top: parent.top
-            anchors.topMargin: buttonsTopMargin + 300
-
             text: "База вариантов лечения"
 
-            onClicked: {
-                stack_content_main.currentIndex = 2
+            onClicked: function()
+            {
+                stack_content_main.currentIndex = 2;
             }
         }
     }
 
     // Страница логина, передающая данные профиля
-    LoginPage {
+    LoginPage
+    {
         id: page_login
 
         visible: false
 
-        onLogIn:
+        onLogIn: function()
         {
             stackview_startup.push(menu_bar)
         }
     }
 
     // Страница регистрации, передающая данные о только что зарегистрированном пользователе
-    DoctorProfileRegistrationPage {
+    DoctorProfileRegistrationPage
+    {
         id: page_doctor_registration
 
         anchors.fill: parent
-
-        visible: false;
-
-        Connections
-        {
-            target: backend
-
-            onProfileAdded:
-            {
-                doctorFullName = backend.currentDoctorFullName
-
-                page_doctor_profile.doctorName = backend.currentDoctorFullName
-                page_doctor_profile.doctorSpecialization = backend.currentDoctorSpecialization
-                page_doctor_profile.doctorInstitutionName = backend.currentDoctorInstitutionName
-                page_doctor_profile.doctorInstitutionAddress = backend.currentDoctorInstitutionAddress
-                page_doctor_profile.doctorInstitutionCode = backend.currentDoctorInstitutionCode
-                page_doctor_profile.doctorInn = backend.currentDoctorInn
-                page_doctor_profile.doctorLicenseInfo = backend.currentDoctorLicenseInfo
-
-                stackview_startup.push(menu_bar)
-            }
-        }
+        visible: false
     }
 }

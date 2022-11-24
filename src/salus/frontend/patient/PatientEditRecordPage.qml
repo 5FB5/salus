@@ -2,7 +2,6 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtQml 2.12
-
 import salus 1.0
 
 Page {
@@ -28,16 +27,16 @@ Page {
 
     function updateRecordData()
     {
-        if (recordDate !== "")
-        {
-            recordAnamnesis = backend.getRecordAnamnesis(recordDate);
-            recordComplaints = backend.getRecordComplaints(recordDate);
-            recordDiagnosis = backend.getRecordDiagnosis(recordDate);
-            recordDiseases = backend.getRecordDiseases(recordDate);
-            recordTreatment = backend.getRecordTreatment(recordDate);
+        if (recordDate === "")
+            return;
 
-            console.log(recordAnamnesis, recordComplaints, recordDiagnosis, recordDiseases, recordTreatment);
-        }
+        recordAnamnesis = backend.getRecordAnamnesis(recordDate);
+        recordComplaints = backend.getRecordComplaints(recordDate);
+        recordDiagnosis = backend.getRecordDiagnosis(recordDate);
+        recordDiseases = backend.getRecordDiseases(recordDate);
+        recordTreatment = backend.getRecordTreatment(recordDate);
+
+        console.log(recordAnamnesis, recordComplaints, recordDiagnosis, recordDiseases, recordTreatment);
     }
 
     Rectangle
@@ -72,50 +71,50 @@ Page {
     {
         id: dialogConfirm
 
-        width: parent.width / 4
-        height: parent.height / 4
-
         anchors.centerIn: parent
 
+        width: parent.width / 4
+        height: parent.height / 4
         modal: true
-
-        title: "Подтвердите действие"
         standardButtons: Dialog.Yes | Dialog.No
+        title: "Подтвердите действие"
 
-        Text {
+        Text
+        {
             id: dialogboxText
-
-            font.pointSize: 14
 
             anchors.fill: parent
 
+            font.pointSize: 14
             wrapMode: Text.WordWrap
-
             text: qsTr("Сохранить изменения?")
         }
 
-        onAccepted: {
+        onAccepted: function()
+        {
             backend.updateRecord(recordDate, textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
                                  textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString());
             recordUpdated();
         }
     }
 
-    Label {
+    Label
+    {
         id: labelTitle
 
-        text: "Редактирование записи"
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
         font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-
+        text: "Редактирование записи"
     }
 
-    Column {
+    Column
+    {
         id: recordsDataFields
 
         anchors
@@ -126,248 +125,280 @@ Page {
             left: parent.left
             right: parent.right
         }
-
         spacing: 10
 
-        Text {
+        Text
+        {
             id: labelRecordDate
-            text: "Дата записи"
-            font.pointSize: fontSize
+
             anchors.horizontalCenter: parent.horizontalCenter
+
+            font.pointSize: fontSize
+            text: "Дата записи"
         }
 
-       TextField {
+       TextField
+       {
            id: textEditRecordDate
 
            anchors.horizontalCenter: parent.horizontalCenter
 
-           placeholderText: "день.месяц.год"
-           text: recordDate//Qt.formatDateTime(new Date(), "dd.MM.yyyy")
-
            font.pointSize: fontSize
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           placeholderText: "день.месяц.год"
+           text: recordDate//Qt.formatDateTime(new Date(), "dd.MM.yyyy")
+
+           Rectangle
+           {
                anchors.fill: parent
                border.width: 1
                color: "#0000ffff"
            }
        }
 
-       Text {
+       Text
+       {
            id: labelAnamnesis
-           text: "Введите анамнез"
+
+           anchors
+           {
+               horizontalCenter: parent.horizontalCenter
+               bottomMargin: 5
+           }
            font.pointSize: fontSize
-           anchors.horizontalCenter: parent.horizontalCenter
-           anchors.bottomMargin: 5
+           text: "Введите анамнез"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: anamnesisInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewAnamnesis
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditAnamnesis
 
                    font.pointSize: fontSize
-
+                   focus: true
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
                    text: recordAnamnesis
 
-                   focus: true
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelComplaints
-           text: "Введите жалобы"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите жалобы"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: complaintsInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewComplaints
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditComplaints
 
                    font.pointSize: fontSize
-
+                   focus: true
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
                    text: recordComplaints
-
-                   focus: true
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelDiseases
-           text: "Введите перенесённые заболевания"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите перенесённые заболевания"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: diseasesInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewDiseases
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditDiseases
 
                    font.pointSize: fontSize
-
+                   focus: true
                    placeholderText: "Пульпит, Гингивит, ..."
                    text: recordDiseases
-
-                   focus: true
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelDiagnosis
-           text: "Введите текущий диагноз"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите текущий диагноз"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: diagnosisInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewDiagnosis
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditDiagnosis
 
                    font.pointSize: fontSize
-
+                   focus: true                   
                    placeholderText: "Пародонтоз"
                    text: recordDiagnosis
-
-                   focus: true
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelTreatment
-           text: "Введите наименование лечения"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите наименование лечения"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: treatmentInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewTreatment
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditTreatment
 
                    font.pointSize: fontSize
-
+                   focus: true
                    placeholderText: "Реминерализирующая терапия, ..."
                    text: recordTreatment
 
-                   focus: true
                }
            }
        }
 
-        Button {
+        Button
+        {
             id: buttonAddRecord
 
-            text: "Сохранить запись"
-
-            font.pointSize: 10
 
             anchors.horizontalCenter: parent.horizontalCenter
 
+            font.pointSize: 10
             width: 300
             height: 50
+            text: "Сохранить запись"
 
-            onClicked: {
+            onClicked: function()
+            {
                 dialogConfirm.open();
             }
         }

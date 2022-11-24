@@ -1,10 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property int buttonStandartTextFontSize: 10
@@ -40,33 +40,32 @@ Page {
     {
         id: dialogDeleteRecord
 
-        width: parent.width / 3.5
-        height: parent.height / 3.5
-
         anchors.centerIn: parent
 
+        width: parent.width / 3.5
+        height: parent.height / 3.5
         modal: true
-
-        title: "Подтвердите действие"
         standardButtons: Dialog.Yes | Dialog.No
+        title: "Подтвердите действие"
 
-        Text {
+        Text
+        {
             id: dialogboxText
-            font.pointSize: 14
 
             anchors.fill: parent
 
+            font.pointSize: 14
             wrapMode: Text.WordWrap
-
             text: qsTr("Удалить запись " + currentRecord + "?")
         }
 
-        onAccepted: {
-            if (currentRecord !== "")
-            {
-                backend.deleteRecord(currentRecord);
-                recordDeleted();
-            }
+        onAccepted: function()
+        {
+            if (currentRecord === "")
+                return;
+
+            backend.deleteRecord(currentRecord);
+            recordDeleted();
         }
     }
 
@@ -89,40 +88,43 @@ Page {
         }
     }
 
-    Label {
+    Label
+    {
         id: labelTitle
 
-        text: "Дневник лечения"
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
         font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Дневник лечения"
     }
 
     Label {
         id: labelRecords
 
-        text: "Записи"
-
+        anchors
+        {
+            top: labelTitle.bottom
+            topMargin: 40
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 17
         font.bold: true
-
-        anchors.top: labelTitle.bottom
-        anchors.topMargin: 40
-
-        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Записи"
     }
 
     ListView
     {
         id: recordsListView
 
-        model: patientRecordsListModel
-
-        spacing: 15
+        Component.onCompleted:
+        {
+            highlightMoveDuration = 0;
+        }
 
         anchors
         {
@@ -136,13 +138,20 @@ Page {
 
             right: parent.right
         }
+        clip: true
+        focus: true
+        model: patientRecordsListModel
+        spacing: 15
 
-        delegate: Component {
-            Item {
+        delegate: Component
+        {
+            Item
+            {
                 width: parent.width
                 height: 40
 
-                Column {
+                Column
+                {
                     anchors.centerIn: parent
 
                     Text
@@ -151,9 +160,11 @@ Page {
                         text: display
                     }
                 }
-                MouseArea {
+                MouseArea
+                {
                     anchors.fill: parent
-                    onClicked:
+
+                    onClicked: function()
                     {
                         recordsListView.currentIndex = index;
                         currentRecord = display;
@@ -162,39 +173,29 @@ Page {
             }
         }
 
-        highlight: Rectangle {
+        highlight: Rectangle
+        {
             anchors
             {
                 left: parent.left
-                leftMargin: 300
-
                 right: parent.right
+                leftMargin: 300
                 rightMargin: 300
             }
-
-            color: "lightsteelblue";
-        }
-
-        clip: true
-        focus: true
-
-        Component.onCompleted:
-        {
-//            highlightMoveVelocity = 0
-            highlightMoveDuration = 0
+            color: "lightsteelblue"
         }
     }
 
     Row {
         id: buttons_diary
 
-        anchors.top: recordsListView.bottom
-        anchors.topMargin: 20
-
-        anchors.horizontalCenter: parent.horizontalCenter
-
+        anchors
+        {
+            top: recordsListView.bottom
+            topMargin: 20
+            horizontalCenter: parent.horizontalCenter
+        }
         transformOrigin: Item.Center
-
         spacing: 50
 
         Button
@@ -203,15 +204,13 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
-
             text: "Добавить запись"
 
-            onClicked:
+            onClicked: function()
             {
-                openAddRecordPage()
+                openAddRecordPage();
             }
         }
 
@@ -221,20 +220,17 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
             text: "Изменить запись"
 
-            onClicked:
+            onClicked: function()
             {
-                if (currentRecord !== "") {
-                    openEditPage();
-                }
-                else {
-                    console.log("Запись не выбрана");
-                }
+                if (currentRecord === "")
+                    return;
+
+                openEditPage();
             }
         }
 
@@ -244,13 +240,12 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
             text: "Удалить запись"
 
-            onClicked:
+            onClicked: function()
             {
                 dialogDeleteRecord.open();
             }
