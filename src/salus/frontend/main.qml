@@ -48,7 +48,8 @@ ApplicationWindow {
     }
 
     // Окно, отображающее контент на основной странице
-    StackLayout {
+    StackLayout
+    {
         id: stack_content_main
 
         width: applicationWindow.width - menu_bar.width
@@ -62,11 +63,13 @@ ApplicationWindow {
         // По умолчанию отображается окно амбулаторной карты
         currentIndex: 3
 
-        DoctorProfilePage { // 0
+        DoctorProfilePage // 0
+        {
             id: page_doctor_profile
         }
 
-        DoctorDiagnosesDataBase { // 1
+        DoctorDiagnosesDataBase // 3
+        {
             id: page_doctor_diagnoses
         }
 
@@ -74,7 +77,8 @@ ApplicationWindow {
             id: page_doctor_treatments
         }
 
-        PatientSearchMedicalCardPage { // 3
+        PatientSearchMedicalCardPage // 3
+        {
             id: page_medical_card_search
 
             Connections
@@ -107,8 +111,14 @@ ApplicationWindow {
             }
         }
 
-        PatientMedicalCardRegistrationPage { // 4
+        PatientMedicalCardRegistrationPage // 4
+        {
             id: page_patient_registration
+
+            onReturnBack: function()
+            {
+                stack_content_main.currentIndex = 3;
+            }
 
             Connections
             {
@@ -125,8 +135,14 @@ ApplicationWindow {
             }
        }
 
-        PatientMedicalCardMain { // 5
+        PatientMedicalCardMain // 5
+        {
             id: page_patient_medical_card_main
+
+            onReturnBack: function()
+            {
+                stack_content_main.currentIndex = 3;
+            }
 
             Connections
             {
@@ -180,8 +196,14 @@ ApplicationWindow {
             }
         }
 
-        PatientMedicalCardDiary { // 6
+        PatientMedicalCardDiary // 6
+        {
             id: page_patient_medical_card_diary
+
+            onReturnBack: function()
+            {
+                stack_content_main.currentIndex = 5;
+            }
 
             onOpenAddRecordPage:
             {
@@ -197,8 +219,14 @@ ApplicationWindow {
             }
         }
 
-        PatientAddRecordPage { // 7
+        PatientAddRecordPage // 7
+        {
             id: page_patient_add_record
+
+            onReturnBack: function()
+            {
+                stack_content_main.currentIndex = 6;
+            }
 
             Connections
             {
@@ -212,8 +240,14 @@ ApplicationWindow {
             }
         }
 
-        PatientEditRecordPage { // 8
+        PatientEditRecordPage // 8
+        {
             id: page_patient_edit_record
+
+            onReturnBack: function()
+            {
+                stack_content_main.currentIndex = 6;
+            }
 
             onRecordUpdated:
             {

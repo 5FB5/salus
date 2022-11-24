@@ -18,6 +18,7 @@ Page {
 
     property int fontSize: 11
 
+    signal returnBack()
     signal patientRegistered(string fullname)
 
     function clearTextFields()
@@ -43,6 +44,25 @@ Page {
         anchors.fill: parent
 
         color: "#ffffff"
+    }
+
+    Button
+    {
+        id: buttonReturn
+
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
+
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
     Label {
