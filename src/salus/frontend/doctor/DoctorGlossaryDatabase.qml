@@ -19,6 +19,6 @@ Page
         }
         font.pointSize: standartTextSize
         font.bold: true
-        text: "[Заглушка] Окно БД вариантов лечения"
+        text: "[Заглушка] Окно БД глоссария"
     }
 }
