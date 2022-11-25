@@ -220,7 +220,7 @@ ApplicationWindow
 
                 page_patient_edit_record.recordDate = currentRecord;
                 page_patient_edit_record.updateRecordData();
-                stack_content_main.currentIndex = 8;
+                stack_content_main.currentIndex = 7;
             }
         }
 
@@ -306,7 +306,7 @@ ApplicationWindow
             anchors
             {
                 top: parent.top
-                topMargin: buttonsTopMargin + 100
+                topMargin: buttonsTopMargin + 230
             }
             font.pointSize: 12
             width: parent.width
@@ -325,8 +325,8 @@ ApplicationWindow
 
             anchors
             {
-                top: parent.top
-                topMargin: buttonsTopMargin + 200
+                top: button_patient_card.bottom
+                topMargin: buttonsTopMargin + 25
             }
             font.pointSize: 12
             width: parent.width

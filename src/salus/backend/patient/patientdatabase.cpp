@@ -119,20 +119,20 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 {
                     if (r.date == recordDate)
                         return false;
-
-                    Record_t newRecord;
-
-                    newRecord.date = recordDate;
-                    newRecord.currentDiagnosis = diagnosis;
-                    newRecord.anamnesis = anamnesis;
-                    newRecord.complaints = complaints;
-                    newRecord.diseases = diseases;
-                    newRecord.treatment = treatment;
-
-                    p.cardRecords.append(newRecord);
-
-                    return true;
                 }
+
+                Record_t newRecord;
+
+                newRecord.date = recordDate;
+                newRecord.currentDiagnosis = diagnosis;
+                newRecord.anamnesis = anamnesis;
+                newRecord.complaints = complaints;
+                newRecord.diseases = diseases;
+                newRecord.treatment = treatment;
+
+                p.cardRecords.append(newRecord);
+
+                return true;
             }
         }
     }
