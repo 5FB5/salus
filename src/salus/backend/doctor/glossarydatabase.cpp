@@ -5,6 +5,47 @@ GlossaryDatabase::GlossaryDatabase()
     getDataListFromJson();
 }
 
+GlossaryDatabase::~GlossaryDatabase()
+{
+    saveDataToJson();
+}
+
+void GlossaryDatabase::saveDataToJson()
+{
+    QJsonArray diagnoses = convertListToJsonArray(*diagnosesList);
+    QJsonArray treatments = convertListToJsonArray(*treatmentsList);
+
+    QJsonObject obj;
+    QJsonDocument doc;
+
+    QFile f(JSON_GLOSSARY_FILE_PATH);
+
+    obj.insert("diagnoses", diagnoses);
+    obj.insert("treatments", treatments);
+
+    doc.setObject(obj);
+
+    f.open(QFile::WriteOnly);
+    f.write(doc.toJson());
+    f.close();
+}
+
+void GlossaryDatabase::addDataToDiagnosesList(QString data)
+{
+    if (diagnosesList == nullptr)
+        return;
+
+    diagnosesList->append(data);
+}
+
+void GlossaryDatabase::addDataToTreatmentsList(QString data)
+{
+    if (treatmentsList == nullptr)
+        return;
+
+    treatmentsList->append(data);
+}
+
 QJsonDocument GlossaryDatabase::loadJson()
 {
     QFileInfo fInfo(JSON_GLOSSARY_FILE_PATH);
@@ -15,7 +56,7 @@ QJsonDocument GlossaryDatabase::loadJson()
         f.open(QFile::WriteOnly);
         QJsonDocument jd;
 
-        fillDocumentDefaultData(jd);
+        fillDocumentDefaultData(&jd);
 
         f.write(jd.toJson());
         f.close();
@@ -28,12 +69,12 @@ QJsonDocument GlossaryDatabase::loadJson()
     return jd;
 }
 
-void GlossaryDatabase::fillDocumentDefaultData(QJsonDocument &doc)
+void GlossaryDatabase::fillDocumentDefaultData(QJsonDocument *doc)
 {
     QJsonObject obj;
 
     QList<QString> defaultDiagnosesList;
-//    QList<QString> defaultTreatmentsList;
+    QList<QString> defaultTreatmentsList;
 
     defaultDiagnosesList.append("К02.0 — кариес эмали стадия белого (мелового) пятна (начальный кариес)");
     defaultDiagnosesList.append("К02.1 — кариес дентина");
@@ -44,11 +85,12 @@ void GlossaryDatabase::fillDocumentDefaultData(QJsonDocument &doc)
     defaultDiagnosesList.append("К02.9 — кариес зубов неуточненный");
 
     obj.insert("diagnoses", convertListToJsonArray(defaultDiagnosesList));
+    obj.insert("treatments", convertListToJsonArray(defaultTreatmentsList));
 
-    doc.setObject(obj);
+    doc->setObject(obj);
 }
 
-QJsonArray GlossaryDatabase::convertListToJsonArray(const QList<QString> &list)
+QJsonArray GlossaryDatabase::convertListToJsonArray(const QList<QString> list)
 {
     QJsonArray array;
 
@@ -57,7 +99,7 @@ QJsonArray GlossaryDatabase::convertListToJsonArray(const QList<QString> &list)
 
     for (int i = 0; i < list.size(); i++)
     {
-        QJsonValue item = static_cast<QJsonValue>(list[i]);
+        QJsonValue item = static_cast<QJsonValue>(list.at(i));
         array.insert(i, item);
     }
 
@@ -74,20 +116,13 @@ void GlossaryDatabase::getDataListFromJson()
         treatmentsList = new QList<QString>;
     }
 
-    QJsonArray array = doc.array();
-    QJsonObject currentObj;
+    QJsonObject obj = doc.object();
 
-    if (array.isEmpty() == true)
+    if (obj.isEmpty() == true)
         return;
 
-    // Перебор диагнозов и терапии
-    foreach (const QJsonValue &v, array)
-    {
-        currentObj = v.toObject();
-
-        *diagnosesList = convertJsonArrayToList(currentObj["diagnoses"].toArray());
-        *treatmentsList = convertJsonArrayToList(currentObj["treatments"].toArray());
-    }
+    *diagnosesList = convertJsonArrayToList(obj["diagnoses"].toArray());
+//        *treatmentsList = convertJsonArrayToList(currentObj["treatments"].toArray());
 }
 
 QList<QString> GlossaryDatabase::convertJsonArrayToList(const QJsonArray array)

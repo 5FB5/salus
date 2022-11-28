@@ -16,24 +16,26 @@ class GlossaryDatabase : public QObject
 {
     Q_OBJECT
 
-private:
-    QJsonDocument loadJson();
-
-    QJsonArray convertListToJsonArray(const QList<QString> &list);
-
+private:    
     QList<QString> *diagnosesList = nullptr;
     QList<QString> *treatmentsList = nullptr;
+
+    QJsonDocument loadJson();
+
+    QJsonArray convertListToJsonArray(const QList<QString> list);
+
     QList<QString> convertJsonArrayToList(const QJsonArray array);
 
     void getDataListFromJson();
-    void fillDocumentDefaultData(QJsonDocument &doc);
-
-    //QJsonArray convertListToJsonArray(const QList<QString> &list);
-  //  QJsonArray convertRecordsToJsonArray(const QList<Record_t> &records);
+    void fillDocumentDefaultData(QJsonDocument *doc);
+    void saveDataToJson();
 
 public:
     GlossaryDatabase();
+    ~GlossaryDatabase();
 
+    void addDataToDiagnosesList(QString data);
+    void addDataToTreatmentsList(QString data);
 
 };
 

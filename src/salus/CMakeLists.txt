@@ -20,9 +20,7 @@ add_subdirectory(backend/patient)
 
 qt5_add_resources(RESOURCES qml.qrc)
 
-set(PROJECT_SOURCES
-        main.cpp
-)
+set(PROJECT_SOURCES main.cpp)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${RESOURCES})
 
