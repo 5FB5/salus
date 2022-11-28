@@ -37,6 +37,8 @@ public:
     void addDataToDiagnosesList(QString data);
     void addDataToTreatmentsList(QString data);
 
+    QStringList getDiagnosesListModel();
+
 };
 
 #endif // GLOSSARYDATABASE_H

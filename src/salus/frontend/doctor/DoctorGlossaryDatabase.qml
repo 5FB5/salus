@@ -28,6 +28,22 @@ Page
         text: "Глоссарий"
     }
 
+    Text
+    {
+        id: labelListViewDiagnoses
+
+        anchors
+        {
+            top: labelListViewTreatments.top
+            bottom: listViewDiagnoses.top
+            bottomMargin: 15
+            horizontalCenter: listViewDiagnoses.horizontalCenter
+        }
+        font.bold: true
+        font.pixelSize: 25
+        text: "Диагноз"
+    }
+
     ListView
     {
         id: listViewDiagnoses
@@ -36,31 +52,56 @@ Page
         {
             left: parent.left
             right: labelTitle.horizontalCenter
-            top: labelTitle.bottom
+            top: listViewTreatments.top
             bottom: parent.bottom
-            topMargin: 30
             bottomMargin: listViewBottomMargin
         }
+        clip: true
+        model: glossaryDiagnosesListModel
+        spacing: 15
 
-        Rectangle
+        delegate: Text
         {
-            id: bg1
-
-            anchors.fill: parent
-            color: "#ff0000"
-        }
-
-        GlossaryEditPanel
-        {
-            id: editPanelDiagnoses
-
             anchors
             {
-                top: parent.bottom
                 left: parent.left
                 right: parent.right
+                leftMargin: 10
+                rightMargin: 10
             }
+            width: parent.width
+            wrapMode: Text.WrapAnywhere
+            font.pixelSize: 17
+            text: display
         }
+    }
+
+    GlossaryEditPanel
+    {
+        id: editPanelDiagnoses
+
+        anchors
+        {
+            top: listViewDiagnoses.bottom
+            left: listViewDiagnoses.left
+            right: listViewDiagnoses.right
+            topMargin: 5
+        }
+    }
+
+    Text
+    {
+        id: labelListViewTreatments
+
+        anchors
+        {
+           bottom: listViewTreatments.top
+           bottomMargin: 5
+           horizontalCenter: listViewTreatments.horizontalCenter
+        }
+        font.bold: true
+        font.pixelSize: 25
+        text: "Терапия"
     }
 
     ListView
@@ -94,6 +135,7 @@ Page
                 top: parent.bottom
                 left: parent.left
                 right: parent.right
+                topMargin: 5
             }
         }
     }

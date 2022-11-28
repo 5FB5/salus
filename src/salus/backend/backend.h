@@ -42,9 +42,12 @@ class Backend : public QObject
 private:
     DoctorDataBase doctorDb;
     GlossaryDatabase *glossaryDb;
+
     PatientDataBase *patientsDb;
     PatientListModel *patientListModel;
+
     QStringListModel *patientRecordsListModel;
+    QStringListModel *glossaryDiagnosesListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -113,6 +116,7 @@ public slots:
     QString getRecordTreatment(QString recordDate);
 
     QStringList getCurrentPatientRecords();
+    QStringList getGlossaryDiagnosesList();
 
 signals:
     void profileAdded();

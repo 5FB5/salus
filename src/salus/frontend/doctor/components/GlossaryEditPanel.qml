@@ -5,6 +5,8 @@ Item
 {
     id: root
 
+    property int buttonWidth: 50
+    property int fontPixelSize: 18
 
     Button
     {
@@ -30,8 +32,8 @@ Item
             right: buttonEdit.left
             rightMargin: 5
         }
-        width: 30
-        font.pixelSize: 15
+        width: buttonWidth
+        font.pixelSize: fontPixelSize
         font.bold: true
         text: "+"
     }
@@ -46,8 +48,8 @@ Item
             left: buttonEdit.right
             leftMargin: 5
         }
-        width: 30
-        font.pixelSize: 15
+        width: buttonWidth
+        font.pixelSize: fontPixelSize
         font.bold: true
         text: "-"
     }

@@ -46,6 +46,19 @@ void GlossaryDatabase::addDataToTreatmentsList(QString data)
     treatmentsList->append(data);
 }
 
+QStringList GlossaryDatabase::getDiagnosesListModel()
+{
+    QStringList list;
+
+    if (diagnosesList->isEmpty() == true)
+        return QStringList();
+
+    for (const auto &record : *diagnosesList)
+        list.append(record);
+
+    return list;
+}
+
 QJsonDocument GlossaryDatabase::loadJson()
 {
     QFileInfo fInfo(JSON_GLOSSARY_FILE_PATH);
