@@ -16,11 +16,13 @@ Backend::Backend(QObject *parent) : QObject(parent)
 
     patientRecordsListModel = new QStringListModel();
     glossaryDiagnosesListModel = new QStringListModel();
+    glossaryTreatmentsListModel = new QStringListModel();
 
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
 
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
     glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
 }
 
 Backend::~Backend()
@@ -32,6 +34,7 @@ Backend::~Backend()
     delete patientRecordsListModel;
     delete patientsDb;
     delete glossaryDiagnosesListModel;
+    delete glossaryTreatmentsListModel;
     delete glossaryDb;
 }
 
@@ -53,6 +56,9 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
     qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("glossaryDiagnosesListModel", glossaryDiagnosesListModel);
+
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("glossaryTreatmentsListModel", glossaryTreatmentsListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -300,6 +306,11 @@ QStringList Backend::getCurrentPatientRecords()
 QStringList Backend::getGlossaryDiagnosesList()
 {
     return glossaryDb->getDiagnosesListModel();
+}
+
+QStringList Backend::getGlossaryTreatmentsList()
+{
+    return glossaryDb->getTreatmentsListModel();
 }
 
 QString Backend::getRecordAnamnesis(QString recordDate)

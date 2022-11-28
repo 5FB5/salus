@@ -36,7 +36,7 @@ Page
         {
             top: labelListViewTreatments.top
             bottom: listViewDiagnoses.top
-            bottomMargin: 15
+            bottomMargin: 20
             horizontalCenter: listViewDiagnoses.horizontalCenter
         }
         font.bold: true
@@ -96,7 +96,7 @@ Page
         anchors
         {
            bottom: listViewTreatments.top
-           bottomMargin: 5
+           bottomMargin: 20
            horizontalCenter: listViewTreatments.horizontalCenter
         }
         font.bold: true
@@ -111,32 +111,42 @@ Page
         anchors
         {
             left: labelTitle.horizontalCenter
+            right: parent.right
             top: labelTitle.bottom
             bottom: parent.bottom
-            topMargin: 30
+            topMargin: 50
             bottomMargin: listViewBottomMargin
         }
-        width: parent.width / 2
+        clip: true
+        model: glossaryTreatmentsListModel
+        spacing: 15
 
-        Rectangle
+        delegate: Text
         {
-            id: bg2
-
-            anchors.fill: parent
-            color: "#00ff00"
-        }
-
-        GlossaryEditPanel
-        {
-            id: editPanelTreatments
-
             anchors
             {
-                top: parent.bottom
                 left: parent.left
                 right: parent.right
-                topMargin: 5
+                leftMargin: 10
+                rightMargin: 10
             }
+            width: parent.width
+            wrapMode: Text.WrapAnywhere
+            font.pixelSize: 17
+            text: display
+        }
+    }
+
+    GlossaryEditPanel
+    {
+        id: editPanelTreatments
+
+        anchors
+        {
+            top: listViewTreatments.bottom
+            left: listViewTreatments.left
+            right: listViewTreatments.right
+            topMargin: 5
         }
     }
 }

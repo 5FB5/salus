@@ -59,6 +59,19 @@ QStringList GlossaryDatabase::getDiagnosesListModel()
     return list;
 }
 
+QStringList GlossaryDatabase::getTreatmentsListModel()
+{
+    QStringList list;
+
+    if (treatmentsList->isEmpty() == true)
+        return QStringList();
+
+    for (const auto &record : *treatmentsList)
+        list.append(record);
+
+    return list;
+}
+
 QJsonDocument GlossaryDatabase::loadJson()
 {
     QFileInfo fInfo(JSON_GLOSSARY_FILE_PATH);

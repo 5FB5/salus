@@ -38,6 +38,7 @@ public:
     void addDataToTreatmentsList(QString data);
 
     QStringList getDiagnosesListModel();
+    QStringList getTreatmentsListModel();
 
 };
 

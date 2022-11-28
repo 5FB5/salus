@@ -48,6 +48,7 @@ private:
 
     QStringListModel *patientRecordsListModel;
     QStringListModel *glossaryDiagnosesListModel;
+    QStringListModel *glossaryTreatmentsListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -117,6 +118,7 @@ public slots:
 
     QStringList getCurrentPatientRecords();
     QStringList getGlossaryDiagnosesList();
+    QStringList getGlossaryTreatmentsList();
 
 signals:
     void profileAdded();
