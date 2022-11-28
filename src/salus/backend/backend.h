@@ -9,6 +9,8 @@
 #include <QString>
 
 #include "doctor/doctordatabase.h"
+#include "doctor/glossarydatabase.h"
+
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
 
@@ -39,6 +41,7 @@ class Backend : public QObject
 
 private:
     DoctorDataBase doctorDb;
+    GlossaryDatabase *glossaryDb;
     PatientDataBase *patientsDb;
     PatientListModel *patientListModel;
     QStringListModel *patientRecordsListModel;

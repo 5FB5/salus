@@ -9,6 +9,8 @@ Backend::Backend(QObject *parent) : QObject(parent)
             currentDoctorInn = doctorDb.getInn();
     }
 
+    glossaryDb = new GlossaryDatabase;
+
     patientsDb = new PatientDataBase;
     patientListModel = new PatientListModel;
     patientRecordsListModel = new QStringListModel();
@@ -25,6 +27,7 @@ Backend::~Backend()
     delete patientListModel;
     delete patientRecordsListModel;
     delete patientsDb;
+    delete glossaryDb;
 }
 
 /**
