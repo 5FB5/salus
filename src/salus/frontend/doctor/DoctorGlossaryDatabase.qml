@@ -44,6 +44,21 @@ Page
         text: "Диагноз"
     }
 
+    Rectangle
+    {
+        id: backgroundDiagnoses
+
+        anchors
+        {
+            left: listViewDiagnoses.left
+            right: listViewDiagnoses.right
+            top: labelListViewDiagnoses.bottom
+            bottom: listViewDiagnoses.bottom
+            topMargin: 5
+        }
+        color: "#bbbbbb"
+    }
+
     ListView
     {
         id: listViewDiagnoses
@@ -54,6 +69,7 @@ Page
             right: labelTitle.horizontalCenter
             top: listViewTreatments.top
             bottom: parent.bottom
+            rightMargin: 5
             bottomMargin: listViewBottomMargin
         }
         clip: true
@@ -70,7 +86,7 @@ Page
                 rightMargin: 10
             }
             width: parent.width
-            wrapMode: Text.WrapAnywhere
+            wrapMode: Text.WordWrap
             font.pixelSize: 17
             text: display
         }
@@ -104,6 +120,21 @@ Page
         text: "Терапия"
     }
 
+    Rectangle
+    {
+        id: backgroundTreatments
+
+        anchors
+        {
+            left: listViewTreatments.left
+            right: listViewTreatments.right
+            top: labelListViewTreatments.bottom
+            bottom: listViewTreatments.bottom
+            topMargin: 5
+        }
+        color: "#bbbbbb"
+    }
+
     ListView
     {
         id: listViewTreatments
@@ -131,7 +162,7 @@ Page
                 rightMargin: 10
             }
             width: parent.width
-            wrapMode: Text.WrapAnywhere
+            wrapMode: Text.WordWrap
             font.pixelSize: 17
             text: display
         }
