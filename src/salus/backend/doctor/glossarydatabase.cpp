@@ -78,6 +78,30 @@ void GlossaryDatabase::editTreatment(QString oldData, QString newData)
     *treatmentsList = tmp;
 }
 
+void GlossaryDatabase::deleteDiagnosis(QString data)
+{
+    if (diagnosesList == nullptr)
+        return;
+
+    for (int i = 0; i < diagnosesList->size(); i++)
+    {
+        if (diagnosesList->at(i) == data)
+            diagnosesList->removeAt(i);
+    }
+}
+
+void GlossaryDatabase::deleteTreatment(QString data)
+{
+    if (diagnosesList == nullptr)
+        return;
+
+    for (int i = 0; i < treatmentsList->size(); i++)
+    {
+        if (treatmentsList->at(i) == data)
+            treatmentsList->removeAt(i);
+    }
+}
+
 QString GlossaryDatabase::getDiagnosisAt(int index)
 {
     return diagnosesList->at(index);

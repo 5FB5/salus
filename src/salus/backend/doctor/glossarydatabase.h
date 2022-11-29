@@ -40,6 +40,9 @@ public:
     void editDiagnosis(QString oldData, QString newData);
     void editTreatment(QString oldData, QString newData);
 
+    void deleteDiagnosis(QString data);
+    void deleteTreatment(QString data);
+
     QString getDiagnosisAt(int index);
     QString getTreatmentAt(int index);
 

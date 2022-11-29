@@ -20,9 +20,131 @@ Page
     {
         editPanelDiagnoses.addRecord.connect(dialogAddDiagnosis.open);
         editPanelDiagnoses.editRecord.connect(dialogEditDiagnosis.open);
+        editPanelDiagnoses.removeRecord.connect(dialogDeleteDiagnosis.open);
 
         editPanelTreatments.addRecord.connect(dialogAddTreatment.open);
         editPanelTreatments.editRecord.connect(dialogEditTreatment.open);
+        editPanelTreatments.removeRecord.connect(dialogDeleteTreatment.open);
+    }
+
+    Dialog
+    {
+        id: dialogDeleteDiagnosis
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Да";
+            standardButton(Dialog.Cancel).text = "Нет";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Удаление записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelDeleteDiagnosis
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Вы точно хотите удалить запись?"
+            }
+
+            Text
+            {
+                id: labelDeleteDiagnosisData
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelDeleteDiagnosis.bottom
+                    topMargin: 15
+                }
+                font.bold: false
+                font.pixelSize: 18
+                wrapMode: Text.WordWrap
+                text: "'" + currentDiagnosis + "'"
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.deleteGlossaryDiagnosis(currentDiagnosis);
+        }
+    }
+
+    Dialog
+    {
+        id: dialogDeleteTreatment
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Да";
+            standardButton(Dialog.Cancel).text = "Нет";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Удаление записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelDeleteTreatment
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Вы точно хотите удалить запись?"
+            }
+
+            Text
+            {
+                id: labelDeleteTreatmentData
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelDeleteTreatment.bottom
+                    topMargin: 15
+                }
+                font.bold: false
+                font.pixelSize: 18
+                wrapMode: Text.WordWrap
+                text: "'" + currentTreatment + "'"
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.deleteGlossaryTreatment(currentTreatment);
+        }
     }
 
     Dialog

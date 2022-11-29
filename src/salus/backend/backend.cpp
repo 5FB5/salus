@@ -228,6 +228,28 @@ void Backend::editGlossaryTreatment(QString oldData, QString newData)
     emit glossaryTreatmentChanged();
 }
 
+void Backend::deleteGlossaryDiagnosis(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteDiagnosis(data);
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+
+    emit glossaryDiagnosisDeleted();
+}
+
+void Backend::deleteGlossaryTreatment(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteTreatment(data);
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+
+    emit glossaryTreatmentDeleted();
+}
+
 /**
  * @brief Удаляет выбранного пациента из БД.
  */

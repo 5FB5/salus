@@ -114,6 +114,8 @@ public slots:
     void addGlossaryTreatment(QString data);
     void editGlossaryDiagnosis(QString oldData, QString newData);
     void editGlossaryTreatment(QString oldData, QString newData);
+    void deleteGlossaryDiagnosis(QString data);
+    void deleteGlossaryTreatment(QString data);
 
     QString getRecordAnamnesis(QString recordDate);
     QString getRecordComplaints(QString recordDate);
@@ -140,6 +142,8 @@ signals:
     void glossaryTreatmentAdded();
     void glossaryDiagnosisChanged();
     void glossaryTreatmentChanged();
+    void glossaryDiagnosisDeleted();
+    void glossaryTreatmentDeleted();
 };
 
 #endif // BACKEND_H
