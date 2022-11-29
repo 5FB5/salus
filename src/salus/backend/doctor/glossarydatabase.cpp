@@ -46,6 +46,48 @@ void GlossaryDatabase::addDataToTreatmentsList(QString data)
     treatmentsList->append(data);
 }
 
+void GlossaryDatabase::editDiagnosis(QString oldData, QString newData)
+{
+    if (diagnosesList == nullptr)
+        return;
+
+    QList<QString> tmp = *diagnosesList;
+
+    for (int i = 0; i < tmp.size(); i++)
+    {
+        if (tmp[i] == oldData)
+            tmp[i] = newData;
+    }
+
+    *diagnosesList = tmp;
+}
+
+void GlossaryDatabase::editTreatment(QString oldData, QString newData)
+{
+    if (treatmentsList == nullptr)
+        return;
+
+    QList<QString> tmp = *treatmentsList;
+
+    for (int i = 0; i < tmp.size(); i++)
+    {
+        if (tmp[i] == oldData)
+            tmp[i] = newData;
+    }
+
+    *treatmentsList = tmp;
+}
+
+QString GlossaryDatabase::getDiagnosisAt(int index)
+{
+    return diagnosesList->at(index);
+}
+
+QString GlossaryDatabase::getTreatmentAt(int index)
+{
+    return treatmentsList->at(index);
+}
+
 QStringList GlossaryDatabase::getDiagnosesListModel()
 {
     QStringList list;

@@ -13,11 +13,132 @@ Page
     property int standartTextSize: 14
     property int listViewBottomMargin: 150
     property string listViewBackgroundColor: "#bbbbbb"
+    property string currentDiagnosis: ""
+    property string currentTreatment: ""
 
     Component.onCompleted: function()
     {
         editPanelDiagnoses.addRecord.connect(dialogAddDiagnosis.open);
+        editPanelDiagnoses.editRecord.connect(dialogEditDiagnosis.open);
+
         editPanelTreatments.addRecord.connect(dialogAddTreatment.open);
+        editPanelTreatments.editRecord.connect(dialogEditTreatment.open);
+    }
+
+    Dialog
+    {
+        id: dialogEditDiagnosis
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Изменить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Редактирование записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelEditDiagnosisInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите диагноз"
+            }
+
+            TextField
+            {
+                id: inputEditDiagnosis
+
+                anchors
+                {
+                    top: labelEditDiagnosisInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.editGlossaryDiagnosis(currentDiagnosis.toString(), inputEditDiagnosis.text);
+        }
+    }
+
+    Dialog
+    {
+        id: dialogEditTreatment
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Изменить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Редактирование записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelEditTreatmentInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите название терапии"
+            }
+
+            TextField
+            {
+                id: inputEditTreatment
+
+                anchors
+                {
+                    top: labelEditTreatmentInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.editGlossaryTreatment(currentTreatment.toString(), inputEditTreatment.text);
+        }
     }
 
     Dialog
@@ -76,7 +197,6 @@ Page
         {
             backend.addGlossaryDiagnosis(inputDiagnosis.text);
         }
-
     }
 
     Dialog
@@ -135,8 +255,8 @@ Page
         {
             backend.addGlossaryTreatment(inputTreatment.text);
         }
-
     }
+
     Text
     {
         id: labelTitle
@@ -187,6 +307,12 @@ Page
     {
         id: listViewDiagnoses
 
+        Component.onCompleted: function()
+        {
+            highlightMoveDuration = 0;
+            currentDiagnosis = backend.getGlossaryDiagnosisAt(0);
+        }
+
         anchors
         {
             left: parent.left
@@ -213,7 +339,29 @@ Page
             width: parent.width
             wrapMode: Text.WordWrap
             font.pixelSize: 17
+            color: listViewDiagnoses.currentIndex === index ? "#ffffff" : "#000000"
             text: display
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                onClicked: function()
+                {
+                    listViewDiagnoses.currentIndex = index;
+                    currentDiagnosis = display.toString();
+                }
+            }
+        }
+
+        highlight: Rectangle
+        {
+            anchors
+            {
+                left: parent.left
+                right: parent.right
+            }
+            color: "lightsteelblue"
         }
     }
 
@@ -264,6 +412,12 @@ Page
     {
         id: listViewTreatments
 
+        Component.onCompleted: function()
+        {
+            highlightMoveDuration = 0;
+            currentTreatment = backend.getGlossaryTreatmentAt(0);
+        }
+
         anchors
         {
             left: labelTitle.horizontalCenter
@@ -290,7 +444,29 @@ Page
             width: parent.width
             wrapMode: Text.WordWrap
             font.pixelSize: 17
+            color: listViewTreatments.currentIndex === index ? "#ffffff" : "#000000"
             text: display
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                onClicked: function()
+                {
+                    listViewTreatments.currentIndex = index;
+                    currentTreatment = display.toString();
+                }
+            }
+        }
+
+        highlight: Rectangle
+        {
+            anchors
+            {
+                left: parent.left
+                right: parent.right
+            }
+            color: "lightsteelblue"
         }
     }
 

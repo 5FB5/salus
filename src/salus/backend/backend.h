@@ -112,12 +112,17 @@ public slots:
 
     void addGlossaryDiagnosis(QString data);
     void addGlossaryTreatment(QString data);
+    void editGlossaryDiagnosis(QString oldData, QString newData);
+    void editGlossaryTreatment(QString oldData, QString newData);
 
     QString getRecordAnamnesis(QString recordDate);
     QString getRecordComplaints(QString recordDate);
     QString getRecordDiagnosis(QString recordDate);
     QString getRecordDiseases(QString recordDate);
     QString getRecordTreatment(QString recordDate);
+
+    QString getGlossaryDiagnosisAt(int index);
+    QString getGlossaryTreatmentAt(int index);
 
     QStringList getCurrentPatientRecords();
     QStringList getGlossaryDiagnosesList();
@@ -133,6 +138,8 @@ signals:
     void changeDoctorProfile();
     void glossaryDiagnosisAdded();
     void glossaryTreatmentAdded();
+    void glossaryDiagnosisChanged();
+    void glossaryTreatmentChanged();
 };
 
 #endif // BACKEND_H

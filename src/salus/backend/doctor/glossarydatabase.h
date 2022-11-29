@@ -37,6 +37,12 @@ public:
     void addDataToDiagnosesList(QString data);
     void addDataToTreatmentsList(QString data);
 
+    void editDiagnosis(QString oldData, QString newData);
+    void editTreatment(QString oldData, QString newData);
+
+    QString getDiagnosisAt(int index);
+    QString getTreatmentAt(int index);
+
     QStringList getDiagnosesListModel();
     QStringList getTreatmentsListModel();
 
