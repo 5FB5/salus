@@ -8,6 +8,10 @@ Item
     property int buttonWidth: 50
     property int fontPixelSize: 18
 
+    signal addRecord()
+    signal removeRecord()
+    signal editRecord()
+
     Button
     {
         id: buttonEdit
@@ -20,6 +24,11 @@ Item
         font.pixelSize: 15
         font.bold: true
         text: "Изменить"
+
+        onClicked: function()
+        {
+            editRecord();
+        }
     }
 
     Button
@@ -36,6 +45,11 @@ Item
         font.pixelSize: fontPixelSize
         font.bold: true
         text: "+"
+
+        onClicked: function()
+        {
+            addRecord();
+        }
     }
 
     Button
@@ -52,5 +66,10 @@ Item
         font.pixelSize: fontPixelSize
         font.bold: true
         text: "-"
+
+        onClicked: function()
+        {
+            removeRecord();
+        }
     }
 }

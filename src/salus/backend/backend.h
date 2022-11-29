@@ -110,6 +110,9 @@ public slots:
     bool addNewRecord(QString date, QString anamnesis, QString complaints,
                       QString diseases, QString diagnosis, QString treatment);
 
+    void addGlossaryDiagnosis(QString data);
+    void addGlossaryTreatment(QString data);
+
     QString getRecordAnamnesis(QString recordDate);
     QString getRecordComplaints(QString recordDate);
     QString getRecordDiagnosis(QString recordDate);
@@ -128,6 +131,8 @@ signals:
     void recordUpdated();
     void recordDeleted();
     void changeDoctorProfile();
+    void glossaryDiagnosisAdded();
+    void glossaryTreatmentAdded();
 };
 
 #endif // BACKEND_H

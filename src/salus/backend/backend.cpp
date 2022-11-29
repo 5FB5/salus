@@ -184,6 +184,28 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     return false;
 }
 
+void Backend::addGlossaryDiagnosis(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToDiagnosesList(data);
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+
+    emit glossaryDiagnosisAdded();
+}
+
+void Backend::addGlossaryTreatment(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToTreatmentsList(data);
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+
+    emit glossaryTreatmentAdded();
+}
+
 /**
  * @brief Удаляет выбранного пациента из БД.
  */

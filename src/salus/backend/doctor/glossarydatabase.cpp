@@ -148,7 +148,7 @@ void GlossaryDatabase::getDataListFromJson()
         return;
 
     *diagnosesList = convertJsonArrayToList(obj["diagnoses"].toArray());
-//        *treatmentsList = convertJsonArrayToList(currentObj["treatments"].toArray());
+    *treatmentsList = convertJsonArrayToList(obj["treatments"].toArray());
 }
 
 QList<QString> GlossaryDatabase::convertJsonArrayToList(const QJsonArray array)

@@ -12,8 +12,132 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
     property int listViewBottomMargin: 150
+    property string listViewBackgroundColor: "#bbbbbb"
 
-    Label
+    Component.onCompleted: function()
+    {
+        editPanelDiagnoses.addRecord.connect(dialogAddDiagnosis.open);
+        editPanelTreatments.addRecord.connect(dialogAddTreatment.open);
+    }
+
+    Dialog
+    {
+        id: dialogAddDiagnosis
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Новая запись"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelDiagnosisInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите диагноз"
+            }
+
+            TextField
+            {
+                id: inputDiagnosis
+
+                anchors
+                {
+                    top: labelDiagnosisInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.addGlossaryDiagnosis(inputDiagnosis.text);
+        }
+
+    }
+
+    Dialog
+    {
+        id: dialogAddTreatment
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Новая запись"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelTreatmentInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите название терапии"
+            }
+
+            TextField
+            {
+                id: inputTreatment
+
+                anchors
+                {
+                    top: labelTreatmentInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.addGlossaryTreatment(inputTreatment.text);
+        }
+
+    }
+    Text
     {
         id: labelTitle
 
@@ -56,7 +180,7 @@ Page
             bottom: listViewDiagnoses.bottom
             topMargin: 5
         }
-        color: "#bbbbbb"
+        color: listViewBackgroundColor
     }
 
     ListView
@@ -69,6 +193,7 @@ Page
             right: labelTitle.horizontalCenter
             top: listViewTreatments.top
             bottom: parent.bottom
+            leftMargin: 5
             rightMargin: 5
             bottomMargin: listViewBottomMargin
         }
@@ -132,7 +257,7 @@ Page
             bottom: listViewTreatments.bottom
             topMargin: 5
         }
-        color: "#bbbbbb"
+        color: listViewBackgroundColor
     }
 
     ListView
@@ -145,6 +270,7 @@ Page
             right: parent.right
             top: labelTitle.bottom
             bottom: parent.bottom
+            rightMargin: 5
             topMargin: 50
             bottomMargin: listViewBottomMargin
         }
