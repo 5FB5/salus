@@ -14,6 +14,7 @@ void GlossaryDatabase::saveDataToJson()
 {
     QJsonArray diagnoses = convertListToJsonArray(*diagnosesList);
     QJsonArray treatments = convertListToJsonArray(*treatmentsList);
+    QJsonArray symptoms = convertListToJsonArray(*symptomsList);
 
     QJsonObject obj;
     QJsonDocument doc;
@@ -22,6 +23,7 @@ void GlossaryDatabase::saveDataToJson()
 
     obj.insert("diagnoses", diagnoses);
     obj.insert("treatments", treatments);
+    obj.insert("symptoms", symptoms);
 
     doc.setObject(obj);
 
@@ -44,6 +46,14 @@ void GlossaryDatabase::addDataToTreatmentsList(QString data)
         return;
 
     treatmentsList->append(data);
+}
+
+void GlossaryDatabase::addDataToSymptomsList(QString data)
+{
+    if (symptomsList == nullptr)
+        return;
+
+    symptomsList->append(data);
 }
 
 void GlossaryDatabase::editDiagnosis(QString oldData, QString newData)
@@ -78,6 +88,22 @@ void GlossaryDatabase::editTreatment(QString oldData, QString newData)
     *treatmentsList = tmp;
 }
 
+void GlossaryDatabase::editSymptom(QString oldData, QString newData)
+{
+    if (symptomsList == nullptr)
+        return;
+
+    QList<QString> tmp = *symptomsList;
+
+    for (int i = 0; i < tmp.size(); i++)
+    {
+        if (tmp[i] == oldData)
+            tmp[i] = newData;
+    }
+
+    *symptomsList = tmp;
+}
+
 void GlossaryDatabase::deleteDiagnosis(QString data)
 {
     if (diagnosesList == nullptr)
@@ -90,6 +116,17 @@ void GlossaryDatabase::deleteDiagnosis(QString data)
     }
 }
 
+void GlossaryDatabase::deleteSymptom(QString data)
+{
+    if (symptomsList == nullptr)
+        return;
+
+    for (int i = 0; i < symptomsList->size(); i++)
+    {
+        if (symptomsList->at(i) == data)
+            symptomsList->removeAt(i);
+    }
+}
 void GlossaryDatabase::deleteTreatment(QString data)
 {
     if (diagnosesList == nullptr)
@@ -104,12 +141,26 @@ void GlossaryDatabase::deleteTreatment(QString data)
 
 QString GlossaryDatabase::getDiagnosisAt(int index)
 {
+    if (diagnosesList == nullptr || diagnosesList->isEmpty() == true)
+        return "";
+
     return diagnosesList->at(index);
 }
 
 QString GlossaryDatabase::getTreatmentAt(int index)
 {
+    if (treatmentsList == nullptr || treatmentsList->isEmpty() == true)
+        return "";
+
     return treatmentsList->at(index);
+}
+
+QString GlossaryDatabase::getSymptomAt(int index)
+{
+    if (symptomsList == nullptr || symptomsList->isEmpty() == true)
+        return "";
+
+    return symptomsList->at(index);
 }
 
 QStringList GlossaryDatabase::getDiagnosesListModel()
@@ -133,6 +184,19 @@ QStringList GlossaryDatabase::getTreatmentsListModel()
         return QStringList();
 
     for (const auto &record : *treatmentsList)
+        list.append(record);
+
+    return list;
+}
+
+QStringList GlossaryDatabase::getSymptomsListModel()
+{
+    QStringList list;
+
+    if (symptomsList->isEmpty() == true)
+        return QStringList();
+
+    for (const auto &record : *symptomsList)
         list.append(record);
 
     return list;
@@ -167,6 +231,7 @@ void GlossaryDatabase::fillDocumentDefaultData(QJsonDocument *doc)
 
     QList<QString> defaultDiagnosesList;
     QList<QString> defaultTreatmentsList;
+    QList<QString> defaultSymptomsList;
 
     defaultDiagnosesList.append("К02.0 — кариес эмали стадия белого (мелового) пятна (начальный кариес)");
     defaultDiagnosesList.append("К02.1 — кариес дентина");
@@ -178,6 +243,7 @@ void GlossaryDatabase::fillDocumentDefaultData(QJsonDocument *doc)
 
     obj.insert("diagnoses", convertListToJsonArray(defaultDiagnosesList));
     obj.insert("treatments", convertListToJsonArray(defaultTreatmentsList));
+    obj.insert("symptoms", convertListToJsonArray(defaultSymptomsList));
 
     doc->setObject(obj);
 }
@@ -202,10 +268,11 @@ void GlossaryDatabase::getDataListFromJson()
 {
     QJsonDocument doc = loadJson();
 
-    if (diagnosesList == nullptr && treatmentsList == nullptr)
+    if (diagnosesList == nullptr && treatmentsList == nullptr && symptomsList == nullptr)
     {
         diagnosesList = new QList<QString>;
         treatmentsList = new QList<QString>;
+        symptomsList = new QList<QString>;
     }
 
     QJsonObject obj = doc.object();
@@ -215,6 +282,7 @@ void GlossaryDatabase::getDataListFromJson()
 
     *diagnosesList = convertJsonArrayToList(obj["diagnoses"].toArray());
     *treatmentsList = convertJsonArrayToList(obj["treatments"].toArray());
+    *symptomsList = convertJsonArrayToList(obj["symptoms"].toArray());
 }
 
 QList<QString> GlossaryDatabase::convertJsonArrayToList(const QJsonArray array)

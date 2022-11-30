@@ -49,6 +49,7 @@ private:
     QStringListModel *patientRecordsListModel;
     QStringListModel *glossaryDiagnosesListModel;
     QStringListModel *glossaryTreatmentsListModel;
+    QStringListModel *glossarySymptomsListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -112,10 +113,24 @@ public slots:
 
     void addGlossaryDiagnosis(QString data);
     void addGlossaryTreatment(QString data);
+    void addGlossarySymptom(QString data);
+
     void editGlossaryDiagnosis(QString oldData, QString newData);
     void editGlossaryTreatment(QString oldData, QString newData);
+    void editGlossarySymptom(QString oldData, QString newData);
+
     void deleteGlossaryDiagnosis(QString data);
     void deleteGlossaryTreatment(QString data);
+    void deleteGlossarySymptom(QString data);
+
+    QStringList getCurrentPatientRecords();
+    QStringList getGlossaryDiagnosesList();
+    QStringList getGlossaryTreatmentsList();
+    QStringList getGlossarySymptomsList();
+
+    QString getGlossaryDiagnosisAt(int index);
+    QString getGlossaryTreatmentAt(int index);
+    QString getGlossarySymptomAt(int index);
 
     QString getRecordAnamnesis(QString recordDate);
     QString getRecordComplaints(QString recordDate);
@@ -123,27 +138,29 @@ public slots:
     QString getRecordDiseases(QString recordDate);
     QString getRecordTreatment(QString recordDate);
 
-    QString getGlossaryDiagnosisAt(int index);
-    QString getGlossaryTreatmentAt(int index);
-
-    QStringList getCurrentPatientRecords();
-    QStringList getGlossaryDiagnosesList();
-    QStringList getGlossaryTreatmentsList();
-
 signals:
     void profileAdded();
+
     void patientAdded();
     void patientDeleted();
+
     void recordAdded();
     void recordUpdated();
     void recordDeleted();
+
     void changeDoctorProfile();
+
     void glossaryDiagnosisAdded();
     void glossaryTreatmentAdded();
+    void glossarySymptomAdded();
+
     void glossaryDiagnosisChanged();
     void glossaryTreatmentChanged();
+    void glossarySymptomChanged();
+
     void glossaryDiagnosisDeleted();
     void glossaryTreatmentDeleted();
+    void glossarySymptomDeleted();
 };
 
 #endif // BACKEND_H

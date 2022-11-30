@@ -1,6 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.12
 import salus 1.0
 
 import "components"
@@ -15,12 +17,17 @@ Page
     property string listViewBackgroundColor: "#bbbbbb"
     property string currentDiagnosis: ""
     property string currentTreatment: ""
+    property string currentSymptom: ""
 
     Component.onCompleted: function()
     {
         editPanelDiagnoses.addRecord.connect(dialogAddDiagnosis.open);
         editPanelDiagnoses.editRecord.connect(dialogEditDiagnosis.open);
         editPanelDiagnoses.removeRecord.connect(dialogDeleteDiagnosis.open);
+
+        editPanelSymptoms.addRecord.connect(dialogAddSymptom.open);
+        editPanelSymptoms.editRecord.connect(dialogEditSymptom.open);
+        editPanelSymptoms.removeRecord.connect(dialogDeleteSymptom.open);
 
         editPanelTreatments.addRecord.connect(dialogAddTreatment.open);
         editPanelTreatments.editRecord.connect(dialogEditTreatment.open);
@@ -149,6 +156,66 @@ Page
 
     Dialog
     {
+        id: dialogDeleteSymptom
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Да";
+            standardButton(Dialog.Cancel).text = "Нет";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Удаление записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelDeleteSymptom
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Вы точно хотите удалить запись?"
+            }
+
+            Text
+            {
+                id: labelDeleteSymptomData
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelDeleteSymptom.bottom
+                    topMargin: 15
+                }
+                font.bold: false
+                font.pixelSize: 18
+                wrapMode: Text.WordWrap
+                text: "'" + currentSymptom + "'"
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.deleteGlossarySymptom(currentSymptom);
+        }
+    }
+
+    Dialog
+    {
         id: dialogEditDiagnosis
 
         Component.onCompleted: function()
@@ -202,6 +269,7 @@ Page
         onAccepted: function()
         {
             backend.editGlossaryDiagnosis(currentDiagnosis.toString(), inputEditDiagnosis.text);
+            currentDiagnosis = inputEditDiagnosis.text;
         }
     }
 
@@ -260,6 +328,66 @@ Page
         onAccepted: function()
         {
             backend.editGlossaryTreatment(currentTreatment.toString(), inputEditTreatment.text);
+            currentTreatment = inputEditTreatment.text;
+        }
+    }
+
+    Dialog
+    {
+        id: dialogEditSymptom
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Изменить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Редактирование записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelEditSymptomInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите симптом"
+            }
+
+            TextField
+            {
+                id: inputEditSymptom
+
+                anchors
+                {
+                    top: labelEditSymptomInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.editGlossarySymptom(currentSymptom.toString(), inputEditSymptom.text);
+            currentSymptom = inputEditSymptom.text;
         }
     }
 
@@ -379,6 +507,64 @@ Page
         }
     }
 
+    Dialog
+    {
+        id: dialogAddSymptom
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Новая запись"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelSymptomInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите симптом"
+            }
+
+            TextField
+            {
+                id: inputSymptom
+
+                anchors
+                {
+                    top: labelSymptomInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.addGlossarySymptom(inputSymptom.text);
+        }
+    }
+
     Text
     {
         id: labelTitle
@@ -394,214 +580,317 @@ Page
         text: "Глоссарий"
     }
 
-    Text
+    SplitView
     {
-        id: labelListViewDiagnoses
+        id: splitView
 
         anchors
         {
-            top: labelListViewTreatments.top
-            bottom: listViewDiagnoses.top
-            bottomMargin: 20
-            horizontalCenter: listViewDiagnoses.horizontalCenter
-        }
-        font.bold: true
-        font.pixelSize: 25
-        text: "Диагноз"
-    }
-
-    Rectangle
-    {
-        id: backgroundDiagnoses
-
-        anchors
-        {
-            left: listViewDiagnoses.left
-            right: listViewDiagnoses.right
-            top: labelListViewDiagnoses.bottom
-            bottom: listViewDiagnoses.bottom
-            topMargin: 5
-        }
-        color: listViewBackgroundColor
-    }
-
-    ListView
-    {
-        id: listViewDiagnoses
-
-        Component.onCompleted: function()
-        {
-            highlightMoveDuration = 0;
-            currentDiagnosis = backend.getGlossaryDiagnosisAt(0);
-        }
-
-        anchors
-        {
-            left: parent.left
-            right: labelTitle.horizontalCenter
-            top: listViewTreatments.top
-            bottom: parent.bottom
-            leftMargin: 5
-            rightMargin: 5
-            bottomMargin: listViewBottomMargin
-        }
-        clip: true
-        model: glossaryDiagnosesListModel
-        spacing: 15
-
-        delegate: Text
-        {
-            anchors
-            {
-                left: parent.left
-                right: parent.right
-                leftMargin: 10
-                rightMargin: 10
-            }
-            width: parent.width
-            wrapMode: Text.WordWrap
-            font.pixelSize: 17
-            color: listViewDiagnoses.currentIndex === index ? "#ffffff" : "#000000"
-            text: display
-
-            MouseArea
-            {
-                anchors.fill: parent
-
-                onClicked: function()
-                {
-                    listViewDiagnoses.currentIndex = index;
-                    currentDiagnosis = display.toString();
-                }
-            }
-        }
-
-        highlight: Rectangle
-        {
-            anchors
-            {
-                left: parent.left
-                right: parent.right
-            }
-            color: "lightsteelblue"
-        }
-    }
-
-    GlossaryEditPanel
-    {
-        id: editPanelDiagnoses
-
-        anchors
-        {
-            top: listViewDiagnoses.bottom
-            left: listViewDiagnoses.left
-            right: listViewDiagnoses.right
-            topMargin: 5
-        }
-    }
-
-    Text
-    {
-        id: labelListViewTreatments
-
-        anchors
-        {
-           bottom: listViewTreatments.top
-           bottomMargin: 20
-           horizontalCenter: listViewTreatments.horizontalCenter
-        }
-        font.bold: true
-        font.pixelSize: 25
-        text: "Терапия"
-    }
-
-    Rectangle
-    {
-        id: backgroundTreatments
-
-        anchors
-        {
-            left: listViewTreatments.left
-            right: listViewTreatments.right
-            top: labelListViewTreatments.bottom
-            bottom: listViewTreatments.bottom
-            topMargin: 5
-        }
-        color: listViewBackgroundColor
-    }
-
-    ListView
-    {
-        id: listViewTreatments
-
-        Component.onCompleted: function()
-        {
-            highlightMoveDuration = 0;
-            currentTreatment = backend.getGlossaryTreatmentAt(0);
-        }
-
-        anchors
-        {
-            left: labelTitle.horizontalCenter
-            right: parent.right
             top: labelTitle.bottom
+            left: parent.left
+            right: parent.right
             bottom: parent.bottom
-            rightMargin: 5
-            topMargin: 50
-            bottomMargin: listViewBottomMargin
+            topMargin: 15
         }
-        clip: true
-        model: glossaryTreatmentsListModel
-        spacing: 15
+        orientation: Qt.Horizontal
 
-        delegate: Text
+        Rectangle
         {
-            anchors
-            {
-                left: parent.left
-                right: parent.right
-                leftMargin: 10
-                rightMargin: 10
-            }
-            width: parent.width
-            wrapMode: Text.WordWrap
-            font.pixelSize: 17
-            color: listViewTreatments.currentIndex === index ? "#ffffff" : "#000000"
-            text: display
+            id: listDiagnoses
 
-            MouseArea
-            {
-                anchors.fill: parent
+            width: 400
+            Layout.maximumWidth: 900
+            Layout.minimumWidth: 150
+            color: listViewBackgroundColor
 
-                onClicked: function()
+            Text
+            {
+                id: labelListViewDiagnoses
+
+                anchors
                 {
-                    listViewTreatments.currentIndex = index;
-                    currentTreatment = display.toString();
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 25
+                text: "Диагноз"
+            }
+
+            ListView
+            {
+                id: listViewDiagnoses
+
+                Component.onCompleted: function()
+                {
+                    highlightMoveDuration = 0;
+                    currentDiagnosis = backend.getGlossaryDiagnosisAt(0);
+                }
+
+                anchors
+                {
+                    fill: parent
+                    left: parent.left
+                    right: parent.right
+                    top: labelListViewDiagnoses.bottom
+                    topMargin: 55
+                    bottomMargin: listViewBottomMargin
+                }
+
+                clip: true
+                model: glossaryDiagnosesListModel
+                spacing: 15
+
+                delegate: Text
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewDiagnoses.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewDiagnoses.currentIndex = index;
+                            currentDiagnosis = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+
+            GlossaryEditPanel
+            {
+                id: editPanelDiagnoses
+
+                anchors
+                {
+                    top: listViewDiagnoses.bottom
+                    left: listViewDiagnoses.left
+                    right: listViewDiagnoses.right
+                    topMargin: 5
                 }
             }
         }
 
-        highlight: Rectangle
+        Rectangle
         {
-            anchors
+            id: listTreatments
+
+            Layout.minimumWidth: 50
+            Layout.fillWidth: true
+            color: listViewBackgroundColor
+
+            Text
             {
-                left: parent.left
-                right: parent.right
+                id: labelListViewTreatments
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 25
+                text: "Терапия"
             }
-            color: "lightsteelblue"
+
+            ListView
+            {
+                id: listViewTreatments
+
+                Component.onCompleted: function()
+                {
+                    highlightMoveDuration = 0;
+                    currentTreatment = backend.getGlossaryTreatmentAt(0);
+                }
+
+                anchors
+                {
+                    fill: parent
+                    left: parent.left
+                    right: parent.right
+                    top: labelListViewTreatments.bottom
+                    topMargin: 55
+                    bottomMargin: listViewBottomMargin
+                }
+
+                clip: true
+                model: glossaryTreatmentsListModel
+                spacing: 15
+
+                delegate: Text
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewTreatments.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewTreatments.currentIndex = index;
+                            currentTreatment = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+
+            GlossaryEditPanel
+            {
+                id: editPanelTreatments
+
+                anchors
+                {
+                    top: listViewTreatments.bottom
+                    left: listViewTreatments.left
+                    right: listViewTreatments.right
+                    topMargin: 5
+                }
+            }
         }
-    }
 
-    GlossaryEditPanel
-    {
-        id: editPanelTreatments
-
-        anchors
+        Rectangle
         {
-            top: listViewTreatments.bottom
-            left: listViewTreatments.left
-            right: listViewTreatments.right
-            topMargin: 5
+            id: listSymptoms
+
+            width: 300
+            Layout.maximumWidth: 900
+            Layout.minimumWidth: 150
+            color: listViewBackgroundColor
+
+            Text
+            {
+                id: labelListViewSymptoms
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 25
+                text: "Симптомы"
+            }
+
+            ListView
+            {
+                id: listViewSymptoms
+
+                Component.onCompleted: function()
+                {
+                    highlightMoveDuration = 0;
+                    currentSymptom = backend.getGlossarySymptomAt(0);
+                }
+
+                anchors
+                {
+                    fill: parent
+                    left: parent.left
+                    right: parent.right
+                    top: labelListViewSymptoms.bottom
+                    topMargin: 55
+                    bottomMargin: listViewBottomMargin
+                }
+
+                clip: true
+                model: glossarySymptomsListModel
+                spacing: 15
+
+                delegate: Text
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewSymptoms.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewSymptoms.currentIndex = index;
+                            currentSymptom = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+
+            GlossaryEditPanel
+            {
+                id: editPanelSymptoms
+
+                anchors
+                {
+                    top: listViewSymptoms.bottom
+                    left: listViewSymptoms.left
+                    right: listViewSymptoms .right
+                    topMargin: 5
+                }
+            }
         }
     }
 }
