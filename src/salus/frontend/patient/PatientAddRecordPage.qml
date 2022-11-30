@@ -4,7 +4,10 @@ import QtQuick.Controls 2.12
 import QtQml 2.12
 import salus 1.0
 
-Page {
+import "components"
+
+Page
+{
     id: root
 
     property int fontSize: 11
@@ -15,7 +18,12 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string diagnosesListColor: "#bbbbbb"
+    property string treatmentsListColor: "#bbbbbb"
+    property string symptomsListcolor: "#bbbbbb"
+
     signal returnBack()
+    signal openContextMenu();
 
     function clearTextFields()
     {
@@ -26,10 +34,48 @@ Page {
         textEditTreatment.clear();
     }
 
+    Component.onCompleted: function()
+    {
+        openContextMenu.connect(glossaryContextMenu.openMenu);
+    }
+
+    GlossaryPasteContextMenu
+    {
+        id: glossaryContextMenu
+    }
+
+    Dialog
+    {
+        id: dialogDiagnosesMenu
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выбор записи"
+        modal: true
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            id: itemDiagnosesList
+
+            anchors.fill: parent
+
+            Rectangle
+            {
+                id: testBg
+
+                anchors.fill: parent
+
+                color: diagnosesListColor
+            }
+        }
+    }
+
     Dialog
     {
         id: dialogRecordExists
-
 
         anchors.centerIn: parent
 
@@ -226,6 +272,19 @@ Page {
                    font.pointSize: fontSize
                    focus: true
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaComplaints
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -312,6 +371,19 @@ Page {
                    font.pointSize: fontSize
                    focus: true
                    placeholderText: "Пародонтоз"
+
+                   MouseArea
+                   {
+                       id: mouseAreaDiagnosis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -355,6 +427,19 @@ Page {
                    font.pointSize: fontSize
                    focus: true
                    placeholderText: "Реминерализирующая терапия, ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaTreatment
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
