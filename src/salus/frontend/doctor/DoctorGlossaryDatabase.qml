@@ -270,6 +270,7 @@ Page
         {
             backend.editGlossaryDiagnosis(currentDiagnosis.toString(), inputEditDiagnosis.text);
             currentDiagnosis = inputEditDiagnosis.text;
+            inputEditDiagnosis.text = "";
         }
     }
 
@@ -329,6 +330,7 @@ Page
         {
             backend.editGlossaryTreatment(currentTreatment.toString(), inputEditTreatment.text);
             currentTreatment = inputEditTreatment.text;
+            inputEditTreatment.text = "";
         }
     }
 
@@ -388,6 +390,7 @@ Page
         {
             backend.editGlossarySymptom(currentSymptom.toString(), inputEditSymptom.text);
             currentSymptom = inputEditSymptom.text;
+            inputEditSymptom.text = "";
         }
     }
 
@@ -446,6 +449,7 @@ Page
         onAccepted: function()
         {
             backend.addGlossaryDiagnosis(inputDiagnosis.text);
+            inputDiagnosis.text = "";
         }
     }
 
@@ -504,6 +508,7 @@ Page
         onAccepted: function()
         {
             backend.addGlossaryTreatment(inputTreatment.text);
+            inputTreatment.text = "";
         }
     }
 
@@ -562,6 +567,7 @@ Page
         onAccepted: function()
         {
             backend.addGlossarySymptom(inputSymptom.text);
+            inputSymptom.text = "";
         }
     }
 
