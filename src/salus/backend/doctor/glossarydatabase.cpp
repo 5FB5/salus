@@ -61,15 +61,11 @@ void GlossaryDatabase::editDiagnosis(QString oldData, QString newData)
     if (diagnosesList == nullptr)
         return;
 
-    QList<QString> tmp = *diagnosesList;
-
-    for (int i = 0; i < tmp.size(); i++)
+    for (int i = 0; i < diagnosesList->size(); i++)
     {
-        if (tmp[i] == oldData)
-            tmp[i] = newData;
+        if ((*diagnosesList)[i] == oldData)
+            (*diagnosesList)[i] = newData;
     }
-
-    *diagnosesList = tmp;
 }
 
 void GlossaryDatabase::editTreatment(QString oldData, QString newData)
@@ -77,15 +73,11 @@ void GlossaryDatabase::editTreatment(QString oldData, QString newData)
     if (treatmentsList == nullptr)
         return;
 
-    QList<QString> tmp = *treatmentsList;
-
-    for (int i = 0; i < tmp.size(); i++)
+    for (int i = 0; i < treatmentsList->size(); i++)
     {
-        if (tmp[i] == oldData)
-            tmp[i] = newData;
+        if ((*treatmentsList)[i] == oldData)
+            (*treatmentsList)[i] = newData;
     }
-
-    *treatmentsList = tmp;
 }
 
 void GlossaryDatabase::editSymptom(QString oldData, QString newData)
@@ -93,15 +85,11 @@ void GlossaryDatabase::editSymptom(QString oldData, QString newData)
     if (symptomsList == nullptr)
         return;
 
-    QList<QString> tmp = *symptomsList;
-
-    for (int i = 0; i < tmp.size(); i++)
+    for (int i = 0; i < symptomsList->size(); i++)
     {
-        if (tmp[i] == oldData)
-            tmp[i] = newData;
+        if ((*symptomsList)[i] == oldData)
+            (*symptomsList)[i] = newData;
     }
-
-    *symptomsList = tmp;
 }
 
 void GlossaryDatabase::deleteDiagnosis(QString data)
