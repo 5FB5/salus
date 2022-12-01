@@ -43,7 +43,6 @@ public:
     void editTreatment(QString oldData, QString newData);
     void editSymptom(QString oldData, QString newData);
 
-
     void deleteDiagnosis(QString data);
     void deleteTreatment(QString data);
     void deleteSymptom(QString data);
