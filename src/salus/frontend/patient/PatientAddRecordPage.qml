@@ -22,6 +22,9 @@ Page
     property string treatmentsListColor: "#bbbbbb"
     property string symptomsListcolor: "#bbbbbb"
 
+    property int currentGlossaryMode: 0
+    property string currentGlossaryItem: ""
+
     signal returnBack()
     signal openContextMenu();
 
@@ -34,9 +37,33 @@ Page
         textEditTreatment.clear();
     }
 
+    function initGlossaryMenu(type)
+    {
+        currentGlossaryMode = type;
+
+        switch (currentGlossaryMode)
+        {
+        case 0:
+            listViewGlossary.model = glossaryDiagnosesListModel;
+            break;
+        case 1:
+            listViewGlossary.model = glossaryTreatmentsListModel;
+            break;
+        case 2:
+            listViewGlossary.model = glossarySymptomsListModel;
+            break;
+        }
+        listViewGlossary.currentIndex = 0;
+        currentGlossaryItem = listViewGlossary.currentItem.text;
+
+        dialogGlossaryMenu.open();
+    }
+
     Component.onCompleted: function()
     {
         openContextMenu.connect(glossaryContextMenu.openMenu);
+
+        glossaryContextMenu.openGlossaryMenu.connect(initGlossaryMenu);
     }
 
     GlossaryPasteContextMenu
@@ -46,29 +73,101 @@ Page
 
     Dialog
     {
-        id: dialogDiagnosesMenu
+        id: dialogGlossaryMenu
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Вставить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
 
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Выбор записи"
+        standardButtons: Dialog.Ok | Dialog.Cancel
         modal: true
         width: 500
         height: 400
 
         contentItem: Item
         {
-            id: itemDiagnosesList
+            id: itemGlossaryList
 
             anchors.fill: parent
 
-            Rectangle
+            ListView
             {
-                id: testBg
+                id: listViewGlossary
 
-                anchors.fill: parent
+                Component.onCompleted:
+                {
+                    highlightMoveDuration = 0;
+                }
 
-                color: diagnosesListColor
+                anchors
+                {
+                    fill: parent
+                    topMargin: 50
+                }
+                clip: true
+                spacing: 15
+
+                delegate: Text
+                {
+                    id: delegateListView
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewGlossary.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewGlossary.currentIndex = index;
+                            currentGlossaryItem = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        margins: 5
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+        }
+
+        onAccepted: function()
+        {
+            switch (currentGlossaryMode)
+            {
+            case 0:
+                textEditDiagnosis.text += " " + currentGlossaryItem;
+                break;
+            case 1:
+                textEditTreatment.text += " " + currentGlossaryItem;
+                break;
+            case 2:
+                textEditComplaints.text += " " + currentGlossaryItem;
+                break;
             }
         }
     }

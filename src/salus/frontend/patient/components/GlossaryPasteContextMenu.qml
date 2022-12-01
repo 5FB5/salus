@@ -6,9 +6,7 @@ Item
 {
     id: root
 
-    signal openDiagnosesMenu()
-    signal openTreatmentsMenu()
-    signal openSymptomsMenu()
+    signal openGlossaryMenu(int type);
 
     function openMenu()
     {
@@ -25,7 +23,7 @@ Item
 
             onTriggered: function()
             {
-                openDiagnosesMenu();
+                openGlossaryMenu(0);
             }
         }
 
@@ -35,7 +33,7 @@ Item
 
             onTriggered: function()
             {
-                openTreatmentsMenu();
+                openGlossaryMenu(1);
             }
         }
 
@@ -45,7 +43,7 @@ Item
 
             onTriggered: function()
             {
-                openSymptomsMenu();
+                openGlossaryMenu(2);
             }
         }
     }
