@@ -156,7 +156,7 @@ QStringList GlossaryDatabase::getDiagnosesListModel()
     QStringList list;
 
     if (diagnosesList->isEmpty() == true)
-        return QStringList();
+        return list;
 
     for (const auto &record : *diagnosesList)
         list.append(record);
@@ -169,7 +169,7 @@ QStringList GlossaryDatabase::getTreatmentsListModel()
     QStringList list;
 
     if (treatmentsList->isEmpty() == true)
-        return QStringList();
+        return list;
 
     for (const auto &record : *treatmentsList)
         list.append(record);
@@ -182,7 +182,7 @@ QStringList GlossaryDatabase::getSymptomsListModel()
     QStringList list;
 
     if (symptomsList->isEmpty() == true)
-        return QStringList();
+        return list;
 
     for (const auto &record : *symptomsList)
         list.append(record);
