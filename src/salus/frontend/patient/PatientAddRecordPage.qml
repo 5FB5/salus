@@ -115,6 +115,7 @@ Page
                 {
                     fill: parent
                     topMargin: 50
+                    bottomMargin: 80
                 }
                 clip: true
                 spacing: 15
