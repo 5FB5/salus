@@ -20,6 +20,7 @@ private:
     QList<QString> *diagnosesList = nullptr;
     QList<QString> *treatmentsList = nullptr; // терапия
     QList<QString> *symptomsList = nullptr;
+    QList<QString> *userList = nullptr; // пользовательские формулировки
 
     QJsonDocument loadJson();
 
@@ -38,22 +39,27 @@ public:
     void addDataToDiagnosesList(QString data);
     void addDataToTreatmentsList(QString data);
     void addDataToSymptomsList(QString data);
+    void addDataToUserList(QString data);
 
     void editDiagnosis(QString oldData, QString newData);
     void editTreatment(QString oldData, QString newData);
     void editSymptom(QString oldData, QString newData);
+    void editUserListItem(QString oldData, QString newData);
 
     void deleteDiagnosis(QString data);
     void deleteTreatment(QString data);
     void deleteSymptom(QString data);
+    void deleteUserListItem(QString data);
 
     QString getDiagnosisAt(int index);
     QString getTreatmentAt(int index);
     QString getSymptomAt(int index);
+    QString getUserItemAt(int index);
 
     QStringList getDiagnosesListModel();
     QStringList getTreatmentsListModel();
     QStringList getSymptomsListModel();
+    QStringList getUserListModel();
 
 };
 

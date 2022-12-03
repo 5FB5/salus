@@ -18,6 +18,7 @@ Page
     property string currentDiagnosis: ""
     property string currentTreatment: ""
     property string currentSymptom: ""
+    property string currentUserItem: ""
 
     Component.onCompleted: function()
     {
@@ -32,6 +33,10 @@ Page
         editPanelTreatments.addRecord.connect(dialogAddTreatment.open);
         editPanelTreatments.editRecord.connect(dialogEditTreatment.open);
         editPanelTreatments.removeRecord.connect(dialogDeleteTreatment.open);
+
+        editPanelUser.addRecord.connect(dialogAddUser.open);
+        editPanelUser.editRecord.connect(dialogEditUser.open);
+        editPanelUser.removeRecord.connect(dialogDeleteUser.open);
     }
 
     Dialog
@@ -211,6 +216,66 @@ Page
         onAccepted: function()
         {
             backend.deleteGlossarySymptom(currentSymptom);
+        }
+    }
+
+    Dialog
+    {
+        id: dialogDeleteUser
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Да";
+            standardButton(Dialog.Cancel).text = "Нет";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Удаление записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelDeleteUser
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Вы точно хотите удалить запись?"
+            }
+
+            Text
+            {
+                id: labelDeleteUserData
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelDeleteUser.bottom
+                    topMargin: 15
+                }
+                font.bold: false
+                font.pixelSize: 18
+                wrapMode: Text.WordWrap
+                text: "'" + currentUserItem + "'"
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.deleteGlossaryUserFormulation(currentUserItem);
         }
     }
 
@@ -396,6 +461,66 @@ Page
 
     Dialog
     {
+        id: dialogEditUser
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Изменить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Редактирование записи"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelEditUserInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите формулировку"
+            }
+
+            TextField
+            {
+                id: inputEditUser
+
+                anchors
+                {
+                    top: labelEditUserInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.editGlossaryUserFormulation(currentUserItem.toString(), inputEditUser.text);
+            currentUserItem = inputEditUser.text;
+            inputEditUser.text = "";
+        }
+    }
+
+    Dialog
+    {
         id: dialogAddDiagnosis
 
         Component.onCompleted: function()
@@ -571,6 +696,65 @@ Page
         }
     }
 
+    Dialog
+    {
+        id: dialogAddUser
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Новая запись"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelUserInput
+
+                anchors
+                {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 18
+                text: "Введите формулировку"
+            }
+
+            TextField
+            {
+                id: inputUser
+
+                anchors
+                {
+                    top: labelUserInput.bottom
+                    horizontalCenter: parent.horizontalCenter
+                    topMargin: 15
+                }
+                width: 450
+                height: 40
+                font.pixelSize: 15
+            }
+        }
+
+        onAccepted: function()
+        {
+            backend.addGlossaryUserFormulation(inputUser.text);
+            inputUser.text = "";
+        }
+    }
+
     Text
     {
         id: labelTitle
@@ -607,6 +791,7 @@ Page
             width: 400
             Layout.maximumWidth: 900
             Layout.minimumWidth: 150
+            clip: true
             color: listViewBackgroundColor
 
             Text
@@ -704,8 +889,10 @@ Page
         {
             id: listTreatments
 
+            width: 200
             Layout.minimumWidth: 50
-            Layout.fillWidth: true
+//            Layout.fillWidth: true
+            clip: true
             color: listViewBackgroundColor
 
             Text
@@ -806,6 +993,7 @@ Page
             width: 300
             Layout.maximumWidth: 900
             Layout.minimumWidth: 150
+            clip: true
             color: listViewBackgroundColor
 
             Text
@@ -894,6 +1082,111 @@ Page
                     top: listViewSymptoms.bottom
                     left: listViewSymptoms.left
                     right: listViewSymptoms .right
+                    topMargin: 5
+                }
+            }
+        }
+
+        Rectangle
+        {
+            id: listUser
+
+            width: 300
+            Layout.maximumWidth: 900
+            Layout.minimumWidth: 150
+            clip: true
+            color: listViewBackgroundColor
+
+            Text
+            {
+                id: labelListViewUser
+
+                anchors
+                {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    topMargin: 15
+                    leftMargin: 15
+                    rightMargin: 15
+                }
+                font.bold: true
+                font.pixelSize: 25
+                wrapMode: Text.WordWrap
+                text: "Пользоват. формулировки"
+            }
+
+            ListView
+            {
+                id: listViewUser
+
+                Component.onCompleted: function()
+                {
+                    highlightMoveDuration = 0;
+                    currentSymptom = backend.getGlossaryUserFormulationAt(0);
+                }
+
+                anchors
+                {
+                    fill: parent
+                    left: parent.left
+                    right: parent.right
+                    top: labelListViewUser.bottom
+                    topMargin: 75
+                    bottomMargin: listViewBottomMargin
+                }
+
+                clip: true
+                model: glossaryUserListModel
+                spacing: 15
+
+                delegate: Text
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewUser.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewUser.currentIndex = index;
+                            currentUserItem = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+
+            GlossaryEditPanel
+            {
+                id: editPanelUser
+
+                anchors
+                {
+                    top: listViewUser.bottom
+                    left: listViewUser.left
+                    right: listViewUser.right
                     topMargin: 5
                 }
             }

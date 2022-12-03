@@ -46,5 +46,15 @@ Item
                 openGlossaryMenu(2);
             }
         }
+
+        MenuItem
+        {
+            text: "Вставить свою формулировку"
+
+            onTriggered: function()
+            {
+                openGlossaryMenu(3);
+            }
+        }
     }
 }

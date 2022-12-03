@@ -25,6 +25,8 @@ Page
     property string recordDiseases: ""
     property string recordTreatment: ""
 
+    property Item currentTextEditItem
+
     property int currentGlossaryMode: 0
     property string currentGlossaryItem: ""
 
@@ -59,7 +61,11 @@ Page
         case 2:
             listViewGlossary.model = glossarySymptomsListModel;
             break;
+        case 3:
+            listViewGlossary.model = glossaryUserListModel;
+            break;
         }
+
         listViewGlossary.currentIndex = 0;
         currentGlossaryItem = listViewGlossary.currentItem.text;
 
@@ -164,18 +170,10 @@ Page
 
         onAccepted: function()
         {
-            switch (currentGlossaryMode)
-            {
-            case 0:
-                textEditDiagnosis.text += " " + currentGlossaryItem;
-                break;
-            case 1:
-                textEditTreatment.text += " " + currentGlossaryItem;
-                break;
-            case 2:
-                textEditComplaints.text += " " + currentGlossaryItem;
-                break;
-            }
+            if (!currentTextEditItem)
+                return;
+
+            currentTextEditItem.text += " " + currentGlossaryItem;
         }
     }
 
@@ -344,6 +342,19 @@ Page
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
                    text: recordAnamnesis
 
+                   MouseArea
+                   {
+                       id: mouseAreaAnamnesis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentTextEditItem = textEditAnamnesis;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -398,6 +409,7 @@ Page
                        acceptedButtons: Qt.RightButton
                        onClicked: function()
                        {
+                           currentTextEditItem = textEditComplaints;
                            openContextMenu();
                        }
                    }
@@ -445,6 +457,20 @@ Page
                    focus: true
                    placeholderText: "Пульпит, Гингивит, ..."
                    text: recordDiseases
+
+                   MouseArea
+                   {
+                       id: mouseAreaDiseases
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentTextEditItem = textEditDiseases;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -499,6 +525,7 @@ Page
                        acceptedButtons: Qt.RightButton
                        onClicked: function()
                        {
+                           currentTextEditItem = textEditDiagnosis;
                            openContextMenu();
                        }
                    }
@@ -556,6 +583,7 @@ Page
                        acceptedButtons: Qt.RightButton
                        onClicked: function()
                        {
+                           currentTextEditItem = textEditTreatment;
                            openContextMenu();
                        }
                    }
