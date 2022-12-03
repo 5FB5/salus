@@ -1091,8 +1091,8 @@ Page
         {
             id: listUser
 
-            width: 300
-            Layout.maximumWidth: 900
+            width: 500
+            Layout.maximumWidth: root.width
             Layout.minimumWidth: 150
             clip: true
             color: listViewBackgroundColor
