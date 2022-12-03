@@ -39,6 +39,7 @@ Page
         editPanelUser.removeRecord.connect(dialogDeleteUser.open);
     }
 
+    // FIXME: Сделать 3 окна на каждое действие, меняя только на требуемые данные
     Dialog
     {
         id: dialogDeleteDiagnosis
@@ -788,7 +789,7 @@ Page
         {
             id: listDiagnoses
 
-            width: 400
+            width: 200
             Layout.maximumWidth: 900
             Layout.minimumWidth: 150
             clip: true
@@ -990,7 +991,7 @@ Page
         {
             id: listSymptoms
 
-            width: 300
+            width: 200
             Layout.maximumWidth: 900
             Layout.minimumWidth: 150
             clip: true
@@ -1091,7 +1092,7 @@ Page
         {
             id: listUser
 
-            width: 500
+            width: 200
             Layout.maximumWidth: root.width
             Layout.minimumWidth: 150
             clip: true
