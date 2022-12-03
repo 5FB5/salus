@@ -19,41 +19,55 @@ Item
 
         MenuItem
         {
-            text: "Вставить диагноз"
+            id: menuAddTextToGlossary
 
-            onTriggered: function()
-            {
-                openGlossaryMenu(0);
-            }
+            text: "Добавить текст в глоссарий"
         }
 
-        MenuItem
+        Menu
         {
-            text: "Вставить терапию"
+            id: menuInsert
 
-            onTriggered: function()
+            title: "Вставить"
+
+            MenuItem
             {
-                openGlossaryMenu(1);
+                text: "Диагноз"
+
+                onTriggered: function()
+                {
+                    openGlossaryMenu(0);
+                }
             }
-        }
 
-        MenuItem
-        {
-            text: "Вставить симптом"
-
-            onTriggered: function()
+            MenuItem
             {
-                openGlossaryMenu(2);
+                text: "Терапию"
+
+                onTriggered: function()
+                {
+                    openGlossaryMenu(1);
+                }
             }
-        }
 
-        MenuItem
-        {
-            text: "Вставить свою формулировку"
-
-            onTriggered: function()
+            MenuItem
             {
-                openGlossaryMenu(3);
+                text: "Симптом"
+
+                onTriggered: function()
+                {
+                    openGlossaryMenu(2);
+                }
+            }
+
+            MenuItem
+            {
+                text: "Свою формулировку"
+
+                onTriggered: function()
+                {
+                    openGlossaryMenu(3);
+                }
             }
         }
     }
