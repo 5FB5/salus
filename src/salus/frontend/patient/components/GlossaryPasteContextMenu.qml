@@ -7,6 +7,7 @@ Item
     id: root
 
     signal openGlossaryMenu(int type);
+    signal openAddTextToGlossaryMenu();
 
     function openMenu()
     {
@@ -22,6 +23,11 @@ Item
             id: menuAddTextToGlossary
 
             text: "Добавить текст в глоссарий"
+
+            onTriggered: function()
+            {
+                openAddTextToGlossaryMenu();
+            }
         }
 
         Menu
