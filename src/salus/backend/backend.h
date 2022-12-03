@@ -9,6 +9,8 @@
 #include <QString>
 
 #include "doctor/doctordatabase.h"
+#include "doctor/glossarydatabase.h"
+
 #include "patient/patientdatabase.h"
 #include "patient/patientlistmodel.h"
 
@@ -39,9 +41,16 @@ class Backend : public QObject
 
 private:
     DoctorDataBase doctorDb;
+    GlossaryDatabase *glossaryDb;
+
     PatientDataBase *patientsDb;
     PatientListModel *patientListModel;
+
     QStringListModel *patientRecordsListModel;
+    QStringListModel *glossaryDiagnosesListModel;
+    QStringListModel *glossaryTreatmentsListModel;
+    QStringListModel *glossarySymptomsListModel;
+    QStringListModel *glossaryUserListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -103,22 +112,65 @@ public slots:
     bool addNewRecord(QString date, QString anamnesis, QString complaints,
                       QString diseases, QString diagnosis, QString treatment);
 
+    void addGlossaryDiagnosis(QString data);
+    void addGlossaryTreatment(QString data);
+    void addGlossarySymptom(QString data);
+    void addGlossaryUserFormulation(QString data);
+
+    void editGlossaryDiagnosis(QString oldData, QString newData);
+    void editGlossaryTreatment(QString oldData, QString newData);
+    void editGlossarySymptom(QString oldData, QString newData);
+    void editGlossaryUserFormulation(QString oldData, QString newData);
+
+    void deleteGlossaryDiagnosis(QString data);
+    void deleteGlossaryTreatment(QString data);
+    void deleteGlossarySymptom(QString data);
+    void deleteGlossaryUserFormulation(QString data);
+
+    QStringList getCurrentPatientRecords();
+    QStringList getGlossaryDiagnosesList();
+    QStringList getGlossaryTreatmentsList();
+    QStringList getGlossarySymptomsList();
+    QStringList getGlossaryUserList();
+
+    QString getGlossaryDiagnosisAt(int index);
+    QString getGlossaryTreatmentAt(int index);
+    QString getGlossarySymptomAt(int index);
+    QString getGlossaryUserFormulationAt(int index);
+
     QString getRecordAnamnesis(QString recordDate);
     QString getRecordComplaints(QString recordDate);
     QString getRecordDiagnosis(QString recordDate);
     QString getRecordDiseases(QString recordDate);
     QString getRecordTreatment(QString recordDate);
 
-    QStringList getCurrentPatientRecords();
-
 signals:
     void profileAdded();
+
     void patientAdded();
     void patientDeleted();
+
     void recordAdded();
     void recordUpdated();
     void recordDeleted();
+
     void changeDoctorProfile();
+
+    void glossaryDiagnosisAdded();
+    void glossaryTreatmentAdded();
+    void glossarySymptomAdded();
+    void glossaryUserFormulationAdded();
+
+    void glossaryDiagnosisChanged();
+    void glossaryTreatmentChanged();
+    void glossarySymptomChanged();
+    void glossaryUserFormulationChanged();
+
+    void glossaryDiagnosisDeleted();
+    void glossaryTreatmentDeleted();
+    void glossarySymptomDeleted();
+    void glossaryUserFormulationDeleted();
+
 };
 
 #endif // BACKEND_H

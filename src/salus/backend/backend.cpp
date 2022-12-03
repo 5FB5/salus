@@ -9,12 +9,24 @@ Backend::Backend(QObject *parent) : QObject(parent)
             currentDoctorInn = doctorDb.getInn();
     }
 
+    glossaryDb = new GlossaryDatabase;
     patientsDb = new PatientDataBase;
+
     patientListModel = new PatientListModel;
     patientRecordsListModel = new QStringListModel();
 
+    glossaryDiagnosesListModel = new QStringListModel();
+    glossaryTreatmentsListModel = new QStringListModel();
+    glossarySymptomsListModel = new QStringListModel();
+    glossaryUserListModel = new QStringListModel();
+
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
+
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+    glossarySymptomsListModel->setStringList(getGlossarySymptomsList());
+    glossaryUserListModel->setStringList(getGlossaryUserList());
 }
 
 Backend::~Backend()
@@ -25,6 +37,11 @@ Backend::~Backend()
     delete patientListModel;
     delete patientRecordsListModel;
     delete patientsDb;
+    delete glossaryDiagnosesListModel;
+    delete glossaryTreatmentsListModel;
+    delete glossarySymptomsListModel;
+    delete glossaryUserListModel;
+    delete glossaryDb;
 }
 
 /**
@@ -42,6 +59,18 @@ void Backend::addPropertiesToContext(QQmlContext *context)
 
     qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("patientRecordsListModel", patientRecordsListModel);
+
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("glossaryDiagnosesListModel", glossaryDiagnosesListModel);
+
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("glossaryTreatmentsListModel", glossaryTreatmentsListModel);
+
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("glossarySymptomsListModel", glossarySymptomsListModel);
+
+    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("glossaryUserListModel", glossaryUserListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -167,6 +196,138 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     return false;
 }
 
+void Backend::addGlossaryDiagnosis(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToDiagnosesList(data);
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+
+    emit glossaryDiagnosisAdded();
+}
+
+void Backend::addGlossaryTreatment(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToTreatmentsList(data);
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+
+    emit glossaryTreatmentAdded();
+}
+
+void Backend::editGlossaryDiagnosis(QString oldData, QString newData)
+{
+    if (glossaryDb == nullptr || oldData == "")
+        return;
+
+    glossaryDb->editDiagnosis(oldData, newData);
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+
+    emit glossaryDiagnosisChanged();
+}
+
+void Backend::editGlossaryTreatment(QString oldData, QString newData)
+{
+    if (glossaryDb == nullptr || oldData == "")
+        return;
+
+    glossaryDb->editTreatment(oldData, newData);
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+
+    emit glossaryTreatmentChanged();
+}
+
+void Backend::editGlossarySymptom(QString oldData, QString newData)
+{
+    if (glossaryDb == nullptr || oldData == "")
+        return;
+
+    glossaryDb->editSymptom(oldData, newData);
+    glossarySymptomsListModel->setStringList(getGlossarySymptomsList());
+
+    emit glossarySymptomChanged();
+}
+
+void Backend::editGlossaryUserFormulation(QString oldData, QString newData)
+{
+    if (glossaryDb == nullptr || oldData == "")
+        return;
+
+    glossaryDb->editUserListItem(oldData, newData);
+    glossaryUserListModel->setStringList(getGlossaryUserList());
+
+    emit glossaryUserFormulationChanged();
+}
+
+void Backend::addGlossarySymptom(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToSymptomsList(data);
+    glossarySymptomsListModel->setStringList(getGlossarySymptomsList());
+
+    emit glossarySymptomAdded();
+}
+
+void Backend::addGlossaryUserFormulation(QString data)
+{
+    if (glossaryDb == nullptr)
+        return;
+
+    glossaryDb->addDataToUserList(data);
+    glossaryUserListModel->setStringList(getGlossaryUserList());
+
+    emit glossaryUserFormulationAdded();
+}
+
+void Backend::deleteGlossaryDiagnosis(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteDiagnosis(data);
+    glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
+
+    emit glossaryDiagnosisDeleted();
+}
+
+void Backend::deleteGlossaryTreatment(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteTreatment(data);
+    glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
+
+    emit glossaryTreatmentDeleted();
+}
+
+void Backend::deleteGlossarySymptom(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteSymptom(data);
+    glossarySymptomsListModel->setStringList(getGlossarySymptomsList());
+
+    emit glossarySymptomDeleted();
+}
+
+void Backend::deleteGlossaryUserFormulation(QString data)
+{
+    if (glossaryDb == nullptr || data == "")
+        return;
+
+    glossaryDb->deleteUserListItem(data);
+    glossaryUserListModel->setStringList(getGlossaryUserList());
+
+    emit glossaryUserFormulationDeleted();
+}
+
 /**
  * @brief Удаляет выбранного пациента из БД.
  */
@@ -286,6 +447,26 @@ QStringList Backend::getCurrentPatientRecords()
     return patientsDb->getRecordsList(currentPatientBirthDate);
 }
 
+QStringList Backend::getGlossaryDiagnosesList()
+{
+    return glossaryDb->getDiagnosesListModel();
+}
+
+QStringList Backend::getGlossaryTreatmentsList()
+{
+    return glossaryDb->getTreatmentsListModel();
+}
+
+QStringList Backend::getGlossarySymptomsList()
+{
+    return glossaryDb->getSymptomsListModel();
+}
+
+QStringList Backend::getGlossaryUserList()
+{
+    return glossaryDb->getUserListModel();
+}
+
 QString Backend::getRecordAnamnesis(QString recordDate)
 {
     return patientsDb->getAnamnesis(currentPatientBirthDate, recordDate);
@@ -309,4 +490,24 @@ QString Backend::getRecordDiseases(QString recordDate)
 QString Backend::getRecordTreatment(QString recordDate)
 {
     return patientsDb->getTreatment(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getGlossaryDiagnosisAt(int index)
+{
+    return glossaryDb->getDiagnosisAt(index);
+}
+
+QString Backend::getGlossaryTreatmentAt(int index)
+{
+    return glossaryDb->getTreatmentAt(index);
+}
+
+QString Backend::getGlossarySymptomAt(int index)
+{
+    return glossaryDb->getSymptomAt(index);
+}
+
+QString Backend::getGlossaryUserFormulationAt(int index)
+{
+    return glossaryDb->getUserItemAt(index);
 }

@@ -4,7 +4,10 @@ import QtQuick.Controls 2.12
 import QtQml 2.12
 import salus 1.0
 
-Page {
+import "components"
+
+Page
+{
     id: root
 
     property int fontSize: 11
@@ -15,7 +18,18 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string diagnosesListColor: "#bbbbbb"
+    property string treatmentsListColor: "#bbbbbb"
+    property string symptomsListcolor: "#bbbbbb"
+
+    property Item currentTextEditItem
+
+    property int currentGlossaryMode: 0
+    property string currentGlossaryItem: ""
+    property string currentSelectedText: ""
+
     signal returnBack()
+    signal openContextMenu();
 
     function clearTextFields()
     {
@@ -26,10 +40,247 @@ Page {
         textEditTreatment.clear();
     }
 
+    function initGlossaryMenu(type)
+    {
+        currentGlossaryMode = type;
+
+        switch (currentGlossaryMode)
+        {
+        case 0:
+            listViewGlossary.model = glossaryDiagnosesListModel;
+            break;
+        case 1:
+            listViewGlossary.model = glossaryTreatmentsListModel;
+            break;
+        case 2:
+            listViewGlossary.model = glossarySymptomsListModel;
+            break;
+        case 3:
+            listViewGlossary.model = glossaryUserListModel;
+            break;
+        }
+
+        listViewGlossary.currentIndex = 0;
+        currentGlossaryItem = listViewGlossary.currentItem.text;
+
+        dialogGlossaryMenu.open();
+    }
+
+    function openAddTextToGlossaryMenu()
+    {
+        if (currentSelectedText === "")
+            return;
+
+        dialogAddTextToGlossary.open();
+    }
+
+    Component.onCompleted: function()
+    {
+        openContextMenu.connect(glossaryContextMenu.openMenu);
+
+        glossaryContextMenu.openGlossaryMenu.connect(initGlossaryMenu);
+        glossaryContextMenu.openAddTextToGlossaryMenu.connect(openAddTextToGlossaryMenu);
+    }
+
+    GlossaryPasteContextMenu
+    {
+        id: glossaryContextMenu
+    }
+
+
+    Dialog
+    {
+        id: dialogAddTextToGlossary
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выберите словарь"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        width: 500
+        height: 400
+
+        onAccepted: function()
+        {
+            var comboboxText = comboBoxChooseGlossary.currentText;
+
+            switch (comboboxText)
+            {
+            case "Диагноз":
+                backend.addGlossaryDiagnosis(currentSelectedText);
+                break;
+
+            case "Терапия":
+                backend.addGlossaryTreatment(currentSelectedText);
+                break;
+
+            case "Симптомы":
+                backend.addGlossarySymptom(currentSelectedText);
+                break;
+
+            case "Пользоват. формулировки":
+                backend.addGlossaryUserFormulation(currentSelectedText);
+                break;
+            }
+        }
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelChooseGlossary
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    topMargin: 5
+                }
+                font.pixelSize: 17
+                wrapMode: Text.WordWrap
+                text: "В какой словарь добавить текст?"
+            }
+
+            Text
+            {
+                id: labelChooseGlossaryText
+
+                anchors
+                {
+                    top: labelChooseGlossary.bottom
+                    topMargin: 5
+                }
+                width: parent.width
+                height: 50
+                font.pixelSize: 17
+                wrapMode: Text.WordWrap
+                elide: Text.ElideRight
+                text: currentSelectedText
+            }
+
+            ComboBox
+            {
+                id: comboBoxChooseGlossary
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelChooseGlossaryText.bottom
+                    topMargin: 15
+                    leftMargin: 5
+                    rightMargin: 5
+                }
+                model: ["Диагноз", "Терапия", "Симптомы", "Пользоват. формулировки"]
+            }
+        }
+    }
+
+    Dialog
+    {
+        id: dialogGlossaryMenu
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Вставить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выбор записи"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            id: itemGlossaryList
+
+            anchors.fill: parent
+
+            ListView
+            {
+                id: listViewGlossary
+
+                Component.onCompleted:
+                {
+                    highlightMoveDuration = 0;
+                }
+
+                anchors
+                {
+                    fill: parent
+                    topMargin: 50
+                    bottomMargin: 80
+                }
+                clip: true
+                spacing: 15
+
+                delegate: Text
+                {
+                    id: delegateListView
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewGlossary.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewGlossary.currentIndex = index;
+                            currentGlossaryItem = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        margins: 5
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+        }
+
+        onAccepted: function()
+        {
+            if (!currentTextEditItem)
+                return;
+
+            currentTextEditItem.text += " " + currentGlossaryItem;
+        }
+    }
+
     Dialog
     {
         id: dialogRecordExists
-
 
         anchors.centerIn: parent
 
@@ -180,9 +431,24 @@ Page {
                {
                    id: textEditAnamnesis
 
-                   focus: true
+                   selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaAnamnesis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditAnamnesis.selectedText;
+                           currentTextEditItem = textEditAnamnesis;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -223,9 +489,24 @@ Page {
                {
                    id: textEditComplaints
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-                   focus: true
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaComplaints
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditComplaints.selectedText;
+                           currentTextEditItem = textEditComplaints;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -266,9 +547,24 @@ Page {
                {
                    id: textEditDiseases
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-                   focus: true
                    placeholderText: "Пульпит, Гингивит, ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaDiseases
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditDiseases.selectedText;
+                           currentTextEditItem = textEditDiseases;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -309,9 +605,24 @@ Page {
                {
                    id: textEditDiagnosis
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-                   focus: true
                    placeholderText: "Пародонтоз"
+
+                   MouseArea
+                   {
+                       id: mouseAreaDiagnosis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditDiagnosis.selectedText;
+                           currentTextEditItem = textEditDiagnosis;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
@@ -352,9 +663,24 @@ Page {
                {
                    id: textEditTreatment
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-                   focus: true
                    placeholderText: "Реминерализирующая терапия, ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaTreatment
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditTreatment.selectedText;
+                           currentTextEditItem = textEditTreatment;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }

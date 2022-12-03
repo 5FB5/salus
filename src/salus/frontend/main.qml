@@ -48,7 +48,7 @@ ApplicationWindow
 
     function setDataToDiary()
     {
-        stack_content_main.currentIndex = 6;
+        stack_content_main.currentIndex = 5;
         page_patient_add_record.clearTextFields();
     }
 
@@ -97,23 +97,19 @@ ApplicationWindow
         height: applicationWindow.height
 
         // По умолчанию отображается окно амбулаторной карты
-        currentIndex: 3
+        currentIndex: 2
 
         DoctorProfilePage // 0
         {
             id: page_doctor_profile
         }
 
-        DoctorDiagnosesDataBase // 3
+        DoctorGlossaryDatabase // 1
         {
-            id: page_doctor_diagnoses
+            id: page_doctor_glossary
         }
 
-        DoctorTreatmentsDatabase { // 2
-            id: page_doctor_treatments
-        }
-
-        PatientSearchMedicalCardPage // 3
+        PatientSearchMedicalCardPage // 2
         {
             id: page_medical_card_search
 
@@ -126,7 +122,7 @@ ApplicationWindow
 
                 backend.setPatient(fullname);
                 page_patient_medical_card_main.updatePatientData();
-                stack_content_main.currentIndex = 5;
+                stack_content_main.currentIndex = 4;
 
             }
 
@@ -135,27 +131,27 @@ ApplicationWindow
                 console.log("Salus: [QML](PatientSearchMedicalCardPage -> registerMedicalCard) - Open registration page for " + fullname + "...\n");
 
                 page_patient_registration.patientFullName = fullname;
-                stack_content_main.currentIndex = 4;
+                stack_content_main.currentIndex = 3;
             }
         }
 
-        PatientMedicalCardRegistrationPage // 4
+        PatientMedicalCardRegistrationPage // 3
         {
             id: page_patient_registration
 
             onReturnBack: function()
             {
-                stack_content_main.currentIndex = 3;
+                stack_content_main.currentIndex = 2;
             }
        }
 
-        PatientMedicalCardMain // 5
+        PatientMedicalCardMain // 4
         {
             id: page_patient_medical_card_main
 
             onReturnBack: function()
             {
-                stack_content_main.currentIndex = 3;
+                stack_content_main.currentIndex = 2;
             }
 
             // Диалоговое окно для подтверждения удаления пациента из БД
@@ -184,7 +180,7 @@ ApplicationWindow
                 onAccepted: function()
                 {
                     backend.deletePatient();
-                    stack_content_main.currentIndex = 3;
+                    stack_content_main.currentIndex = 2;
                 }
             }
 
@@ -193,7 +189,7 @@ ApplicationWindow
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n");
 
                 page_patient_medical_card_diary.updatePatientData();
-                stack_content_main.currentIndex = 6;
+                stack_content_main.currentIndex = 5;
 
                 console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n");
             }
@@ -204,18 +200,18 @@ ApplicationWindow
             }
         }
 
-        PatientMedicalCardDiary // 6
+        PatientMedicalCardDiary // 5
         {
             id: page_patient_medical_card_diary
 
             onReturnBack: function()
             {
-                stack_content_main.currentIndex = 5;
+                stack_content_main.currentIndex = 4;
             }
 
             onOpenAddRecordPage: function()
             {
-                stack_content_main.currentIndex = 7;
+                stack_content_main.currentIndex = 6;
             }
 
             onOpenEditPage: function()
@@ -224,32 +220,32 @@ ApplicationWindow
 
                 page_patient_edit_record.recordDate = currentRecord;
                 page_patient_edit_record.updateRecordData();
-                stack_content_main.currentIndex = 8;
+                stack_content_main.currentIndex = 7;
             }
         }
 
-        PatientAddRecordPage // 7
+        PatientAddRecordPage // 6
         {
             id: page_patient_add_record
 
             onReturnBack: function()
             {
-                stack_content_main.currentIndex = 6;
+                stack_content_main.currentIndex = 5;
             }
         }
 
-        PatientEditRecordPage // 8
+        PatientEditRecordPage // 7
         {
             id: page_patient_edit_record
 
             onReturnBack: function()
             {
-                stack_content_main.currentIndex = 6;
+                stack_content_main.currentIndex = 5;
             }
 
             onRecordUpdated: function()
             {
-                stack_content_main.currentIndex = 6;
+                stack_content_main.currentIndex = 5;
             }
         }
     }
@@ -310,7 +306,7 @@ ApplicationWindow
             anchors
             {
                 top: parent.top
-                topMargin: buttonsTopMargin + 100
+                topMargin: buttonsTopMargin + 230
             }
             font.pointSize: 12
             width: parent.width
@@ -319,48 +315,27 @@ ApplicationWindow
 
             onClicked: function()
             {
-                stack_content_main.currentIndex = 3;
+                stack_content_main.currentIndex = 2;
             }
         }
 
         Button
         {
-            id: button_diagnoses_database
+            id: button_glossary
 
             anchors
             {
-                top: parent.top
-                topMargin: buttonsTopMargin + 200
+                top: button_patient_card.bottom
+                topMargin: buttonsTopMargin + 25
             }
             font.pointSize: 12
             width: parent.width
             height: 60
-            text: "База диагнозов"
+            text: "Глоссарий"
 
             onClicked: function()
             {
                 stack_content_main.currentIndex = 1;
-            }
-        }
-
-        Button
-        {
-            id: button_treatments_database
-
-            anchors
-            {
-                top: parent.top
-                topMargin: buttonsTopMargin + 300
-            }
-
-            font.pointSize: 12
-            width: parent.width
-            height: 60
-            text: "База вариантов лечения"
-
-            onClicked: function()
-            {
-                stack_content_main.currentIndex = 2;
             }
         }
     }
