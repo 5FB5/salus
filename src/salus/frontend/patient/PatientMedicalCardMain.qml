@@ -35,6 +35,8 @@ Page
         patientAddress = backend.currentPatientAddress;
         patientPhoneNumber = backend.currentPatientPhoneNumber;
         patientOccupation = backend.currentPatientOccupation;
+
+        backend.sortPatientRecordListModel();
     }
 
     Button
