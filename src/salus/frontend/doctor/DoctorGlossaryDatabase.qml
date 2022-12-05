@@ -15,10 +15,11 @@ Page
     property int standartTextSize: 14
     property int listViewBottomMargin: 150
     property string listViewBackgroundColor: "#bbbbbb"
+
     property string currentDiagnosis: ""
     property string currentTreatment: ""
     property string currentSymptom: ""
-    property string currentUserItem: ""
+    property string currentUserFormulation: ""
 
     Component.onCompleted: function()
     {
@@ -270,13 +271,13 @@ Page
                 font.bold: false
                 font.pixelSize: 18
                 wrapMode: Text.WordWrap
-                text: "'" + currentUserItem + "'"
+                text: "'" + currentUserFormulation + "'"
             }
         }
 
         onAccepted: function()
         {
-            backend.deleteGlossaryUserFormulation(currentUserItem);
+            backend.deleteGlossaryUserFormulation(currentUserFormulation);
         }
     }
 
@@ -514,8 +515,8 @@ Page
 
         onAccepted: function()
         {
-            backend.editGlossaryUserFormulation(currentUserItem.toString(), inputEditUser.text);
-            currentUserItem = inputEditUser.text;
+            backend.editGlossaryUserFormulation(currentUserFormulation.toString(), inputEditUser.text);
+            currentUserFormulation = inputEditUser.text;
             inputEditUser.text = "";
         }
     }
@@ -817,6 +818,9 @@ Page
                 Component.onCompleted: function()
                 {
                     highlightMoveDuration = 0;
+
+                    // Чтобы если мы ещё не выбрали элемент,
+                    // то при нажатии на изменение или удаление работали с первым элементом
                     currentDiagnosis = backend.getGlossaryDiagnosisAt(0);
                 }
 
@@ -892,7 +896,6 @@ Page
 
             width: 200
             Layout.minimumWidth: 50
-//            Layout.fillWidth: true
             clip: true
             color: listViewBackgroundColor
 
@@ -918,6 +921,8 @@ Page
                 Component.onCompleted: function()
                 {
                     highlightMoveDuration = 0;
+                    // Чтобы если мы ещё не выбрали элемент,
+                    // то при нажатии на изменение или удаление работали с первым элементом
                     currentTreatment = backend.getGlossaryTreatmentAt(0);
                 }
 
@@ -1019,6 +1024,8 @@ Page
                 Component.onCompleted: function()
                 {
                     highlightMoveDuration = 0;
+                    // Чтобы если мы ещё не выбрали элемент,
+                    // то при нажатии на изменение или удаление работали с первым элементом
                     currentSymptom = backend.getGlossarySymptomAt(0);
                 }
 
@@ -1124,7 +1131,9 @@ Page
                 Component.onCompleted: function()
                 {
                     highlightMoveDuration = 0;
-                    currentSymptom = backend.getGlossaryUserFormulationAt(0);
+                    // Чтобы если мы ещё не выбрали элемент,
+                    // то при нажатии на изменение или удаление работали с первым элементом
+                    currentUserFormulation = backend.getGlossaryUserFormulationAt(0);
                 }
 
                 anchors
@@ -1163,7 +1172,7 @@ Page
                         onClicked: function()
                         {
                             listViewUser.currentIndex = index;
-                            currentUserItem = display.toString();
+                            currentUserFormulation = display.toString();
                         }
                     }
                 }
