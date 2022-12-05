@@ -40,11 +40,20 @@ Page
         if (recordDate === "")
             return;
 
-        recordAnamnesis = backend.getRecordAnamnesis(recordDate);
-        recordComplaints = backend.getRecordComplaints(recordDate);
-        recordDiagnosis = backend.getRecordDiagnosis(recordDate);
-        recordDiseases = backend.getRecordDiseases(recordDate);
-        recordTreatment = backend.getRecordTreatment(recordDate);
+        textEditAnamnesis.text = backend.getRecordAnamnesis(recordDate);
+        textEditComplaints.text = backend.getRecordComplaints(recordDate);
+        textEditDiagnosis.text = backend.getRecordDiagnosis(recordDate);
+        textEditDiseases.text = backend.getRecordDiseases(recordDate);
+        textEditTreatment.text = backend.getRecordTreatment(recordDate);
+    }
+
+    function clearTextFields()
+    {
+        textEditAnamnesis.clear();
+        textEditComplaints.clear();
+        textEditDiagnosis.clear();
+        textEditDiseases.clear();
+        textEditTreatment.clear();
     }
 
     function initGlossaryMenu(type)
@@ -447,7 +456,7 @@ Page
                    selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
-                   text: recordAnamnesis
+                   //text: recordAnamnesis
 
                    MouseArea
                    {
@@ -506,7 +515,7 @@ Page
                    selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
-                   text: recordComplaints
+                  // text: recordComplaints
 
                    MouseArea
                    {
@@ -565,7 +574,7 @@ Page
                    selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "Пульпит, Гингивит, ..."
-                   text: recordDiseases
+                   //text: recordDiseases
 
                    MouseArea
                    {
@@ -624,7 +633,7 @@ Page
                    selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "Пародонтоз"
-                   text: recordDiagnosis
+                   //text: recordDiagnosis
 
                    MouseArea
                    {
@@ -683,7 +692,7 @@ Page
                    selectByMouse: true
                    font.pointSize: fontSize
                    placeholderText: "Реминерализирующая терапия, ..."
-                   text: recordTreatment
+                   //text: recordTreatment
 
                    MouseArea
                    {

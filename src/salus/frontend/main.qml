@@ -186,12 +186,8 @@ ApplicationWindow
 
             onOpenDiary: function()
             {
-                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Opening diary page...\n");
-
                 page_patient_medical_card_diary.updatePatientData();
                 stack_content_main.currentIndex = 5;
-
-                console.log("Salus: [QML](PatientMedicalCardMain -> openDiary) - Diary page opened\n");
             }
 
             onDeletePatient: function()
@@ -246,6 +242,7 @@ ApplicationWindow
             onRecordUpdated: function()
             {
                 stack_content_main.currentIndex = 5;
+                page_patient_edit_record.clearTextFields();
             }
         }
     }

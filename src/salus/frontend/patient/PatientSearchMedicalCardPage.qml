@@ -7,6 +7,25 @@ Page
 {
     id: root
 
+    function capitalizeFirstLetter(string)
+    {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function unCapitalizeLettersFromFirst(string)
+    {
+        var result = "";
+
+        result += string.charAt(0);
+
+        for (let i = 1; i < string.length - 1; i++)
+        {
+            result += string.charAt(i).toLowerCase() + string.slice(1);
+        }
+
+        return result;
+    }
+
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
@@ -57,7 +76,21 @@ Page
         onAccepted: function()
         {
             console.log("Salus: [QML](ComboBox 'combobox_patients') - Patient accepted " + editText + "\n");
-            find(editText) !== -1 ? openCurrentMedicalCard(editText) : registerMedicalCard(editText);
+
+            var nameText = editText.split(" ");
+            var formattedName = "";
+
+            // Приводим регистры текста к виду "Иванов Иван Иванович"
+            for (let i = 0; i < nameText.length; i++)
+            {
+                var text = i === 2 ? nameText[i] : nameText[i] + " "
+
+                unCapitalizeLettersFromFirst(text);
+
+                formattedName += capitalizeFirstLetter(text);
+            }
+
+            find(formattedName) !== -1 ? openCurrentMedicalCard(formattedName) : registerMedicalCard(formattedName);
         }
     }
 }
