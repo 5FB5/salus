@@ -359,6 +359,14 @@ bool Backend::getIsPatientDbEmpty()
     return patientsDb->patientsList->isEmpty();
 }
 
+void Backend::sortPatientRecordListModel()
+{
+    if (patientRecordsListModel == nullptr)
+        return;
+
+    patientRecordsListModel->sort(0);
+}
+
 QString Backend::getCurrentDoctorFullName()
 {
     qDebug() << "Salus: [Backend::getCurrentDoctorFullName()] - returned " << doctorDb.getFullName(currentDoctorInn) << "\n";

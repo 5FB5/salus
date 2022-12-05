@@ -91,6 +91,8 @@ public:
     bool getIsPatientDbEmpty();
 
 public slots:
+    void sortPatientRecordListModel();
+
     void addNewPatient(QString fullName, quint16 age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
