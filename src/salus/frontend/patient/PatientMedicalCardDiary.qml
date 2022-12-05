@@ -240,6 +240,7 @@ Page
             onClicked:
             {
                 console.log("TODO: Печать записи")
+                backend.printCard();
             }
         }
 

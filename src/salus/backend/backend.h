@@ -91,6 +91,8 @@ public:
     bool getIsPatientDbEmpty();
 
 public slots:
+    void printCard();
+
     void sortPatientRecordListModel();
 
     void addNewPatient(QString fullName, quint16 age, bool sex,
