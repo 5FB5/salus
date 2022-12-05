@@ -246,6 +246,7 @@ ApplicationWindow
             onRecordUpdated: function()
             {
                 stack_content_main.currentIndex = 5;
+                page_patient_edit_record.clearTextFields();
             }
         }
     }
