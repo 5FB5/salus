@@ -34,6 +34,10 @@ Page
         patientAddress = backend.currentPatientAddress;
         patientPhoneNumber = backend.currentPatientPhoneNumber;
         patientOccupation = backend.currentPatientOccupation;
+
+        recordsListView.currentIndex = 0;
+
+        currentRecord = recordsListView.currentItem == null ? "" : recordsListView.currentItem.text
     }
 
     Dialog
@@ -128,47 +132,34 @@ Page
 
         anchors
         {
-            top: labelRecords.bottom
-            topMargin: 10
-
-            bottom: parent.bottom
-            bottomMargin: 200
-
             left: parent.left
-
             right: parent.right
+            top: labelRecords.bottom
+            bottom: parent.bottom
+            topMargin: 10
+            bottomMargin: 200
         }
         clip: true
         focus: true
         model: patientRecordsListModel
         spacing: 15
 
-        delegate: Component
+        delegate: Text
         {
-            Item
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            height: 40
+            font.pointSize: 15
+            text: display
+
+            MouseArea
             {
-                width: parent.width
-                height: 40
+                anchors.fill: parent
 
-                Column
+                onClicked: function()
                 {
-                    anchors.centerIn: parent
-
-                    Text
-                    {
-                        font.pointSize: 15
-                        text: display
-                    }
-                }
-                MouseArea
-                {
-                    anchors.fill: parent
-
-                    onClicked: function()
-                    {
-                        recordsListView.currentIndex = index;
-                        currentRecord = display;
-                    }
+                    recordsListView.currentIndex = index;
+                    currentRecord = display;
                 }
             }
         }

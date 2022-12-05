@@ -346,8 +346,6 @@ Page
 
         onAccepted: function()
         {
-            console.log(textEditAnamnesis.text.toString());
-
             backend.updateRecord(recordDate, textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
                                  textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString());
             recordUpdated();
@@ -406,7 +404,7 @@ Page
            verticalAlignment: Text.AlignVCenter
 
            placeholderText: "день.месяц.год"
-           //text: recordDate//Qt.formatDateTime(new Date(), "dd.MM.yyyy")
+           text: recordDate//Qt.formatDateTime(new Date(), "dd.MM.yyyy")
 
            Rectangle
            {
