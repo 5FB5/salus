@@ -21,9 +21,6 @@
 #include "patient.h"
 #include "patientcardrecord.h"
 
-/*!
- *  @brief Глобальный класс для доступа к БД пациентов
-*/
 class PatientDataBase : public QObject
 {
     Q_OBJECT

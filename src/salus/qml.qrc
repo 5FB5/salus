@@ -5,13 +5,13 @@
         <file>frontend/patient/PatientMedicalCardMain.qml</file>
         <file>frontend/patient/PatientMedicalCardDiary.qml</file>
         <file>frontend/doctor/LoginPage.qml</file>
-        <file>frontend/doctor/DoctorTreatmentsDatabase.qml</file>
         <file>frontend/doctor/DoctorProfileRegistrationPage.qml</file>
         <file>frontend/doctor/DoctorProfilePage.qml</file>
-        <file>frontend/doctor/DoctorDiagnosesDataBase.qml</file>
+        <file>frontend/doctor/DoctorGlossaryDatabase.qml</file>
         <file>frontend/main.qml</file>
         <file>frontend/patient/PatientAddRecordPage.qml</file>
         <file>frontend/patient/PatientEditRecordPage.qml</file>
-        <file>cards_src/dentist_043_header.html</file>
+        <file>frontend/doctor/components/GlossaryEditPanel.qml</file>
+        <file>frontend/patient/components/GlossaryPasteContextMenu.qml</file>
     </qresource>
 </RCC>

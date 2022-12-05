@@ -1,12 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-//import Qt.labs.platform 1.1
-import QtQuick.Dialogs 1.3
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property int buttonStandartTextFontSize: 10
@@ -24,50 +22,74 @@ Page {
     property var patientDiseases: []
     property string patientAnamnesis: ""
 
+    signal returnBack()
     signal openDiary()
     signal deletePatient()
 
     function updatePatientData()
     {
-        patientFullName = backend.currentPatientFullName
-        patientAge = backend.currentPatientAge
-        patientSex = backend.currentPatientSex
-        patientBirthDate = backend.currentPatientBirthDate
-        patientAddress = backend.currentPatientAddress
-        patientPhoneNumber = backend.currentPatientPhoneNumber
-        patientOccupation = backend.currentPatientOccupation
+        patientFullName = backend.currentPatientFullName;
+        patientAge = backend.currentPatientAge;
+        patientSex = backend.currentPatientSex;
+        patientBirthDate = backend.currentPatientBirthDate;
+        patientAddress = backend.currentPatientAddress;
+        patientPhoneNumber = backend.currentPatientPhoneNumber;
+        patientOccupation = backend.currentPatientOccupation;
+
+        backend.sortPatientRecordListModel();
+    }
+
+    Button
+    {
+        id: buttonReturn
+
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
+
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
     Label
     {
         id: labelTitle
 
-        text: "Амбулаторная карта"
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
-        font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true        
+        text: "Амбулаторная карта"
     }
 
     Label
     {
         id: labelPatientName
 
-        text: "<b>Пациент:</b> " + patientFullName
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 100
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
-        font.bold: false
-
-        anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: false        
+        text: "<b>Пациент:</b> " + patientFullName
     }
 
-
-    Row {
+    Row
+    {
         id: buttons_medical_card
 
         anchors.centerIn: parent
@@ -80,14 +102,14 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
             text: "Дневник лечения"
 
-            onClicked: {
-                openDiary()
+            onClicked: function()
+            {
+                openDiary();
             }
         }
 
@@ -97,16 +119,11 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
+            enabled: false
 
             text: "Печать карты"
-
-            onClicked: function()
-            {
-                backend.printCard();
-            }
         }
 
         Button
@@ -115,11 +132,10 @@ Page {
 
             font.pointSize: buttonStandartTextFontSize * 1.1
             font.bold: false
-
             width: 200
             height: 60
 
-            text: "Удалить пациента из БД"
+            text: "Удалить пациента"
 
             onClicked: function()
             {

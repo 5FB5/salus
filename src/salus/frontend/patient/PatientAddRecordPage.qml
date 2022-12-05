@@ -2,10 +2,12 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import QtQml 2.12
-
 import salus 1.0
 
-Page {
+import "components"
+
+Page
+{
     id: root
 
     property int fontSize: 11
@@ -16,37 +18,286 @@ Page {
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string diagnosesListColor: "#bbbbbb"
+    property string treatmentsListColor: "#bbbbbb"
+    property string symptomsListcolor: "#bbbbbb"
+
+    property Item currentTextEditItem
+
+    property int currentGlossaryMode: 0
+    property string currentGlossaryItem: ""
+    property string currentSelectedText: ""
+
+    signal returnBack()
+    signal openContextMenu();
+
     function clearTextFields()
     {
-        textEditAnamnesis.clear()
-        textEditComplaints.clear()
-        textEditDiagnosis.clear()
-        textEditDiseases.clear()
-        textEditTreatment.clear()
+        textEditAnamnesis.clear();
+        textEditComplaints.clear();
+        textEditDiagnosis.clear();
+        textEditDiseases.clear();
+        textEditTreatment.clear();
+    }
+
+    function initGlossaryMenu(type)
+    {
+        currentGlossaryMode = type;
+
+        switch (currentGlossaryMode)
+        {
+        case 0:
+            listViewGlossary.model = glossaryDiagnosesListModel;
+            break;
+        case 1:
+            listViewGlossary.model = glossaryTreatmentsListModel;
+            break;
+        case 2:
+            listViewGlossary.model = glossarySymptomsListModel;
+            break;
+        case 3:
+            listViewGlossary.model = glossaryUserListModel;
+            break;
+        }
+
+        listViewGlossary.currentIndex = 0;
+        currentGlossaryItem = listViewGlossary.currentItem.text;
+
+        dialogGlossaryMenu.open();
+    }
+
+    function openAddTextToGlossaryMenu()
+    {
+        if (currentSelectedText === "")
+            return;
+
+        dialogAddTextToGlossary.open();
+    }
+
+    Component.onCompleted: function()
+    {
+        openContextMenu.connect(glossaryContextMenu.openMenu);
+
+        glossaryContextMenu.openGlossaryMenu.connect(initGlossaryMenu);
+        glossaryContextMenu.openAddTextToGlossaryMenu.connect(openAddTextToGlossaryMenu);
+    }
+
+    GlossaryPasteContextMenu
+    {
+        id: glossaryContextMenu
+    }
+
+
+    Dialog
+    {
+        id: dialogAddTextToGlossary
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Добавить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выберите словарь"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        width: 500
+        height: 400
+
+        onAccepted: function()
+        {
+            var comboboxText = comboBoxChooseGlossary.currentText;
+
+            switch (comboboxText)
+            {
+            case "Диагноз":
+                backend.addGlossaryDiagnosis(currentSelectedText);
+                break;
+
+            case "Терапия":
+                backend.addGlossaryTreatment(currentSelectedText);
+                break;
+
+            case "Симптомы":
+                backend.addGlossarySymptom(currentSelectedText);
+                break;
+
+            case "Пользоват. формулировки":
+                backend.addGlossaryUserFormulation(currentSelectedText);
+                break;
+            }
+        }
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelChooseGlossary
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    topMargin: 5
+                }
+                font.pixelSize: 17
+                wrapMode: Text.WordWrap
+                text: "В какой словарь добавить текст?"
+            }
+
+            Text
+            {
+                id: labelChooseGlossaryText
+
+                anchors
+                {
+                    top: labelChooseGlossary.bottom
+                    topMargin: 5
+                }
+                width: parent.width
+                height: 50
+                font.pixelSize: 17
+                wrapMode: Text.WordWrap
+                elide: Text.ElideRight
+                text: currentSelectedText
+            }
+
+            ComboBox
+            {
+                id: comboBoxChooseGlossary
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: labelChooseGlossaryText.bottom
+                    topMargin: 15
+                    leftMargin: 5
+                    rightMargin: 5
+                }
+                model: ["Диагноз", "Терапия", "Симптомы", "Пользоват. формулировки"]
+            }
+        }
+    }
+
+    Dialog
+    {
+        id: dialogGlossaryMenu
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Вставить";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выбор записи"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        width: 500
+        height: 400
+
+        contentItem: Item
+        {
+            id: itemGlossaryList
+
+            anchors.fill: parent
+
+            ListView
+            {
+                id: listViewGlossary
+
+                Component.onCompleted:
+                {
+                    highlightMoveDuration = 0;
+                }
+
+                anchors
+                {
+                    fill: parent
+                    topMargin: 50
+                    bottomMargin: 80
+                }
+                clip: true
+                spacing: 15
+
+                delegate: Text
+                {
+                    id: delegateListView
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 17
+                    color: listViewGlossary.currentIndex === index ? "#ffffff" : "#000000"
+                    text: display
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewGlossary.currentIndex = index;
+                            currentGlossaryItem = display.toString();
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        margins: 5
+                    }
+                    color: "lightsteelblue"
+                }
+            }
+        }
+
+        onAccepted: function()
+        {
+            if (!currentTextEditItem)
+                return;
+
+            currentTextEditItem.text += " " + currentGlossaryItem;
+        }
     }
 
     Dialog
     {
         id: dialogRecordExists
 
-        width: parent.width / 4
-        height: parent.height / 4
-
         anchors.centerIn: parent
 
+        width: parent.width / 4
+        height: parent.height / 4
         modal: true
-
-        title: "Данная запись уже существует"
         standardButtons: Dialog.Ok
+        title: "Данная запись уже существует"
 
-        Text {
+        Text
+        {
             id: dialogboxText
-            font.pointSize: 14
 
             anchors.fill: parent
 
+            font.pointSize: 14
             wrapMode: Text.WordWrap
-
             text: qsTr("Измените существующую запись, либо укажите иную дату.")
         }
     }
@@ -56,25 +307,45 @@ Page {
         id: background
 
         anchors.fill: parent
-
         color: "#ffffff"
     }
 
-    Label {
-        id: labelTitle
+    Button
+    {
+        id: buttonReturn
 
-        text: "Добавление новой записи"
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
 
-        font.pointSize: 20
-        font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
-    Column {
+    Label
+    {
+        id: labelTitle
+
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
+        font.pointSize: 20
+        font.bold: true
+        text: "Добавление новой записи"
+    }
+
+    Column
+    {
         id: recordsDataFields
 
         anchors
@@ -85,243 +356,348 @@ Page {
             left: parent.left
             right: parent.right
         }
-
         spacing: 10
 
-        Text {
+        Text
+        {
             id: labelRecordDate
-            text: "Введите дату новой записи"
-            font.pointSize: fontSize
+
             anchors.horizontalCenter: parent.horizontalCenter
+
+            font.pointSize: fontSize
+            text: "Введите дату новой записи"
         }
 
-       TextField {
+       TextField
+       {
            id: textEditRecordDate
 
            anchors.horizontalCenter: parent.horizontalCenter
 
-           placeholderText: "день.месяц.год"
-           text: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
-
            font.pointSize: fontSize
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           placeholderText: "день.месяц.год"
+           text: Qt.formatDateTime(new Date(), "dd.MM.yyyy")
+
+           Rectangle
+           {
                anchors.fill: parent
+
                border.width: 1
                color: "#0000ffff"
            }
        }
 
-       Text {
+       Text
+       {
            id: labelAnamnesis
-           text: "Введите анамнез"
+
+           anchors
+           {
+               horizontalCenter: parent.horizontalCenter
+               bottomMargin: 5
+           }
            font.pointSize: fontSize
-           anchors.horizontalCenter: parent.horizontalCenter
-           anchors.bottomMargin: 5
+           text: "Введите анамнез"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: anamnesisInput
 
-           width: 500
-           height: 80
-
            anchors.horizontalCenter: parent.horizontalCenter
 
+           width: 500
+           height: 80
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewAnamnesis
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditAnamnesis
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-
                    placeholderText: "По словам пациента , считает себя больным на протяжении 6 лет..."
 
-                   focus: true
+                   MouseArea
+                   {
+                       id: mouseAreaAnamnesis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditAnamnesis.selectedText;
+                           currentTextEditItem = textEditAnamnesis;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelComplaints
-           text: "Введите жалобы"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите жалобы"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: complaintsInput
 
-           width: 500
-           height: 80
-
            anchors.horizontalCenter: parent.horizontalCenter
 
+           width: 500
+           height: 80
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewComplaints
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditComplaints
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-
                    placeholderText: "Боль в нижней челюсти, кровоточивость десны, ..."
 
-                   focus: true
+                   MouseArea
+                   {
+                       id: mouseAreaComplaints
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditComplaints.selectedText;
+                           currentTextEditItem = textEditComplaints;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelDiseases
-           text: "Введите перенесённые заболевания"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите перенесённые заболевания"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: diseasesInput
 
-           width: 500
-           height: 80
-
            anchors.horizontalCenter: parent.horizontalCenter
 
+           width: 500
+           height: 80
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewDiseases
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditDiseases
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-
                    placeholderText: "Пульпит, Гингивит, ..."
 
-                   focus: true
+                   MouseArea
+                   {
+                       id: mouseAreaDiseases
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditDiseases.selectedText;
+                           currentTextEditItem = textEditDiseases;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelDiagnosis
-           text: "Введите текущий диагноз"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите текущий диагноз"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: diagnosisInput
 
-           width: 500
-           height: 80
-
            anchors.horizontalCenter: parent.horizontalCenter
 
+           width: 500
+           height: 80
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewDiagnosis
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditDiagnosis
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-
                    placeholderText: "Пародонтоз"
 
-                   focus: true
+                   MouseArea
+                   {
+                       id: mouseAreaDiagnosis
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditDiagnosis.selectedText;
+                           currentTextEditItem = textEditDiagnosis;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
 
-       Text {
+       Text
+       {
            id: labelTreatment
-           text: "Введите наименование лечения"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите наименование лечения"
        }
 
-       Rectangle {
+       Rectangle
+       {
            id: treatmentInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
 
            width: 500
            height: 80
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
            border.width: 1
            color: "#0000ffff"
 
-           ScrollView {
+           ScrollView
+           {
                id: scrollViewTreatment
 
-               anchors.fill: parent
-               anchors.horizontalCenter: parent.horizontalCenter
-
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
                clip: true
 
-               TextArea {
+               TextArea
+               {
                    id: textEditTreatment
 
+                   selectByMouse: true
                    font.pointSize: fontSize
-
                    placeholderText: "Реминерализирующая терапия, ..."
 
-                   focus: true
+                   MouseArea
+                   {
+                       id: mouseAreaTreatment
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditTreatment.selectedText;
+                           currentTextEditItem = textEditTreatment;
+                           openContextMenu();
+                       }
+                   }
                }
            }
        }
 
-        Button {
+        Button
+        {
             id: buttonAddRecord
-
-            text: "Добавить запись"
-
-            font.pointSize: 10
 
             anchors.horizontalCenter: parent.horizontalCenter
 
+            font.pointSize: 10
             width: 300
             height: 50
+            text: "Добавить запись"
 
-            onClicked: {
+            onClicked: function()
+            {
                 if (backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
                                      textEditDiagnosis.text.toString(), textEditTreatment.text.toString()) === false)
                 {

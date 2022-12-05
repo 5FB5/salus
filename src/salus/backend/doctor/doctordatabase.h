@@ -16,9 +16,6 @@
 
 #include "doctor.h"
 
-/*!
- *  @brief Глобальный класс для доступа к БД врача
-*/
 class DoctorDataBase : public QObject
 {
     Q_OBJECT
@@ -32,23 +29,16 @@ public:
                           QString institutionName, quint16 institutionCode, QString institutionAddress,
                           quint16 inn, QString licenseInfo);
 
-    // We use inn as primary key to get right doctor's data
-    /*! Возвращается ФИО врача через ИНН */
     QString getFullName(quint16 inn);
-    /*! Возвращает наименование специализации врача через ИНН */
     QString getSpecialization(quint16 inn);
-    /*! Возвращает наименование организации через ИНН */
     QString getInstitutionName(quint16 inn);
-    /*! Возвращает код организации через ИНН */
-    quint16 getInstitutionCode(quint16 inn);
-    /*! Возвращает адрес организации через ИНН */
     QString getInstitutionAddress(quint16 inn);
-    /*! Возвращает ИНН врача */
-    quint16 getInn(); // FIXME: works only for 1 profile
-    /*! Возвращает наименование лицензии через ИНН */
     QString getLicenseInfo(quint16 inn);
-    /*! Возвращает инициалы врача через ИНН */
     QString getProfileInitials(quint16 inn);
+
+    quint16 getInstitutionCode(quint16 inn);
+    quint16 getInn(); // FIXME: works only for 1 profile
+
 
     //QString findDiagnosis(QJsonArray diagnosesData);
 

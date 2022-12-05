@@ -1,10 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property int buttonStandartTextFontSize: 10
@@ -23,74 +23,63 @@ Page {
     Rectangle
     {
         id: background
-        anchors.fill: parent
 
+        anchors.fill: parent
         color: "#ffffff"
     }
 
-    Label {
-        text: "Войти как..."
-
+    Label
+    {
+        anchors
+        {
+            top: rowButtons.top
+            horizontalCenter: parent.horizontalCenter
+            topMargin: -180
+        }
         font.pointSize: standartTextSize
         font.bold: true
-
-        anchors.top: rowButtons.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: -180
+        text: "Войти как..."
     }
 
-    // Табличка, на которой будет отображаться имя врача из профиля
     Label {
         id: doctorName
 
-        text: backend.currentDoctorFullName
-
+        anchors
+        {
+            top: rowButtons.top
+            topMargin: -112
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: standartTextSize
-
-        anchors.top: rowButtons.top
-        anchors.topMargin: -112
-        anchors.horizontalCenter: parent.horizontalCenter
+        text: backend.currentDoctorFullName
     }
 
-    Row {
+    Row
+    {
         id: rowButtons
 
+        anchors
+        {
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            bottomMargin: (parent.height / 2) - 50
+        }
         spacing: 15
 
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: (parent.height / 2) - 50
-
-        Button {
+        Button
+        {
             id: buttonEnterToProfile
-            text: "Войти"
 
             font.pointSize: buttonStandartTextFontSize
-
             width: 200
             height: 60
 
-            onClicked: {
-                logIn();
+            text: "Войти"
 
+            onClicked: function()
+            {
+                logIn();
             }
         }
-
-        // TODO: add multiple doctor profiles registration
-        //        Button {
-        //            id: buttonSignUp
-        //            text: "Добавить профиль"
-        //            enabled: false
-
-        //            font.pointSize: buttonStandartTextFontSize
-
-        //            width: 200
-        //            height: 60
-
-        //            onClicked: {
-        //                root.signUp();
-        //            }
-        //        }
     }
-
 }

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(doctor LANGUAGES CXX)
 
-set(SOURCES doctor.cpp doctordatabase.cpp)
+set(SOURCES doctor.cpp doctordatabase.cpp
+            glossarydatabase.cpp)
 
 add_library(${PROJECT_NAME} ${SOURCES})
 

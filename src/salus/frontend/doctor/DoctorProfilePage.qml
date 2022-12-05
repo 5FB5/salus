@@ -1,10 +1,10 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
     property string doctorName
@@ -18,39 +18,39 @@ Page {
     property int buttonStandartTextFontSize: 11
     property int standartTextSize: 14
 
-
-    Label {
+    Label
+    {
         id: pageTitle
 
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
         font.pointSize: 20
         font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-
-        anchors.horizontalCenter: parent.horizontalCenter
-
         text: "Личный кабинет"
-
     }
 
-    // Область с данными текущего профиля
-    Column {
+    Column
+    {
         id: column_profile_data
 
-        anchors.top: parent.top
-        anchors.topMargin: 150
-
-        anchors.left: parent.left
-        anchors.leftMargin: 120
-
+        anchors
+        {
+            top: parent.top
+            topMargin: 150
+            left: parent.left
+            leftMargin: 120
+        }
         spacing: 30
 
-        Label {
+        Label
+        {
             id: labelName
 
             font.pointSize: standartTextSize
-
             text: "<b>ФИО:</b> " + doctorName
         }
 
@@ -58,65 +58,58 @@ Page {
             id: labelSpecialization
 
             font.pointSize: standartTextSize
-
             text: "<b>Специализация:</b> " + doctorSpecialization
         }
 
-        Label {
+        Label
+        {
             id: labelInstitutionName
 
             font.pointSize: standartTextSize
-
             text: "<b>Наименование учреждения:</b> " + doctorInstitutionName
         }
 
-        Label {
+        Label
+        {
             id: labelInstitutionCode
 
             font.pointSize: standartTextSize
-
             text: "<b>Код учреждения:</b> " + doctorInstitutionCode
-
         }
 
-        Label {
+        Label
+        {
             id: labelInstitutionAddress
 
             font.pointSize: standartTextSize
-
             text: "<b>Адрес учреждения:</b> " + doctorInstitutionAddress
-
         }
 
-        Label {
+        Label
+        {
             id: labelInn
 
             font.pointSize: standartTextSize
-
             text: "<b>ИНН:</b> " + doctorInn
-
         }
 
-        Label {
+        Label
+        {
             id: labelLicenseInfo
 
             font.pointSize: standartTextSize
-
             text: "<b>Лицензия:</b> " + doctorLicenseInfo
         }
 
-        Button {
+        Button
+        {
             id: button_change_info
 
             font.pointSize: buttonStandartTextFontSize
-
             width: 200
             height: 60
-
             enabled: false
-
             text: "Изменить профиль"
         }
     }
 }
-

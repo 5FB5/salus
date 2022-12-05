@@ -1,13 +1,12 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-
 import salus 1.0
 
-Page {
+Page
+{
     id: root
 
-    // Поля для базовой регистрации
     property string patientFullName: ""
     property int patientAge: 0
     property bool patientSex
@@ -16,25 +15,23 @@ Page {
     property string patientPhoneNumber: ""
     property string patientOccupation: ""
 
-    property int fontSize: 11
+    property int fontSize: 11    
+    property int textFieldsWidth: 300
+    property int textFieldBorderRadius: 10
+    property int buttonStandartTextFontSize: 10
+    property int standartTextSize: 14
 
+    signal returnBack()
     signal patientRegistered(string fullname)
 
     function clearTextFields()
     {
-        textEditFullName.clear()
-        textEditAge.clear()
-        textEditBirthDate.clear()
-        textEditAddress.clear()
-        textEditPhoneNumber.clear()
-        textEditOccupation.clear()
+        textEditFullName.clear();
+        textEditBirthDate.clear();
+        textEditAddress.clear();
+        textEditPhoneNumber.clear();
+        textEditOccupation.clear();
     }
-
-    property int textFieldsWidth: 300
-    property int textFieldBorderRadius: 10
-
-    property int buttonStandartTextFontSize: 10
-    property int standartTextSize: 14
 
     Rectangle
     {
@@ -45,39 +42,62 @@ Page {
         color: "#ffffff"
     }
 
-    Label {
-        id: labelTitle
+    Button
+    {
+        id: buttonReturn
 
-        text: "Регистрация новой амбулаторной карты"
+        anchors
+        {
+            top: parent.top
+            left: parent.left
+            topMargin: 15
+            leftMargin: 15
+        }
+        text: "Назад"
 
-        font.pointSize: 20
-        font.bold: true
-
-        anchors.top: parent.top
-        anchors.topMargin: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-
+        onClicked: function()
+        {
+            returnBack();
+        }
     }
 
-    Column {
+    Label
+    {
+        id: labelTitle
+
+        anchors
+        {
+            top: parent.top
+            topMargin: 50
+            horizontalCenter: parent.horizontalCenter
+        }
+        font.pointSize: 20
+        font.bold: true
+        text: "Регистрация новой амбулаторной карты"
+    }
+
+    Column
+    {
         id: registrationFields
 
         anchors
         {
             top: labelTitle.bottom
-            topMargin: 30
             bottom: parent.bottom
             left: parent.left
             right: parent.right
+            topMargin: 30
         }
-
         spacing: 15
 
-        Text {
+        Text
+        {
             id: labelFullName
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
             text: "Введите ФИО"
             font.pointSize: fontSize
-            anchors.horizontalCenter: parent.horizontalCenter
         }
 
        TextField {
@@ -85,228 +105,207 @@ Page {
 
            anchors.horizontalCenter: parent.horizontalCenter
 
+           font.pointSize: fontSize
+           width: textFieldsWidth
+           height: 30
+           horizontalAlignment: Text.AlignHCenter
+           verticalAlignment: Text.AlignVCenter
+
            placeholderText: "Введите ФИО"
            text: patientFullName
 
-           font.pointSize: fontSize
-
-           width: textFieldsWidth
-           height: 30
-
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-
-           Rectangle {
+           Rectangle
+           {
                anchors.fill: parent
+
                border.width: 1
-//               radius: textFieldBorderRadius
                color: "#0000ffff"
-
            }
        }
 
-       Text {
-           id: labelAge
-           text: "Введите возраст"
-           font.pointSize: fontSize
-           anchors.horizontalCenter: parent.horizontalCenter
-       }
-
-       TextField {
-           id: textEditAge
-
-           anchors.horizontalCenter: parent.horizontalCenter
-
-           font.pointSize: fontSize
-
-           width: textFieldsWidth
-           height: 30
-
-           horizontalAlignment: Text.AlignHCenter
-           verticalAlignment: Text.AlignVCenter
-
-           validator: IntValidator {
-               bottom: 0
-               top: 255
-           }
-
-           Rectangle {
-               anchors.fill: parent
-               border.width: 1
-//               radius: textFieldBorderRadius
-               color: "#0000ffff"
-
-           }
-       }
-
-       Text {
+       Text
+       {
            id: labelSex
-           text: "Пол"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Пол"
        }
 
-       ComboBox {
+       ComboBox
+       {
            id: combobox_sex
 
-           font.pointSize: fontSize
-
            anchors.horizontalCenter: parent.horizontalCenter
 
-           model: ListModel {
+           font.pointSize: fontSize
+
+           model: ListModel
+           {
                id: list_sex
 
                ListElement { text: "Мужской" }
                ListElement { text: "Женский" }
            }
 
-           onActivated: {
-               patientSex = index === 0 ? false : true
+           onActivated:
+           {
+               patientSex = index === 0 ? false : true;
            }
        }
 
-       Text {
+       Text
+       {
            id: labelBirthDate
-           text: "Введите дату рождения"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите дату рождения"
        }
 
-       TextField {
+       TextField
+       {
            id: textEditBirthDate
 
            anchors.horizontalCenter: parent.horizontalCenter
 
-           placeholderText: "12.12.1985"
-
            font.pointSize: fontSize
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           placeholderText: "12.12.1985"
+
+           Rectangle
+           {
                anchors.fill: parent
                border.width: 1
-//               radius: textFieldBorderRadius
                color: "#0000ffff"
-
            }
        }
 
-       Text {
+       Text
+       {
            id: labelAddress
-           text: "Введите адрес проживания"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите адрес проживания"
        }
 
-       TextField {
+       TextField
+       {
            id: textEditAddress
 
            anchors.horizontalCenter: parent.horizontalCenter
 
-           placeholderText: "г. Краснодар, ул. 40 лет Победы"
-
            font.pointSize: fontSize
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           placeholderText: "г. Краснодар, ул. 40 лет Победы"
+
+           Rectangle
+           {
                anchors.fill: parent
                border.width: 1
-//               radius: textFieldBorderRadius
                color: "#0000ffff"
 
            }
        }
 
-       Text {
+       Text
+       {
            id: labelPhoneNumber
-           text: "Введите номер телефона"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите номер телефона"
+
        }
 
-       TextField {
+       TextField
+       {
            id: textEditPhoneNumber
 
            anchors.horizontalCenter: parent.horizontalCenter
 
            font.pointSize: fontSize
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           Rectangle
+           {
                anchors.fill: parent
                border.width: 1
-//               radius: textFieldBorderRadius
                color: "#0000ffff"
-
            }
        }
 
-       Text {
+       Text
+       {
            id: labelOccupation
-           text: "Введите профессию"
-           font.pointSize: fontSize
+
            anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Введите профессию"
        }
 
-       TextField {
+       TextField
+       {
            id: textEditOccupation
 
            anchors.horizontalCenter: parent.horizontalCenter
 
-           placeholderText: "Аналитик"
            font.pointSize: 11
-
            width: textFieldsWidth
            height: 30
-
            horizontalAlignment: Text.AlignHCenter
            verticalAlignment: Text.AlignVCenter
 
-           Rectangle {
+           placeholderText: "Аналитик"
+
+           Rectangle
+           {
                anchors.fill: parent
                border.width: 1
-//               radius: textFieldBorderRadius
                color: "#0000ffff"
-
            }
        }
 
-        Button {
+        Button
+        {
             id: buttonRegisterPatient
-
-            text: "Зарегистрировать новую карту"
-
-            font.pointSize: 10
 
             anchors.horizontalCenter: parent.horizontalCenter
 
-//            anchors.left: parent.left
-//            anchors.right: parent.right
-
-//            anchors.leftMargin: 30
-//            anchors.rightMargin: 30
-
+            font.pointSize: 10
             width: 300
             height: 50
 
-            onClicked: {
-                backend.addNewPatient(textEditFullName.text.toString(), textEditAge.text, patientSex, textEditBirthDate.text,
-                                      textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString())
+            text: "Добавить карту"
+
+            onClicked: function()
+            {
+                var date = new Date();
+
+                let birthDate = textEditBirthDate.text.split('.');
+                let currentAge = date.getFullYear() - birthDate[2];
+
+                console.log(currentAge);
+
+                backend.addNewPatient(textEditFullName.text.toString(), currentAge, patientSex, textEditBirthDate.text,
+                                      textEditAddress.text.toString(), textEditPhoneNumber.text, textEditOccupation.text.toString());
             }
         }
     }
