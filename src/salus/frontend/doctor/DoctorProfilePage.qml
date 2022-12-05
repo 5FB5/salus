@@ -18,6 +18,14 @@ Page
     property int buttonStandartTextFontSize: 11
     property int standartTextSize: 14
 
+    Rectangle
+    {
+        id: background
+
+        anchors.fill: parent
+        color: mainBackgroundColor
+    }
+
     Label
     {
         id: pageTitle

@@ -28,6 +28,14 @@ ApplicationWindow
 
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
+    property string sidePanelColor: "#D8D7DC"
+    property string mainBackgroundColor: "#EBEBEB"
+
+    property string buttonDefaultColor: "#EBEBEB"
+    property string buttonPressedColor: "#007AFF"
+    property string buttonTextDefaultColor: "#000000"
+    property string buttonTextPressedColor: "#FFFFFF"
+
     function updateProfilePage()
     {
         page_doctor_profile.doctorName = backend.currentDoctorFullName;
@@ -261,7 +269,8 @@ ApplicationWindow
     }
 
     // Левая панель управления
-    Rectangle {
+    Rectangle
+    {
         id: menu_bar
 
         anchors
@@ -272,7 +281,7 @@ ApplicationWindow
         }
         visible: false
         width: 256
-        color: "#828282"
+        color: sidePanelColor
 
         Button
         {
@@ -280,15 +289,35 @@ ApplicationWindow
 
             anchors
             {
-                top: parent.top
-                topMargin: buttonsTopMargin
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                bottomMargin: 30
+                leftMargin: 10
+                rightMargin: 10
             }
 
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: button_profile.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: doctorFullName
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_profile.down ? buttonPressedColor: buttonDefaultColor
+            }
             font.pointSize: 12
             font.bold: true
-            width: parent.width
             height: 60
-            text: doctorFullName
+//            display: AbstractButton.TextBesideIcon
 
             onClicked: function()
             {
@@ -302,13 +331,33 @@ ApplicationWindow
 
             anchors
             {
+                left: parent.left
+                right: parent.right
                 top: parent.top
                 topMargin: buttonsTopMargin + 230
+                leftMargin: 10
+                rightMargin: 10
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: button_patient_card.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Амбулаторная карта"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_patient_card.down ? buttonPressedColor: buttonDefaultColor
             }
             font.pointSize: 12
-            width: parent.width
             height: 60
-            text: "Амбулаторная карта"
 
             onClicked: function()
             {
@@ -322,13 +371,33 @@ ApplicationWindow
 
             anchors
             {
+                left: parent.left
+                right: parent.right
                 top: button_patient_card.bottom
-                topMargin: buttonsTopMargin + 25
+                topMargin: buttonsTopMargin
+                leftMargin: 10
+                rightMargin: 10
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: button_glossary.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Глоссарий"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_glossary.down ? buttonPressedColor: buttonDefaultColor
             }
             font.pointSize: 12
-            width: parent.width
             height: 60
-            text: "Глоссарий"
 
             onClicked: function()
             {
