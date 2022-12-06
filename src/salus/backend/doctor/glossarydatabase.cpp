@@ -14,7 +14,7 @@ void GlossaryDatabase::getDataListFromJson()
 {
     QJsonDocument doc = loadJson();
 
-    if (diagnosesList == nullptr && treatmentsList == nullptr && symptomsList == nullptr || userList == nullptr)
+    if (diagnosesList == nullptr && treatmentsList == nullptr && symptomsList == nullptr && userList == nullptr)
     {
         diagnosesList = new QList<QString>;
         treatmentsList = new QList<QString>;
