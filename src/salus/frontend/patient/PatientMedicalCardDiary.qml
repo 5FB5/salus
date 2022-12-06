@@ -10,6 +10,11 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string buttonDefaultColor: "#E1E1E1"
+    property string buttonPressedColor: "#BABABA"
+    property string buttonTextColor: "#007AFF"
+    property string buttonTextPressedColor: Qt.darker(buttonTextColor, 0.5)
+
     property string patientFullName: ""
     property int patientAge: 0
     property bool patientSex: false
@@ -46,10 +51,9 @@ Page
 
         anchors.centerIn: parent
 
-        width: parent.width / 3.5
-        height: parent.height / 3.5
+        width: 500
+        height: 250
         modal: true
-        standardButtons: Dialog.Yes | Dialog.No
         title: "Подтвердите действие"
 
         Text
@@ -60,16 +64,89 @@ Page
 
             font.pointSize: 14
             wrapMode: Text.WordWrap
-            text: qsTr("Удалить запись " + currentRecord + "?")
+            text: "Удалить запись " + currentRecord + "?"
         }
 
-        onAccepted: function()
+        Button
         {
-            if (currentRecord === "")
-                return;
+            id: dialogDeleteRecordRejectButton
 
-            backend.deleteRecord(currentRecord);
-            recordDeleted();
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogDeleteRecordAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteRecordRejectButton.down ? "#FFFFFF" : "#000000"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteRecordRejectButton.down ? "#007AFF" : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogDeleteRecord.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogDeleteRecordAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteRecordAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteRecordAcceptButton.down ? buttonDefaultColor : "#007AFF"
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                if (currentRecord === "")
+                    return;
+
+                backend.deleteRecord(currentRecord);
+                recordDeleted();
+
+                dialogDeleteRecord.close();
+            }
         }
     }
 
@@ -84,7 +161,34 @@ Page
             topMargin: 15
             leftMargin: 15
         }
-        text: "Назад"
+
+        contentItem: Text
+        {
+            anchors
+            {
+                fill: parent
+                verticalCenter: parent.verticalCenter
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            font.pointSize: 13
+            opacity: enabled ? 1.0 : 0.3
+            color: buttonReturn.down ? buttonTextPressedColor : buttonTextColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: "❮"
+        }
+
+        background: Rectangle
+        {
+            anchors.fill: parent
+            radius: 14
+            color: buttonReturn.down ? buttonPressedColor : buttonDefaultColor
+        }
+
+        width: 50
+        height: 50
 
         onClicked: function()
         {
@@ -148,9 +252,23 @@ Page
         {
             anchors.horizontalCenter: parent.horizontalCenter
 
-            height: 40
             font.pointSize: 15
+            height: 40
             text: display
+
+            Rectangle
+            {
+                id: separator
+
+                anchors
+                {
+                    left: parent    .left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: 1
+                color: "#E1E1E1"
+            }
 
             MouseArea
             {
@@ -170,10 +288,8 @@ Page
             {
                 left: parent.left
                 right: parent.right
-                leftMargin: 300
-                rightMargin: 300
             }
-            color: "lightsteelblue"
+            color: "#E1E1E1"
         }
     }
 
@@ -193,11 +309,26 @@ Page
         {
             id: buttonAddMedicalData
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonAddMedicalData.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить запись"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonAddMedicalData.down ? buttonPressedColor : buttonDefaultColor
+            }
+
             width: 200
-            height: 60
-            text: "Добавить запись"
+            height: 70
 
             onClicked: function()
             {
@@ -209,12 +340,26 @@ Page
         {
             id: buttonEditMedicalData
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
-            width: 200
-            height: 60
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonEditMedicalData.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить запись"
+            }
 
-            text: "Изменить запись"
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonEditMedicalData.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            width: 200
+            height: 70
 
             onClicked: function()
             {
@@ -229,10 +374,26 @@ Page
         {
             id: buttonDeleteMedicalData
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDeleteMedicalData.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Удалить запись"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDeleteMedicalData.down ? buttonPressedColor : buttonDefaultColor
+            }
+
             width: 200
-            height: 60
+            height: 70
 
             text: "Удалить запись"
 

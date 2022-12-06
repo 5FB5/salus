@@ -73,7 +73,7 @@ Page
                 horizontalCenter: parent.horizontalCenter
             }
 
-            font.pointSize: 12
+            font.pointSize: 13
             opacity: enabled ? 1.0 : 0.3
             color: buttonReturn.down ? buttonTextPressedColor : buttonTextColor
             horizontalAlignment: Text.AlignHCenter
