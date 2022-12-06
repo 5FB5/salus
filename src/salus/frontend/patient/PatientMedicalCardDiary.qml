@@ -262,7 +262,7 @@ Page
 
                 anchors
                 {
-                    left: parent    .left
+                    left: parent.left
                     right: parent.right
                     bottom: parent.bottom
                 }
