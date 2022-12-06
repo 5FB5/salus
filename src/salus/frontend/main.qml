@@ -341,7 +341,7 @@ ApplicationWindow
 
             contentItem: Text
             {
-                font.pointSize: 12
+                font.pointSize: 13
                 opacity: enabled ? 1.0 : 0.3
                 color: button_patient_card.down ? buttonTextPressedColor : buttonTextDefaultColor
                 horizontalAlignment: Text.AlignHCenter
@@ -381,7 +381,7 @@ ApplicationWindow
 
             contentItem: Text
             {
-                font.pointSize: 12
+                font.pointSize: 13
                 opacity: enabled ? 1.0 : 0.3
                 color: button_glossary.down ? buttonTextPressedColor : buttonTextDefaultColor
                 horizontalAlignment: Text.AlignHCenter
