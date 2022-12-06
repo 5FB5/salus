@@ -29,7 +29,7 @@ ApplicationWindow
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
     property string sidePanelColor: "#D8D7DC"
-    property string mainBackgroundColor: "#EBEBEB"
+    property string mainBackgroundColor: "#FFFFFF"//"#EBEBEB"
 
     property string buttonDefaultColor: "#EBEBEB"
     property string buttonPressedColor: "#007AFF"
@@ -169,10 +169,88 @@ ApplicationWindow
 
                 anchors.centerIn: parent
 
-                width: parent.width / 4
-                height: parent.height / 4
+                width: 400
+                height: 250
+                modal: true
                 title: "Удаление карты пациента '" + page_patient_medical_card_main.patientFullName + "'"
-                standardButtons: Dialog.Yes | Dialog.No
+
+                Button
+                {
+                    id: dialogDeletePatientRejectButton
+
+                    anchors
+                    {
+                        left:  parent.horizontalCenter
+                        right: parent.right
+                        top: dialogDeletePatientAcceptButton.top
+                        leftMargin: 5
+                    }
+
+                    contentItem: Text
+                    {
+                        font.pointSize: 12
+                        opacity: enabled ? 1.0 : 0.3
+                        color: dialogDeletePatientRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        text: "Нет"
+                    }
+
+                    background: Rectangle
+                    {
+                        anchors.fill: parent
+                        radius: 14
+                        color: dialogDeletePatientRejectButton.down ? buttonPressedColor : buttonDefaultColor
+                    }
+
+                    height: 40
+
+                    onClicked: function()
+                    {
+                        dialogbox_delete_patient.close();
+                    }
+                }
+
+                Button
+                {
+                    id: dialogDeletePatientAcceptButton
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.horizontalCenter
+                        bottom: parent.bottom
+                        rightMargin: 5
+                    }
+
+                    contentItem: Text
+                    {
+                        font.pointSize: 12
+                        opacity: enabled ? 1.0 : 0.3
+                        color: dialogDeletePatientAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        text: "Да"
+                    }
+
+                    background: Rectangle
+                    {
+                        anchors.fill: parent
+                        radius: 14
+                        color: dialogDeletePatientAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+                    }
+
+                    height: 40
+
+                    onClicked: function()
+                    {
+                        backend.deletePatient();
+                        stack_content_main.currentIndex = 2;
+                        dialogbox_delete_patient.close();
+                    }
+                }
 
                 Text
                 {
@@ -182,13 +260,7 @@ ApplicationWindow
 
                     font.pointSize: 14
                     wrapMode: Text.WordWrap
-                    text: qsTr("Удалить карту?")
-                }
-
-                onAccepted: function()
-                {
-                    backend.deletePatient();
-                    stack_content_main.currentIndex = 2;
+                    text: "Точно хотите удалить карту?"
                 }
             }
 

@@ -10,6 +10,11 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string buttonDefaultColor: "#E1E1E1"
+    property string buttonPressedColor: "#BABABA"
+    property string buttonTextColor: "#007AFF"
+    property string buttonTextPressedColor: Qt.darker(buttonTextColor, 0.5)
+
     property string patientFullName: ""
     property int patientAge: 0
     property bool patientSex: false
@@ -39,6 +44,14 @@ Page
         backend.sortPatientRecordListModel();
     }
 
+    Rectangle
+    {
+        id: background
+
+        anchors.fill: parent
+        color: mainBackgroundColor
+    }
+
     Button
     {
         id: buttonReturn
@@ -50,7 +63,34 @@ Page
             topMargin: 15
             leftMargin: 15
         }
-        text: "Назад"
+
+        contentItem: Text
+        {
+            anchors
+            {
+                fill: parent
+                verticalCenter: parent.verticalCenter
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            font.pointSize: 12
+            opacity: enabled ? 1.0 : 0.3
+            color: buttonReturn.down ? buttonTextPressedColor : buttonTextColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: "❮"
+        }
+
+        background: Rectangle
+        {
+            anchors.fill: parent
+            radius: 14
+            color: buttonReturn.down ? buttonPressedColor : buttonDefaultColor
+        }
+
+        width: 50
+        height: 50
 
         onClicked: function()
         {
@@ -100,12 +140,26 @@ Page
         {
             id: buttonDiary
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
-            width: 200
-            height: 60
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDiary.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Дневник лечения"
+            }
 
-            text: "Дневник лечения"
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDiary.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            width: 200
+            height: 70
 
             onClicked: function()
             {
@@ -117,25 +171,54 @@ Page
         {
             id: buttonPrintMedicalCard
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
-            width: 200
-            height: 60
-            enabled: false
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonPrintMedicalCard.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Печать карты"
+            }
 
-            text: "Печать карты"
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonPrintMedicalCard.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            width: 200
+            height: 70
+
+            enabled: false
         }
 
         Button
         {
             id: buttonDeletePatient
 
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
-            width: 200
-            height: 60
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDeletePatient.down ? buttonTextPressedColor : buttonTextColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Удалить карту"
+            }
 
-            text: "Удалить пациента"
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDeletePatient.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            width: 200
+            height: 70
 
             onClicked: function()
             {
