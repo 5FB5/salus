@@ -113,11 +113,27 @@ Page
         {
             id: button_change_info
 
-            font.pointSize: buttonStandartTextFontSize
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: button_change_info.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить профиль"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: button_change_info.down ? buttonPressedColor : buttonDefaultColor
+            }
+
             width: 200
             height: 60
             enabled: false
-            text: "Изменить профиль"
         }
     }
 }
