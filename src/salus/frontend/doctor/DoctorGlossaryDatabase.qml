@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
-import QtQuick.Controls 2.12
 import QtQuick.Controls 1.4
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import salus 1.0
 
@@ -14,7 +14,9 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
     property int listViewBottomMargin: 150
-    property string listViewBackgroundColor: "#bbbbbb"
+    property string listViewBackgroundColor: "#FFFFFF"
+    property string listViewDelegateHighlightColor: "#E1E1E1"
+    property int dialogBoxHeight: 250
 
     property string currentDiagnosis: ""
     property string currentTreatment: ""
@@ -45,20 +47,90 @@ Page
     {
         id: dialogDeleteDiagnosis
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Да";
-            standardButton(Dialog.Cancel).text = "Нет";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Удаление записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogDeleteDiagnosisRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogDeleteDiagnosisAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteDiagnosisRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteDiagnosisRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogDeleteDiagnosis.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogDeleteDiagnosisAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteDiagnosisAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteDiagnosisAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.deleteGlossaryDiagnosis(currentDiagnosis);
+                dialogDeleteDiagnosis.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -94,31 +166,96 @@ Page
                 text: "'" + currentDiagnosis + "'"
             }
         }
-
-        onAccepted: function()
-        {
-            backend.deleteGlossaryDiagnosis(currentDiagnosis);
-        }
     }
 
     Dialog
     {
         id: dialogDeleteTreatment
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Да";
-            standardButton(Dialog.Cancel).text = "Нет";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Удаление записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogDeleteTreatmentRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogDeleteTreatmentAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteTreatmentRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteTreatmentRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogDeleteTreatment.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogDeleteTreatmentAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteTreatmentAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteTreatmentAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.deleteGlossaryTreatment(currentTreatment);
+                dialogDeleteTreatment.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -154,31 +291,96 @@ Page
                 text: "'" + currentTreatment + "'"
             }
         }
-
-        onAccepted: function()
-        {
-            backend.deleteGlossaryTreatment(currentTreatment);
-        }
     }
 
     Dialog
     {
         id: dialogDeleteSymptom
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Да";
-            standardButton(Dialog.Cancel).text = "Нет";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Удаление записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogDeleteSymptomRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogDeleteSymptomAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteSymptomRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteSymptomRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogDeleteSymptom.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogDeleteSymptomAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteSymptomAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteSymptomAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.deleteGlossarySymptom(currentSymptom);
+                dialogDeleteSymptom.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -214,31 +416,96 @@ Page
                 text: "'" + currentSymptom + "'"
             }
         }
-
-        onAccepted: function()
-        {
-            backend.deleteGlossarySymptom(currentSymptom);
-        }
     }
 
     Dialog
     {
         id: dialogDeleteUser
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Да";
-            standardButton(Dialog.Cancel).text = "Нет";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Удаление записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogDeleteUserRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogDeleteUserAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteUserRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteUserRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogDeleteUser.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogDeleteUserAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogDeleteUserAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogDeleteUserAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.deleteGlossaryUserFormulation(currentUserFormulation);
+                dialogDeleteUser.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -274,31 +541,99 @@ Page
                 text: "'" + currentUserFormulation + "'"
             }
         }
-
-        onAccepted: function()
-        {
-            backend.deleteGlossaryUserFormulation(currentUserFormulation);
-        }
     }
 
     Dialog
     {
         id: dialogEditDiagnosis
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Изменить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Редактирование записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogEditDiagnosisRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogEditDiagnosisAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditDiagnosisRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditDiagnosisRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogEditDiagnosis.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogEditDiagnosisAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditDiagnosisAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditDiagnosisAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.editGlossaryDiagnosis(currentDiagnosis.toString(), inputEditDiagnosis.text);
+                currentDiagnosis = inputEditDiagnosis.text;
+                inputEditDiagnosis.text = "";
+
+                dialogEditDiagnosis.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -332,33 +667,99 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.editGlossaryDiagnosis(currentDiagnosis.toString(), inputEditDiagnosis.text);
-            currentDiagnosis = inputEditDiagnosis.text;
-            inputEditDiagnosis.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogEditTreatment
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Изменить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Редактирование записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogEditTreatmentRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogEditTreatmentAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditTreatmentRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditTreatmentRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogEditTreatment.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogEditTreatmentAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditTreatmentAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditTreatmentAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.editGlossaryTreatment(currentTreatment.toString(), inputEditTreatment.text);
+                currentTreatment = inputEditTreatment.text;
+                inputEditTreatment.text = "";
+
+                dialogEditTreatment.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -392,33 +793,99 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.editGlossaryTreatment(currentTreatment.toString(), inputEditTreatment.text);
-            currentTreatment = inputEditTreatment.text;
-            inputEditTreatment.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogEditSymptom
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Изменить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Редактирование записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogEditSymptomRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogEditSymptomAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditSymptomRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditSymptomRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogEditSymptom.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogEditSymptomAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditSymptomAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditSymptomAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.editGlossarySymptom(currentSymptom.toString(), inputEditSymptom.text);
+                currentSymptom = inputEditSymptom.text;
+                inputEditSymptom.text = "";
+
+                dialogEditSymptom.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -452,33 +919,99 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.editGlossarySymptom(currentSymptom.toString(), inputEditSymptom.text);
-            currentSymptom = inputEditSymptom.text;
-            inputEditSymptom.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogEditUser
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Изменить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Редактирование записи"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogEditUserRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogEditUserAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditUserRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditUserRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogEditUser.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogEditUserAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogEditUserAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Изменить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogEditSymptomAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.editGlossaryUserFormulation(currentUserFormulation.toString(), inputEditUser.text);
+                currentUserFormulation = inputEditUser.text;
+                inputEditUser.text = "";
+
+                dialogEditUser.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -512,33 +1045,98 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.editGlossaryUserFormulation(currentUserFormulation.toString(), inputEditUser.text);
-            currentUserFormulation = inputEditUser.text;
-            inputEditUser.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogAddDiagnosis
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Добавить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Новая запись"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogAddDiagnosisRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogAddDiagnosisAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddDiagnosisRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddDiagnosisRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogAddDiagnosis.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogAddDiagnosisAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddDiagnosisAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddDiagnosisAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.addGlossaryDiagnosis(inputDiagnosis.text);
+                inputDiagnosis.text = "";
+
+                dialogAddDiagnosis.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -572,32 +1170,98 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.addGlossaryDiagnosis(inputDiagnosis.text);
-            inputDiagnosis.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogAddTreatment
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Добавить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Новая запись"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogAddTreatmentRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogAddTreatmentAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddTreatmentRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddTreatmentRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogAddTreatment.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogAddTreatmentAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddTreatmentAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddTreatmentAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.addGlossaryTreatment(inputTreatment.text);
+                inputTreatment.text = "";
+
+                dialogAddTreatment.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -631,32 +1295,98 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.addGlossaryTreatment(inputTreatment.text);
-            inputTreatment.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogAddSymptom
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Добавить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Новая запись"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogAddSymptomRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogAddSymptomAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddSymptomRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddSymptomRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogAddSymptom.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogAddSymptomAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddSymptomAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddSymptomAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.addGlossarySymptom(inputSymptom.text);
+                inputSymptom.text = "";
+
+                dialogAddSymptom.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -690,32 +1420,98 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.addGlossarySymptom(inputSymptom.text);
-            inputSymptom.text = "";
-        }
     }
 
     Dialog
     {
         id: dialogAddUser
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Добавить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Новая запись"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
         width: 500
-        height: 400
+        height: dialogBoxHeight
+
+        Button
+        {
+            id: dialogAddUserRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogAddUserAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddUserRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddUserRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogAddUser.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogAddUserAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogAddUserAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogAddUserAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.addGlossaryUserFormulation(inputUser.text);
+                inputUser.text = "";
+
+                dialogAddUser.close();
+            }
+        }
 
         contentItem: Item
         {
@@ -749,27 +1545,6 @@ Page
                 font.pixelSize: 15
             }
         }
-
-        onAccepted: function()
-        {
-            backend.addGlossaryUserFormulation(inputUser.text);
-            inputUser.text = "";
-        }
-    }
-
-    Text
-    {
-        id: labelTitle
-
-        anchors
-        {
-            top: parent.top
-            topMargin: 20
-            horizontalCenter: parent.horizontalCenter
-        }
-        font.pointSize: 20
-        font.bold: true
-        text: "Глоссарий"
     }
 
     SplitView
@@ -778,7 +1553,7 @@ Page
 
         anchors
         {
-            top: labelTitle.bottom
+            top: parent.top//labelTitle.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -850,8 +1625,22 @@ Page
                     width: parent.width
                     wrapMode: Text.WordWrap
                     font.pixelSize: 17
-                    color: listViewDiagnoses.currentIndex === index ? "#ffffff" : "#000000"
+                    color: "#000000"
                     text: display
+
+                    Rectangle
+                    {
+                        id: separator
+
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 1
+                        color: listViewDelegateHighlightColor
+                    }
 
                     MouseArea
                     {
@@ -872,7 +1661,7 @@ Page
                         left: parent.left
                         right: parent.right
                     }
-                    color: "lightsteelblue"
+                    color: listViewDelegateHighlightColor
                 }
             }
 
@@ -952,8 +1741,22 @@ Page
                     width: parent.width
                     wrapMode: Text.WordWrap
                     font.pixelSize: 17
-                    color: listViewTreatments.currentIndex === index ? "#ffffff" : "#000000"
+                    color: "#000000"
                     text: display
+
+                    Rectangle
+                    {
+                        id: separatorTreatments
+
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 1
+                        color: "#E1E1E1"
+                    }
 
                     MouseArea
                     {
@@ -974,7 +1777,7 @@ Page
                         left: parent.left
                         right: parent.right
                     }
-                    color: "lightsteelblue"
+                    color: listViewDelegateHighlightColor
                 }
             }
 
@@ -1055,8 +1858,22 @@ Page
                     width: parent.width
                     wrapMode: Text.WordWrap
                     font.pixelSize: 17
-                    color: listViewSymptoms.currentIndex === index ? "#ffffff" : "#000000"
+                    color: "#000000"
                     text: display
+
+                    Rectangle
+                    {
+                        id: separatorSymptoms
+
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 1
+                        color: "#E1E1E1"
+                    }
 
                     MouseArea
                     {
@@ -1077,7 +1894,7 @@ Page
                         left: parent.left
                         right: parent.right
                     }
-                    color: "lightsteelblue"
+                    color: listViewDelegateHighlightColor
                 }
             }
 
@@ -1162,8 +1979,22 @@ Page
                     width: parent.width
                     wrapMode: Text.WordWrap
                     font.pixelSize: 17
-                    color: listViewUser.currentIndex === index ? "#ffffff" : "#000000"
+                    color: "#000000"
                     text: display
+
+                    Rectangle
+                    {
+                        id: separatorUser
+
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 1
+                        color: "#E1E1E1"
+                    }
 
                     MouseArea
                     {
@@ -1184,7 +2015,7 @@ Page
                         left: parent.left
                         right: parent.right
                     }
-                    color: "lightsteelblue"
+                    color: listViewDelegateHighlightColor
                 }
             }
 
