@@ -161,7 +161,10 @@ Page
             width: 200
             height: 70
 
-            enabled: false
+            onClicked: function()
+            {
+                backend.printCard();
+            }
         }
 
         Button
