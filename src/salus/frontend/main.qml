@@ -28,6 +28,14 @@ ApplicationWindow
 
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
+    property string sidePanelColor: "#D8D7DC"
+    property string mainBackgroundColor: "#FFFFFF"
+
+    property string buttonDefaultColor: "#EBEBEB"
+    property string buttonPressedColor: "#007AFF"
+    property string buttonTextDefaultColor: "#000000"
+    property string buttonTextPressedColor: "#FFFFFF"
+
     function updateProfilePage()
     {
         page_doctor_profile.doctorName = backend.currentDoctorFullName;
@@ -78,6 +86,12 @@ ApplicationWindow
         backend.profileAdded.connect(addNewProfile);
 
         patientListModel.modelReloaded.connect(page_patient_medical_card_main.updatePatientData);
+
+        page_patient_add_record.returnButtonAddress.returnBack.connect(page_patient_add_record.returnBack);
+        page_patient_edit_record.returnButtonAddress.returnBack.connect(page_patient_edit_record.returnBack);
+        page_patient_medical_card_diary.returnButtonAddress.returnBack.connect(page_patient_medical_card_diary.returnBack);
+        page_patient_medical_card_main.returnButtonAddress.returnBack.connect(page_patient_medical_card_main.returnBack);
+        page_patient_registration.returnButtonAddress.returnBack.connect(page_patient_registration.returnBack);
     }
 
     // Окно, отображающее контент на основной странице
@@ -139,7 +153,7 @@ ApplicationWindow
         {
             id: page_patient_registration
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 2;
             }
@@ -149,7 +163,7 @@ ApplicationWindow
         {
             id: page_patient_medical_card_main
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 2;
             }
@@ -161,10 +175,88 @@ ApplicationWindow
 
                 anchors.centerIn: parent
 
-                width: parent.width / 4
-                height: parent.height / 4
+                width: 400
+                height: 250
+                modal: true
                 title: "Удаление карты пациента '" + page_patient_medical_card_main.patientFullName + "'"
-                standardButtons: Dialog.Yes | Dialog.No
+
+                Button
+                {
+                    id: dialogDeletePatientRejectButton
+
+                    anchors
+                    {
+                        left:  parent.horizontalCenter
+                        right: parent.right
+                        top: dialogDeletePatientAcceptButton.top
+                        leftMargin: 5
+                    }
+
+                    contentItem: Text
+                    {
+                        font.pointSize: 12
+                        opacity: enabled ? 1.0 : 0.3
+                        color: dialogDeletePatientRejectButton.down ? buttonTextPressedColor : buttonTextDefaultColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        text: "Нет"
+                    }
+
+                    background: Rectangle
+                    {
+                        anchors.fill: parent
+                        radius: 14
+                        color: dialogDeletePatientRejectButton.down ? buttonPressedColor : buttonDefaultColor
+                    }
+
+                    height: 40
+
+                    onClicked: function()
+                    {
+                        dialogbox_delete_patient.close();
+                    }
+                }
+
+                Button
+                {
+                    id: dialogDeletePatientAcceptButton
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.horizontalCenter
+                        bottom: parent.bottom
+                        rightMargin: 5
+                    }
+
+                    contentItem: Text
+                    {
+                        font.pointSize: 12
+                        opacity: enabled ? 1.0 : 0.3
+                        color: dialogDeletePatientAcceptButton.down ? buttonTextDefaultColor : buttonTextPressedColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        text: "Да"
+                    }
+
+                    background: Rectangle
+                    {
+                        anchors.fill: parent
+                        radius: 14
+                        color: dialogDeletePatientAcceptButton.down ? buttonDefaultColor : buttonPressedColor
+                    }
+
+                    height: 40
+
+                    onClicked: function()
+                    {
+                        backend.deletePatient();
+                        stack_content_main.currentIndex = 2;
+                        dialogbox_delete_patient.close();
+                    }
+                }
 
                 Text
                 {
@@ -174,13 +266,7 @@ ApplicationWindow
 
                     font.pointSize: 14
                     wrapMode: Text.WordWrap
-                    text: qsTr("Удалить карту?")
-                }
-
-                onAccepted: function()
-                {
-                    backend.deletePatient();
-                    stack_content_main.currentIndex = 2;
+                    text: "Точно хотите удалить карту?"
                 }
             }
 
@@ -200,7 +286,7 @@ ApplicationWindow
         {
             id: page_patient_medical_card_diary
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 4;
             }
@@ -224,7 +310,7 @@ ApplicationWindow
         {
             id: page_patient_add_record
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 5;
             }
@@ -234,7 +320,7 @@ ApplicationWindow
         {
             id: page_patient_edit_record
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 5;
             }
@@ -261,7 +347,8 @@ ApplicationWindow
     }
 
     // Левая панель управления
-    Rectangle {
+    Rectangle
+    {
         id: menu_bar
 
         anchors
@@ -272,7 +359,7 @@ ApplicationWindow
         }
         visible: false
         width: 256
-        color: "#828282"
+        color: sidePanelColor
 
         Button
         {
@@ -280,15 +367,35 @@ ApplicationWindow
 
             anchors
             {
-                top: parent.top
-                topMargin: buttonsTopMargin
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                bottomMargin: 30
+                leftMargin: 10
+                rightMargin: 10
             }
 
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: button_profile.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: doctorFullName
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_profile.down ? buttonPressedColor: buttonDefaultColor
+            }
             font.pointSize: 12
             font.bold: true
-            width: parent.width
             height: 60
-            text: doctorFullName
+//            display: AbstractButton.TextBesideIcon
 
             onClicked: function()
             {
@@ -302,13 +409,33 @@ ApplicationWindow
 
             anchors
             {
+                left: parent.left
+                right: parent.right
                 top: parent.top
                 topMargin: buttonsTopMargin + 230
+                leftMargin: 10
+                rightMargin: 10
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: button_patient_card.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Амбулаторная карта"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_patient_card.down ? buttonPressedColor: buttonDefaultColor
             }
             font.pointSize: 12
-            width: parent.width
             height: 60
-            text: "Амбулаторная карта"
 
             onClicked: function()
             {
@@ -322,13 +449,33 @@ ApplicationWindow
 
             anchors
             {
+                left: parent.left
+                right: parent.right
                 top: button_patient_card.bottom
-                topMargin: buttonsTopMargin + 25
+                topMargin: buttonsTopMargin
+                leftMargin: 10
+                rightMargin: 10
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 13
+                opacity: enabled ? 1.0 : 0.3
+                color: button_glossary.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Глоссарий"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: button_glossary.down ? buttonPressedColor: buttonDefaultColor
             }
             font.pointSize: 12
-            width: parent.width
             height: 60
-            text: "Глоссарий"
 
             onClicked: function()
             {

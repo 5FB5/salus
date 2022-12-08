@@ -18,6 +18,11 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string buttonDefaultColor: "#E1E1E1"
+    property string buttonPressedColor: "#BABABA"
+    property string buttonTextColor: "#007AFF"
+    property string buttonTextPressedColor: Qt.darker(buttonTextColor, 0.5)
+
     property string recordDate: ""
     property string recordComplaints: ""
     property string recordAnamnesis: ""
@@ -26,12 +31,12 @@ Page
     property string recordTreatment: ""
 
     property Item currentTextEditItem
+    property Item returnButtonAddress: buttonReturn
 
     property int currentGlossaryMode: 0
     property string currentGlossaryItem: ""
     property string currentSelectedText: ""
 
-    signal returnBack()
     signal recordUpdated()
     signal openContextMenu();
 
@@ -302,7 +307,7 @@ Page
         color: "#ffffff"
     }
 
-    Button
+    ButtonReturn
     {
         id: buttonReturn
 
@@ -310,14 +315,7 @@ Page
         {
             top: parent.top
             left: parent.left
-            topMargin: 15
-            leftMargin: 15
-        }
-        text: "Назад"
-
-        onClicked: function()
-        {
-            returnBack();
+            margins: 5
         }
     }
 
@@ -330,8 +328,86 @@ Page
         width: parent.width / 4
         height: parent.height / 4
         modal: true
-        standardButtons: Dialog.Yes | Dialog.No
         title: "Подтвердите действие"
+
+        Button
+        {
+            id: dialogConfirmRejectButton
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: dialogConfirmAcceptButton.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogConfirmRejectButton.down ? "#000000" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Нет"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogConfirmRejectButton.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogConfirm.close();
+            }
+        }
+
+        Button
+        {
+            id: dialogConfirmAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogConfirmAcceptButton.down ? buttonTextDefaultColor : "#FFFFFF"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Да"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogConfirmAcceptButton.down ? "#EBEBEB" : "#007AFF"
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                backend.updateRecord(recordDate, textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
+                                     textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString());
+                recordUpdated();
+                dialogConfirm.close();
+            }
+        }
 
         Text
         {
@@ -342,13 +418,6 @@ Page
             font.pointSize: 14
             wrapMode: Text.WordWrap
             text: qsTr("Сохранить изменения?")
-        }
-
-        onAccepted: function()
-        {
-            backend.updateRecord(recordDate, textEditAnamnesis.text.toString(), textEditComplaints.text.toString(),
-                                 textEditDiseases.text.toString(), textEditDiagnosis.text.toString(), textEditTreatment.text.toString());
-            recordUpdated();
         }
     }
 
@@ -714,15 +783,30 @@ Page
 
         Button
         {
-            id: buttonAddRecord
-
+            id: buttonEditRecord
 
             anchors.horizontalCenter: parent.horizontalCenter
 
-            font.pointSize: 10
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonEditRecord.down ? "#FFFFFF" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Сохранить запись"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: buttonEditRecord.down ? "#007AFF": "#EBEBEB"
+            }
+
             width: 300
             height: 50
-            text: "Сохранить запись"
 
             onClicked: function()
             {

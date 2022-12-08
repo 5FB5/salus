@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import salus 1.0
 
+import "components"
+
 Page
 {
     id: root
@@ -21,7 +23,8 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
-    signal returnBack()
+    property Item returnButtonAddress: buttonReturn
+
     signal patientRegistered(string fullname)
 
     function clearTextFields()
@@ -42,7 +45,7 @@ Page
         color: "#ffffff"
     }
 
-    Button
+    ButtonReturn
     {
         id: buttonReturn
 
@@ -50,14 +53,7 @@ Page
         {
             top: parent.top
             left: parent.left
-            topMargin: 15
-            leftMargin: 15
-        }
-        text: "Назад"
-
-        onClicked: function()
-        {
-            returnBack();
+            margins: 5
         }
     }
 

@@ -18,17 +18,22 @@ Page
     property int buttonStandartTextFontSize: 10
     property int standartTextSize: 14
 
+    property string buttonDefaultColor: "#E1E1E1"
+    property string buttonPressedColor: "#BABABA"
+    property string buttonTextColor: "#007AFF"
+    property string buttonTextPressedColor: Qt.darker(buttonTextColor, 0.5)
+
     property string diagnosesListColor: "#bbbbbb"
     property string treatmentsListColor: "#bbbbbb"
     property string symptomsListcolor: "#bbbbbb"
 
     property Item currentTextEditItem
+    property Item returnButtonAddress: buttonReturn
 
     property int currentGlossaryMode: 0
     property string currentGlossaryItem: ""
     property string currentSelectedText: ""
 
-    signal returnBack()
     signal openContextMenu();
 
     function clearTextFields()
@@ -86,7 +91,6 @@ Page
     {
         id: glossaryContextMenu
     }
-
 
     Dialog
     {
@@ -287,8 +291,45 @@ Page
         width: parent.width / 4
         height: parent.height / 4
         modal: true
-        standardButtons: Dialog.Ok
         title: "Данная запись уже существует"
+
+        Button
+        {
+            id: dialogConfirmAcceptButton
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: dialogConfirmAcceptButton.down ? buttonTextDefaultColor : "#FFFFFF"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Закрыть"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: dialogConfirmAcceptButton.down ? "#EBEBEB" : "#007AFF"
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogRecordExists.close();
+            }
+        }
 
         Text
         {
@@ -310,7 +351,7 @@ Page
         color: "#ffffff"
     }
 
-    Button
+    ButtonReturn
     {
         id: buttonReturn
 
@@ -318,14 +359,7 @@ Page
         {
             top: parent.top
             left: parent.left
-            topMargin: 15
-            leftMargin: 15
-        }
-        text: "Назад"
-
-        onClicked: function()
-        {
-            returnBack();
+            margins: 5
         }
     }
 
@@ -691,10 +725,26 @@ Page
 
             anchors.horizontalCenter: parent.horizontalCenter
 
-            font.pointSize: 10
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonAddRecord.down ? "#FFFFFF" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Добавить запись"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: buttonAddRecord.down ? "#007AFF": "#EBEBEB"
+            }
+
             width: 300
             height: 50
-            text: "Добавить запись"
 
             onClicked: function()
             {

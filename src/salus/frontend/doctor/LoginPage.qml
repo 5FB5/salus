@@ -25,7 +25,7 @@ Page
         id: background
 
         anchors.fill: parent
-        color: "#ffffff"
+        color: "#FFFFFF"
     }
 
     Label
@@ -70,11 +70,26 @@ Page
         {
             id: buttonEnterToProfile
 
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonEnterToProfile.down ? buttonTextPressedColor : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Войти"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: buttonEnterToProfile.down ? buttonPressedColor: buttonDefaultColor
+            }
             font.pointSize: buttonStandartTextFontSize
             width: 200
             height: 60
-
-            text: "Войти"
 
             onClicked: function()
             {

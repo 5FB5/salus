@@ -32,6 +32,14 @@ Page
     signal openCurrentMedicalCard(string fullname)
     signal registerMedicalCard(string fullname)
 
+    Rectangle
+    {
+        id: background
+
+        anchors.fill: parent
+        color: mainBackgroundColor
+    }
+
     Label
     {
         id: labelTitle
