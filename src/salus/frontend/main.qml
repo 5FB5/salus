@@ -16,7 +16,7 @@ ApplicationWindow
 
     visibility: "Windowed"
 
-    title: qsTr("Салюс")
+    title: "Архивариус"
 
     property string doctorFullName
     property string doctorSpecialization
