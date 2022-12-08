@@ -29,7 +29,7 @@ ApplicationWindow
     property int buttonsTopMargin: 5 // позиционирование кнопок левой панели
 
     property string sidePanelColor: "#D8D7DC"
-    property string mainBackgroundColor: "#FFFFFF"//"#EBEBEB"
+    property string mainBackgroundColor: "#FFFFFF"
 
     property string buttonDefaultColor: "#EBEBEB"
     property string buttonPressedColor: "#007AFF"
@@ -86,6 +86,12 @@ ApplicationWindow
         backend.profileAdded.connect(addNewProfile);
 
         patientListModel.modelReloaded.connect(page_patient_medical_card_main.updatePatientData);
+
+        page_patient_add_record.returnButtonAddress.returnBack.connect(page_patient_add_record.returnBack);
+        page_patient_edit_record.returnButtonAddress.returnBack.connect(page_patient_edit_record.returnBack);
+        page_patient_medical_card_diary.returnButtonAddress.returnBack.connect(page_patient_medical_card_diary.returnBack);
+        page_patient_medical_card_main.returnButtonAddress.returnBack.connect(page_patient_medical_card_main.returnBack);
+        page_patient_registration.returnButtonAddress.returnBack.connect(page_patient_registration.returnBack);
     }
 
     // Окно, отображающее контент на основной странице
@@ -147,7 +153,7 @@ ApplicationWindow
         {
             id: page_patient_registration
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 2;
             }
@@ -157,7 +163,7 @@ ApplicationWindow
         {
             id: page_patient_medical_card_main
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 2;
             }
@@ -280,7 +286,7 @@ ApplicationWindow
         {
             id: page_patient_medical_card_diary
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 4;
             }
@@ -304,7 +310,7 @@ ApplicationWindow
         {
             id: page_patient_add_record
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 5;
             }
@@ -314,7 +320,7 @@ ApplicationWindow
         {
             id: page_patient_edit_record
 
-            onReturnBack: function()
+            function returnBack()
             {
                 stack_content_main.currentIndex = 5;
             }

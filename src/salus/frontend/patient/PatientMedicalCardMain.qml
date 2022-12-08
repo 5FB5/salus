@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import salus 1.0
 
+import "components"
+
 Page
 {
     id: root
@@ -14,6 +16,8 @@ Page
     property string buttonPressedColor: "#BABABA"
     property string buttonTextColor: "#007AFF"
     property string buttonTextPressedColor: Qt.darker(buttonTextColor, 0.5)
+
+    property Item returnButtonAddress: buttonReturn
 
     property string patientFullName: ""
     property int patientAge: 0
@@ -27,7 +31,6 @@ Page
     property var patientDiseases: []
     property string patientAnamnesis: ""
 
-    signal returnBack()
     signal openDiary()
     signal deletePatient()
 
@@ -52,7 +55,7 @@ Page
         color: mainBackgroundColor
     }
 
-    Button
+    ButtonReturn
     {
         id: buttonReturn
 
@@ -60,41 +63,7 @@ Page
         {
             top: parent.top
             left: parent.left
-            topMargin: 15
-            leftMargin: 15
-        }
-
-        contentItem: Text
-        {
-            anchors
-            {
-                fill: parent
-                verticalCenter: parent.verticalCenter
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            font.pointSize: 13
-            opacity: enabled ? 1.0 : 0.3
-            color: buttonReturn.down ? buttonTextPressedColor : buttonTextColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-            text: "❮"
-        }
-
-        background: Rectangle
-        {
-            anchors.fill: parent
-            radius: 14
-            color: buttonReturn.down ? buttonPressedColor : buttonDefaultColor
-        }
-
-        width: 50
-        height: 50
-
-        onClicked: function()
-        {
-            returnBack();
+            margins: 5
         }
     }
 

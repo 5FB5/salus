@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
 import salus 1.0
 
+import "components"
+
 Page
 {
     id: root
@@ -25,7 +27,8 @@ Page
 
     property string currentRecord: ""
 
-    signal returnBack()
+    property Item returnButtonAddress: buttonReturn
+
     signal openAddRecordPage()
     signal openEditPage()
     signal recordDeleted()
@@ -150,7 +153,7 @@ Page
         }
     }
 
-    Button
+    ButtonReturn
     {
         id: buttonReturn
 
@@ -158,41 +161,7 @@ Page
         {
             top: parent.top
             left: parent.left
-            topMargin: 15
-            leftMargin: 15
-        }
-
-        contentItem: Text
-        {
-            anchors
-            {
-                fill: parent
-                verticalCenter: parent.verticalCenter
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            font.pointSize: 13
-            opacity: enabled ? 1.0 : 0.3
-            color: buttonReturn.down ? buttonTextPressedColor : buttonTextColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-            text: "❮"
-        }
-
-        background: Rectangle
-        {
-            anchors.fill: parent
-            radius: 14
-            color: buttonReturn.down ? buttonPressedColor : buttonDefaultColor
-        }
-
-        width: 50
-        height: 50
-
-        onClicked: function()
-        {
-            returnBack();
+            margins: 5
         }
     }
 

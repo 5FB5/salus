@@ -13,5 +13,6 @@
         <file>frontend/patient/PatientEditRecordPage.qml</file>
         <file>frontend/doctor/components/GlossaryEditPanel.qml</file>
         <file>frontend/patient/components/GlossaryPasteContextMenu.qml</file>
+        <file>frontend/patient/components/ButtonReturn.qml</file>
     </qresource>
 </RCC>
