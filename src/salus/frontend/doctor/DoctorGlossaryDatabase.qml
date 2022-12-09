@@ -1602,8 +1602,6 @@ Page
                 anchors
                 {
                     fill: parent
-                    left: parent.left
-                    right: parent.right
                     top: labelListViewDiagnoses.bottom
                     topMargin: 55
                     bottomMargin: listViewBottomMargin
@@ -1718,8 +1716,6 @@ Page
                 anchors
                 {
                     fill: parent
-                    left: parent.left
-                    right: parent.right
                     top: labelListViewTreatments.bottom
                     topMargin: 55
                     bottomMargin: listViewBottomMargin
@@ -1835,8 +1831,6 @@ Page
                 anchors
                 {
                     fill: parent
-                    left: parent.left
-                    right: parent.right
                     top: labelListViewSymptoms.bottom
                     topMargin: 55
                     bottomMargin: listViewBottomMargin
@@ -1956,8 +1950,6 @@ Page
                 anchors
                 {
                     fill: parent
-                    left: parent.left
-                    right: parent.right
                     top: labelListViewUser.bottom
                     topMargin: 75
                     bottomMargin: listViewBottomMargin
