@@ -77,7 +77,7 @@ public:
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
     QString getCurrentPatientOccupation();    
-    quint16 getCurrentPatientAge();
+    int getCurrentPatientAge();
 
 //    QString getCurrentPatientRecordDate();
 //    QString getCurrentPatientRecordDiagnosis();
@@ -95,7 +95,7 @@ public slots:
 
     void sortPatientRecordListModel();
 
-    void addNewPatient(QString fullName, quint16 age, bool sex,
+    void addNewPatient(QString fullName, int age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 

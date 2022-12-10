@@ -47,7 +47,7 @@ public:
 
     QList<Patient>* patientsList = nullptr;
 
-    void addNewPatient(QString fullName, quint16 age, bool sex,
+    void addNewPatient(QString fullName, int age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
 
@@ -71,7 +71,7 @@ public:
 
     bool getSex(QString birthDate);
 
-    quint16 getAge(QString birthDate);
+    int getAge(QString birthDate);
 
     QStringList getRecordsList(QString birthDate);
 

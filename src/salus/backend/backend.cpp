@@ -163,7 +163,7 @@ void Backend::deleteRecord(QString recordDate)
  * @param phoneNumber
  * @param occupation
  */
-void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
+void Backend::addNewPatient(QString fullName, int age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
@@ -420,7 +420,7 @@ QString Backend::getCurrentDoctorInitials()
     return doctorDb.getProfileInitials(currentDoctorInn);
 }
 
-quint16 Backend::getCurrentPatientAge()
+int Backend::getCurrentPatientAge()
 {
     return patientsDb->getAge(currentPatientBirthDate);
 }

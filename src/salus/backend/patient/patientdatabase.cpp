@@ -22,7 +22,7 @@ PatientDataBase::~PatientDataBase()
  * @param phoneNumber
  * @param occupation
  */
-void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
+void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
                                     QString birthDate, QString address,
                                     QString phoneNumber, QString occupation)
 {
@@ -431,23 +431,13 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
 
 void PatientDataBase::saveCardPdf(QString birthDate)
 {
-    // открыть файл
-    // прочитать содержимое
-    // найти метки (ФИО и т.д.)
-    // подставить значения
-
     QString fileName;
 
-    for (const auto &p : *patientsList)
-    {
-        if (p.birthDate == birthDate)
-        {
-            fileName = p.fullName + p.birthDate;
-            fileName.remove(' ');
-            fileName.replace('.', '_');
-            break;
-        }
-    }
+    QString patientName;
+    QString sex;
+    QString age;
+    QString address;
+    QString occupation;
 
     QFile file("://cards_src/dentist_043_header.html");
     file.open(QIODevice::ReadOnly);
@@ -457,6 +447,30 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file.close();
 
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
+            sex = p.sex == false ? "М" : "Ж";
+            age = QString::number(p.age);
+            address = p.address;
+            occupation = p.occupation;
+
+            fileName = p.fullName + p.birthDate;
+            fileName.remove(' ');
+            fileName.replace('.', '_');
+            break;
+        }
+    }
+
+    html.replace("МЕТКА_ФИО", patientName);
+    html.replace("МЕТКА_ПОЛ", sex);
+    html.replace("МЕТКА_ВОЗРАСТ", age);
+    html.replace("МЕТКА_АДРЕС", address);
+    html.replace("МЕТКА_ПРОФЕССИЯ", occupation);
+
     webView->setHtml(html);
 
     QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName, "PDF (*.pdf)");
@@ -465,7 +479,6 @@ void PatientDataBase::saveCardPdf(QString birthDate)
         path.append(".pdf");
 
     QPrinter printer(QPrinter::PrinterResolution);
-    //QTextDocument doc;
 
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOrientation(QPrinter::Landscape);
@@ -473,10 +486,6 @@ void PatientDataBase::saveCardPdf(QString birthDate)
     printer.setOutputFileName(path);
 
     webView->page()->printToPdf(path);
-
-//    doc.setHtml(html);
-//    doc.setPageSize(printer.pageRect().size());
-//    doc.print(&printer);
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)
@@ -525,7 +534,7 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 //    }
 //}
 
-quint16 PatientDataBase::getAge(QString birthDate)
+int PatientDataBase::getAge(QString birthDate)
 {
     if (patientsList->isEmpty() == true)
         return 0;

@@ -27,7 +27,7 @@ public:
 
     bool sex;
 
-    quint16 age;
+    int age;
 
     QList<Record_t> cardRecords;
 
