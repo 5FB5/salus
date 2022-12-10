@@ -5,6 +5,7 @@
 
 #include <QCoreApplication>
 #include <QtGui/QTextDocument>
+#include <QtWebEngineWidgets/QWebEngineView>
 #include <QPrinter>
 #include <QFile>
 #include <QFileDialog>
@@ -29,6 +30,8 @@ private:
     void getPatientsListFromJson();
     void saveProfileToJson(Patient patientProfile);
 
+    QWebEngineView *webView;
+
     QJsonDocument loadJson();
 
     QJsonArray convertListToJsonArray(const QList<QString> &list);
@@ -40,6 +43,7 @@ private:
 
 public:
     explicit PatientDataBase(QObject *parent = nullptr);
+    ~PatientDataBase();
 
     QList<Patient>* patientsList = nullptr;
 

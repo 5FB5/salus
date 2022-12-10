@@ -4,6 +4,12 @@
 PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 {
     getPatientsListFromJson();
+    webView = new QWebEngineView();
+}
+
+PatientDataBase::~PatientDataBase()
+{
+    delete webView;
 }
 
 /**
@@ -451,22 +457,26 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file.close();
 
+    webView->setHtml(html);
+
     QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName, "PDF (*.pdf)");
 
     if (QFileInfo(path).suffix().isEmpty())
         path.append(".pdf");
 
     QPrinter printer(QPrinter::PrinterResolution);
-    QTextDocument doc;
+    //QTextDocument doc;
 
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOrientation(QPrinter::Landscape);
     printer.setPaperSize(QPrinter::A5);
     printer.setOutputFileName(path);
 
-    doc.setHtml(html);
-    doc.setPageSize(printer.pageRect().size());
-    doc.print(&printer);
+    webView->page()->printToPdf(path);
+
+//    doc.setHtml(html);
+//    doc.setPageSize(printer.pageRect().size());
+//    doc.print(&printer);
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)
