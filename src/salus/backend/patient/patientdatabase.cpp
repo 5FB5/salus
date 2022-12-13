@@ -5,6 +5,8 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 {
     getPatientsListFromJson();
     webView = new QWebEngineView();
+
+    connect(webView, &QWebEngineView::loadFinished, &loop, &QEventLoop::quit);
 }
 
 PatientDataBase::~PatientDataBase()
@@ -431,6 +433,8 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
 
 void PatientDataBase::saveCardPdf(QString birthDate)
 {
+    // TODO: сгенерировать отдельные файлы для каждой страницы и слепить в одну
+
     QString fileName;
 
     QString patientName;
@@ -438,14 +442,6 @@ void PatientDataBase::saveCardPdf(QString birthDate)
     QString age;
     QString address;
     QString occupation;
-
-    QFile file("://cards_src/dentist_043_header.html");
-    file.open(QIODevice::ReadOnly);
-
-    QTextStream input(&file);
-    QString html = input.readAll();
-
-    file.close();
 
     for (const auto &p : *patientsList)
     {
@@ -465,27 +461,42 @@ void PatientDataBase::saveCardPdf(QString birthDate)
         }
     }
 
+    QFile file("://cards_src/dentist_043_header.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
+
+    file.close();
+
+    QFile file1("://cards_src/second_page_test.html");
+    file1.open(QIODevice::ReadOnly);
+
+    QTextStream input1(&file1);
+    QString html1 = input1.readAll();
+
+    file1.close();
+
     html.replace("МЕТКА_ФИО", patientName);
     html.replace("МЕТКА_ПОЛ", sex);
     html.replace("МЕТКА_ВОЗРАСТ", age);
     html.replace("МЕТКА_АДРЕС", address);
     html.replace("МЕТКА_ПРОФЕССИЯ", occupation);
 
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+
     webView->setHtml(html);
-
-    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName, "PDF (*.pdf)");
-
-    if (QFileInfo(path).suffix().isEmpty())
-        path.append(".pdf");
-
-    QPrinter printer(QPrinter::PrinterResolution);
-
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOrientation(QPrinter::Landscape);
-    printer.setPaperSize(QPrinter::A5);
-    printer.setOutputFileName(path);
+    loop.exec();
 
     webView->page()->printToPdf(path);
+
+    path.replace(".pdf", "_1.pdf");
+
+    webView->setHtml(html1);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
 }
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)

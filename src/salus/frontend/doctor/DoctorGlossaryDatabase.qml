@@ -1553,7 +1553,7 @@ Page
 
         anchors
         {
-            top: parent.top//labelTitle.bottom
+            top: parent.top
             left: parent.left
             right: parent.right
             bottom: parent.bottom

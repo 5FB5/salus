@@ -6,7 +6,6 @@
 #include <QCoreApplication>
 #include <QtGui/QTextDocument>
 #include <QtWebEngineWidgets/QWebEngineView>
-#include <QPrinter>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -30,6 +29,7 @@ private:
     void getPatientsListFromJson();
     void saveProfileToJson(Patient patientProfile);
 
+    QEventLoop loop;
     QWebEngineView *webView;
 
     QJsonDocument loadJson();

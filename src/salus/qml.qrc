@@ -15,5 +15,6 @@
         <file>frontend/patient/components/GlossaryPasteContextMenu.qml</file>
         <file>frontend/patient/components/ButtonReturn.qml</file>
         <file>cards_src/dentist_043_header.html</file>
+        <file>cards_src/second_page_test.html</file>
     </qresource>
 </RCC>
