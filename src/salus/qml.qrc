@@ -16,5 +16,6 @@
         <file>frontend/patient/components/ButtonReturn.qml</file>
         <file>cards_src/dentist_043_header.html</file>
         <file>cards_src/second_page.html</file>
+        <file>cards_src/third_page.html</file>
     </qresource>
 </RCC>

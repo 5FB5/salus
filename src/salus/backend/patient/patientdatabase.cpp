@@ -477,6 +477,13 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file1.close();
 
+QFile file2("://cards_src/third_page.html");
+    file2.open(QIODevice::ReadOnly);
+
+    QTextStream input2(&file2);
+    QString html2 = input2.readAll();
+
+    file2.close();
     html.replace("МЕТКА_ФИО", patientName);
     html.replace("МЕТКА_ПОЛ", sex);
     html.replace("МЕТКА_ВОЗРАСТ", age);
@@ -497,7 +504,12 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     webView->page()->printToPdf(path);
 
-}
+  path.replace(".pdf", "_2.pdf");
+
+    webView->setHtml(html2);
+    loop.exec();
+
+    webView->page()->printToPdf(path);}
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)
 //{
