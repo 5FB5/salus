@@ -469,7 +469,7 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file.close();
 
-    QFile file1("://cards_src/second_page_test.html");
+    QFile file1("://cards_src/second_page.html");
     file1.open(QIODevice::ReadOnly);
 
     QTextStream input1(&file1);
