@@ -469,7 +469,7 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file.close();
 
-    QFile file1("://cards_src/second_page.html");
+    QFile file1("://cards_src/page2.html");
     file1.open(QIODevice::ReadOnly);
 
     QTextStream input1(&file1);
@@ -477,13 +477,30 @@ void PatientDataBase::saveCardPdf(QString birthDate)
 
     file1.close();
 
-QFile file2("://cards_src/third_page.html");
+    QFile file2("://cards_src/page3.html");
     file2.open(QIODevice::ReadOnly);
 
     QTextStream input2(&file2);
     QString html2 = input2.readAll();
 
     file2.close();
+
+    QFile file3("://cards_src/page4.html");
+    file3.open(QIODevice::ReadOnly);
+
+    QTextStream input3(&file3);
+    QString html3 = input3.readAll();
+
+    file3.close();
+
+    QFile file4("://cards_src/page5.html");
+    file4.open(QIODevice::ReadOnly);
+
+    QTextStream input4(&file4);
+    QString html4 = input4.readAll();
+
+    file4.close();
+
     html.replace("МЕТКА_ФИО", patientName);
     html.replace("МЕТКА_ПОЛ", sex);
     html.replace("МЕТКА_ВОЗРАСТ", age);
@@ -504,12 +521,27 @@ QFile file2("://cards_src/third_page.html");
 
     webView->page()->printToPdf(path);
 
-  path.replace(".pdf", "_2.pdf");
+    path.replace("_1.pdf", "_2.pdf");
 
     webView->setHtml(html2);
     loop.exec();
 
-    webView->page()->printToPdf(path);}
+    webView->page()->printToPdf(path);
+
+    path.replace("_2.pdf", "_3.pdf");
+
+    webView->setHtml(html3);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
+    path.replace("_3.pdf", "_4.pdf");
+
+    webView->setHtml(html4);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+}
 
 //QString PatientDataBase::getDiagnosis(QString birthDate)
 //{
