@@ -1,6 +1,5 @@
 #include "patientdatabase.h"
 
-
 PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 {
     getPatientsListFromJson();
@@ -431,17 +430,12 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
     return "";
 }
 
-void PatientDataBase::saveCardPdf(QString birthDate)
+void PatientDataBase::saveCardPdf(QString birthDate, int opMode)
 {
     // TODO: сгенерировать отдельные файлы для каждой страницы и слепить в одну
 
     QString fileName;
-
     QString patientName;
-    QString sex;
-    QString age;
-    QString address;
-    QString occupation;
 
     for (const auto &p : *patientsList)
     {
@@ -449,10 +443,6 @@ void PatientDataBase::saveCardPdf(QString birthDate)
         {
             // Для подстановки ФИО в карту
             patientName = p.fullName;
-            sex = p.sex == false ? "М" : "Ж";
-            age = QString::number(p.age);
-            address = p.address;
-            occupation = p.occupation;
 
             fileName = p.fullName + p.birthDate;
             fileName.remove(' ');
@@ -461,133 +451,23 @@ void PatientDataBase::saveCardPdf(QString birthDate)
         }
     }
 
-    QFile file("://cards_src/dentist_043_header.html");
-    file.open(QIODevice::ReadOnly);
-
-    QTextStream input(&file);
-    QString html = input.readAll();
-
-    file.close();
-
-    QFile file1("://cards_src/page2.html");
-    file1.open(QIODevice::ReadOnly);
-
-    QTextStream input1(&file1);
-    QString html1 = input1.readAll();
-
-    file1.close();
-
-    QFile file2("://cards_src/page3.html");
-    file2.open(QIODevice::ReadOnly);
-
-    QTextStream input2(&file2);
-    QString html2 = input2.readAll();
-
-    file2.close();
-
-    QFile file3("://cards_src/page4.html");
-    file3.open(QIODevice::ReadOnly);
-
-    QTextStream input3(&file3);
-    QString html3 = input3.readAll();
-
-    file3.close();
-
-    QFile file4("://cards_src/page5.html");
-    file4.open(QIODevice::ReadOnly);
-
-    QTextStream input4(&file4);
-    QString html4 = input4.readAll();
-
-    file4.close();
-
-    html.replace("МЕТКА_ФИО", patientName);
-    html.replace("МЕТКА_ПОЛ", sex);
-    html.replace("МЕТКА_ВОЗРАСТ", age);
-    html.replace("МЕТКА_АДРЕС", address);
-    html.replace("МЕТКА_ПРОФЕССИЯ", occupation);
-
     QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
 
-    webView->setHtml(html);
-    loop.exec();
-
-    webView->page()->printToPdf(path);
-
-    path.replace(".pdf", "_1.pdf");
-
-    webView->setHtml(html1);
-    loop.exec();
-
-    webView->page()->printToPdf(path);
-
-    path.replace("_1.pdf", "_2.pdf");
-
-    webView->setHtml(html2);
-    loop.exec();
-
-    webView->page()->printToPdf(path);
-
-    path.replace("_2.pdf", "_3.pdf");
-
-    webView->setHtml(html3);
-    loop.exec();
-
-    webView->page()->printToPdf(path);
-
-    path.replace("_3.pdf", "_4.pdf");
-
-    webView->setHtml(html4);
-    loop.exec();
-
-    webView->page()->printToPdf(path);
+    switch(opMode)
+    {
+        case PrintMode::ALL_CARD:
+            generateFullCard(birthDate, path);
+            break;
+        case PrintMode::PAGE_ONLY:
+        {
+            break;
+        }
+        case PrintMode::RECORD:
+        {
+            break;
+        }
+    }
 }
-
-//QString PatientDataBase::getDiagnosis(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.currentDiagnosis;
-//            }
-//        }
-//    }
-//    return nullptr;
-//}
-
-//QString PatientDataBase::getAnamnesis(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.anamnesis;
-//            }
-//        }
-//    }
-//    return nullptr;
-//}
-
-//QList<QString> PatientDataBase::getDiseasesList(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.diseases;
-//            }
-//        }
-//    }
-//}
-
-//QList<QString> PatientDataBase::getComplaintsList(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.complaints;
-//            }
-//        }
-//    }
-//}
 
 int PatientDataBase::getAge(QString birthDate)
 {
@@ -654,6 +534,177 @@ void PatientDataBase::getPatientsListFromJson()
 
         patientsList->append(currentProfile);
     }
+}
+
+void PatientDataBase::generateFullCard(QString birthDate, QString path)
+{
+    QString patientName;
+    QString sex;
+    QString age;
+    QString address;
+    QString occupation;
+
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
+            sex = p.sex == false ? "М" : "Ж";
+            age = QString::number(p.age);
+            address = p.address;
+            occupation = p.occupation;
+            break;
+        }
+    }
+
+    QFile file("://cards_src/page1.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
+
+    file.close();
+
+    QFile file1("://cards_src/page2.html");
+    file1.open(QIODevice::ReadOnly);
+
+    QTextStream input1(&file1);
+    QString html1 = input1.readAll();
+
+    file1.close();
+
+    QFile file2("://cards_src/page3.html");
+    file2.open(QIODevice::ReadOnly);
+
+    QTextStream input2(&file2);
+    QString html2 = input2.readAll();
+
+    file2.close();
+
+    QFile file3("://cards_src/page4.html");
+    file3.open(QIODevice::ReadOnly);
+
+    QTextStream input3(&file3);
+    QString html3 = input3.readAll();
+
+    file3.close();
+
+    QFile file4("://cards_src/page5.html");
+    file4.open(QIODevice::ReadOnly);
+
+    QTextStream input4(&file4);
+    QString html4 = input4.readAll();
+
+    file4.close();
+
+    // 1 страница
+    html.replace("МЕТКА_КОД_ОКУД", "");
+    html.replace("МЕТКА_КОД_ОКПО", "");
+    html.replace("МЕТКА_ДИАГНОЗ", "");
+    html.replace("МЕТКА_ЖАЛОБЫ", "");
+    html.replace("МЕТКА_ФИО", patientName);
+    html.replace("МЕТКА_ПОЛ", sex);
+    html.replace("МЕТКА_ВОЗРАСТ", age);
+    html.replace("МЕТКА_АДРЕС", address);
+    html.replace("МЕТКА_ПРОФЕССИЯ", occupation);
+
+    webView->setHtml(html);
+    loop.exec();
+
+    paths.push_back(path.toStdString());
+    webView->page()->printToPdf(path);
+
+    path.replace(".pdf", "_1.pdf");
+    paths.push_back(path.toStdString());
+
+    // 2 страница
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ1", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ2", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ3", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ4", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ5", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
+
+    html1.replace("МЕТКА_СОСТОЯНИЕ", "");
+
+    html1.replace("МЕТКА_ПРИКУС", "");
+
+    html1.replace("МЕТКА_РЕНТГЕН1", "");
+    html1.replace("МЕТКА_РЕНТГЕН2", "");
+    html1.replace("МЕТКА_РЕНТГЕН3", "");
+    html1.replace("МЕТКА_РЕНТГЕН4", "");
+
+    webView->setHtml(html1);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
+    path.replace("_1.pdf", "_2.pdf");
+    paths.push_back(path.toStdString());
+
+    // 3 страница
+    html2.replace("МЕТКА_ЛЕЧЕНИЕ1", "");
+    html2.replace("МЕТКА_ЛЕЧЕНИЕ2", "");
+    html2.replace("МЕТКА_ЛЕЧЕНИЕ3", "");
+    html2.replace("МЕТКА_ЛЕЧЕНИЕ4", "");
+    html2.replace("МЕТКА_ЛЕЧЕНИЕ5", "");
+
+    html2.replace("МЕТКА_ЭПИКРИЗ1", "");
+    html2.replace("МЕТКА_ЭПИКРИЗ2", "");
+    html2.replace("МЕТКА_ЭПИКРИЗ3", "");
+    html2.replace("МЕТКА_ЭПИКРИЗ4", "");
+    html2.replace("МЕТКА_ЭПИКРИЗ5", "");
+
+    html2.replace("МЕТКА_НАСТАВЛЕНИЯ1", "");
+    html2.replace("МЕТКА_НАСТАВЛЕНИЯ2", "");
+    html2.replace("МЕТКА_НАСТАВЛЕНИЯ3", "");
+    html2.replace("МЕТКА_НАСТАВЛЕНИЯ4", "");
+    html2.replace("МЕТКА_НАСТАВЛЕНИЯ5", "");
+
+    html2.replace("МЕТКА_ВРАЧ", "");
+    html2.replace("МЕТКА_ЗАВЕДУЩ", "");
+
+    webView->setHtml(html2);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
+    path.replace("_2.pdf", "_3.pdf");
+    paths.push_back(path.toStdString());
+
+    // 4 страница
+
+    webView->setHtml(html3);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
+    path.replace("_3.pdf", "_4.pdf");
+    paths.push_back(path.toStdString());
+
+    webView->setHtml(html4);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+
+    path.remove("_4.pdf");
+
+    std::string finalPdfPath = path.toStdString();
+    finalPdfPath += "_final.pdf";
+
+    PDFWriter writer;
+
+    writer.StartPDF(finalPdfPath, ePDFVersion13);
+
+    for (const auto &path : paths)
+    {
+        writer.AppendPDFPagesFromPDF(path, PDFPageRange());
+    }
+
+    writer.EndPDF();
+
 }
 
 /**

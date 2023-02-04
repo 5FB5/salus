@@ -4,7 +4,6 @@
 #define JSON_PATIENT_FILE_PATH QCoreApplication::applicationDirPath() + "/patients.json"
 
 #include <QCoreApplication>
-#include <QtGui/QTextDocument>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include <QFile>
 #include <QFileDialog>
@@ -20,14 +19,25 @@
 
 #include "patient.h"
 #include "patientcardrecord.h"
+#include "PDFWriter/PDFWriter.h"
 
 class PatientDataBase : public QObject
 {
     Q_OBJECT
 
+    enum PrintMode : int
+    {
+        ALL_CARD, // Карта целиком
+        PAGE_ONLY, // Указанная страница
+        RECORD // Дневник по записи
+    };
+
 private:
     void getPatientsListFromJson();
+    void generateFullCard(QString birthDate, QString path);
     void saveProfileToJson(Patient patientProfile);
+
+    std::vector<std::string> paths;
 
     QEventLoop loop;
     QWebEngineView *webView;
@@ -81,16 +91,10 @@ public:
     QString getDiseases(QString birthDate, QString recordDate);
     QString getTreatment(QString birthDate, QString recordDate);
 
-    void saveCardPdf(QString birthDate);
+    void saveCardPdf(QString birthDate, int opMode);
 
 signals:
     void recordAdded();
-
-//    QList<QString> getDiseasesList(QString birthDate);
-//    QList<QString> getComplaintsList(QString birthDate);
-    // QString getAnamnesis(QString insuranceNumber);
-
-    // QString getPatientInitials(QString insuranceNumber);
 };
 
 #endif // PATIENTDATABASE_H

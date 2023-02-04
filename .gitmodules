@@ -1,0 +1,3 @@
+[submodule "src/salus/libs/PDF-Writer"]
+	path = src/salus/libs/PDF-Writer
+	url = ../../galkahana/PDF-Writer

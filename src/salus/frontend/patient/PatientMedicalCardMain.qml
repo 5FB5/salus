@@ -55,6 +55,31 @@ Page
         color: mainBackgroundColor
     }
 
+    Menu
+    {
+        id: menuPrintCard
+
+        MenuItem
+        {
+            text: "Вся карта"
+
+            onTriggered: function()
+            {
+                backend.printCard(0);
+            }
+        }
+
+        MenuItem
+        {
+            text: "Страница"
+        }
+
+        MenuItem
+        {
+            text: "Дневник"
+        }
+    }
+
     ButtonReturn
     {
         id: buttonReturn
@@ -163,7 +188,7 @@ Page
 
             onClicked: function()
             {
-                backend.printCard();
+                menuPrintCard.popup();
             }
         }
 
