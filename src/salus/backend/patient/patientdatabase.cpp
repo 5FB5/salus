@@ -6,6 +6,7 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
     webView = new QWebEngineView();
 
     connect(webView, &QWebEngineView::loadFinished, &loop, &QEventLoop::quit);
+    connect(webView->page(), &QWebEnginePage::pdfPrintingFinished, &loop, &QEventLoop::quit);
 }
 
 PatientDataBase::~PatientDataBase()
@@ -455,17 +456,17 @@ void PatientDataBase::saveCardPdf(QString birthDate, int opMode)
 
     switch(opMode)
     {
-        case PrintMode::ALL_CARD:
-            generateFullCard(birthDate, path);
-            break;
-        case PrintMode::PAGE_ONLY:
-        {
-            break;
-        }
-        case PrintMode::RECORD:
-        {
-            break;
-        }
+    case PrintMode::ALL_CARD:
+        generateFullCard(birthDate, path);
+        break;
+    case PrintMode::PAGE_ONLY:
+    {
+        break;
+    }
+    case PrintMode::RECORD:
+    {
+        break;
+    }
     }
 }
 
@@ -614,6 +615,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     paths.push_back(path.toStdString());
     webView->page()->printToPdf(path);
+    loop.exec();
 
     path.replace(".pdf", "_1.pdf");
     paths.push_back(path.toStdString());
@@ -640,6 +642,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     loop.exec();
 
     webView->page()->printToPdf(path);
+    loop.exec();
 
     path.replace("_1.pdf", "_2.pdf");
     paths.push_back(path.toStdString());
@@ -670,6 +673,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     loop.exec();
 
     webView->page()->printToPdf(path);
+    loop.exec();
 
     path.replace("_2.pdf", "_3.pdf");
     paths.push_back(path.toStdString());
@@ -680,6 +684,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     loop.exec();
 
     webView->page()->printToPdf(path);
+    loop.exec();
 
     path.replace("_3.pdf", "_4.pdf");
     paths.push_back(path.toStdString());
@@ -688,6 +693,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     loop.exec();
 
     webView->page()->printToPdf(path);
+    loop.exec();
 
     path.remove("_4.pdf");
 
@@ -700,6 +706,10 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     for (const auto &path : paths)
     {
+        QFileInfo f(path.c_str());
+
+        qDebug() << f.exists();
+
         writer.AppendPDFPagesFromPDF(path, PDFPageRange());
     }
 
