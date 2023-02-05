@@ -34,6 +34,7 @@ class PatientDataBase : public QObject
 
 private:
     void getPatientsListFromJson();
+    void generateDiary(QString birthDate, std::vector<std::string> *paths);
     void generateFullCard(QString birthDate, QString path);
     void saveProfileToJson(Patient patientProfile);
 

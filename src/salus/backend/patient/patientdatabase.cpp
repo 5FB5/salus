@@ -537,6 +537,176 @@ void PatientDataBase::getPatientsListFromJson()
     }
 }
 
+void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> *paths)
+{
+    QList<Record_t> records;
+
+    // Вытаскиваем все записи для поочерёдного заполнения
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            records = p.cardRecords;
+            break;
+        }
+    }
+    // Изначальный путь до 4-й страницы с дневников
+    QString path = paths->back().c_str();
+
+    for (const auto &recIt : records)
+    {
+        QFile file("://cards_src/page4.html");
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream input(&file);
+        QString html = input.readAll();
+
+        file.close();
+
+        // Мы каждый раз берём изначальный путь без модификаций, чтобы в него без последствий вписать новое имя
+        QString oldPath = path;
+
+        QString finalExtenstionName;
+        QString formattedDate = recIt.date;
+
+        // Меняем в дате точки на нижнее подчёркивание, чтобы не было конфликтов при сохранении
+        formattedDate.replace(".", "_");
+        finalExtenstionName.append("_" + formattedDate + ".pdf");
+
+        // Заменяем у пути имя на <дата_записи>.pdf
+        oldPath.replace(".pdf", finalExtenstionName);
+
+        html.replace("МЕТКА_ДАТА", recIt.date);
+
+        // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
+        if (recIt.complaints.length() <= 101)
+        {
+            if (recIt.complaints.length() <= 10)
+            {
+                // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
+                // Иначе отсутствие символов ломает карту
+                html.replace("МЕТКА_ЖАЛОБЫ1", ".");
+            }
+            else
+                html.replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
+
+            html.replace("МЕТКА_ЖАЛОБЫ2", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ3", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ4", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ5", ".");
+        }
+        else
+        {
+            QString array[5];
+            QString complaint = recIt.complaints; // Копируем, ибо иначе нельзя дойти до remove метода
+
+            // Копируем в первую строку
+            for (int i = 0; i < 101; i++)
+            {
+                array[0].append(complaint.at(i));
+            }
+            complaint.remove(0, 101);
+
+            // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
+            // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
+
+            // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
+            if (complaint.length() < 125)
+            {
+                array[1] = complaint;
+                array[2] = ".";
+                array[3] = ".";
+                array[4] = ".";
+            }
+            else
+            {
+                // То же самое для второй строки
+                for (int i = 0; i < 125; i++)
+                {
+                    array[1].append(complaint.at(i));
+                }
+                complaint.remove(0, 125);
+
+                // Переносим на следующую строку, если размер текста не превышает длину след. строки
+                if (complaint.length() <= 112)
+                {
+                    array[2] = complaint;
+                    array[3] = ".";
+                    array[4] = ".";
+                }
+                else
+                {
+                    // То же самое для третьей строки (112)
+                    for (int i = 0; i < 112; i++)
+                    {
+                        array[2].append(complaint.at(i));
+                    }
+                    complaint.remove(0, 112);
+
+                    if (complaint.length() < 112)
+                    {
+                        array[3] = complaint;
+                        array[4] = ".";
+                    }
+
+                    else
+                    {
+                        // То же самое для четвёртой строки
+                        for (int i = 0; i < 112; i++)
+                        {
+                            array[3].append(complaint.at(i));
+                        }
+                        complaint.remove(0, 112);
+
+                        if (complaint.length() < 112)
+                        {
+                            array[4] = complaint;
+                        }
+                        else
+                        {
+                            // То же самое для пятой строки
+                            for (int i = 0; i < 112; i++)
+                            {
+                                array[4].append(complaint.at(i));
+                            }
+                            complaint.remove(0, 112);
+
+                            if (complaint.length() < 112)
+                            {
+                                array[4] = complaint;
+                            }
+                        }
+                    }
+                }
+            }
+
+            html.replace("МЕТКА_ЖАЛОБЫ1", array[0]);
+            html.replace("МЕТКА_ЖАЛОБЫ2", array[1]);
+            html.replace("МЕТКА_ЖАЛОБЫ3", array[2]);
+            html.replace("МЕТКА_ЖАЛОБЫ4", array[3]);
+            html.replace("МЕТКА_ЖАЛОБЫ5", array[4]);
+        }
+
+        html.replace("МЕТКА_РЕНТГЕН1", ".");
+        html.replace("МЕТКА_РЕНТГЕН2", ".");
+        html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+        if (recIt.currentDiagnosis.size() == 0)
+            html.replace("МЕТКА_ДИАГНОЗ", ".");
+        else
+            html.replace("МЕТКА_ДИАГНОЗ", recIt.currentDiagnosis);
+
+        webView->setHtml(html);
+        loop.exec();
+
+        // Записываем изменённый путь в массив
+        paths->push_back(oldPath.toStdString());
+
+        webView->page()->printToPdf(oldPath);
+        loop.exec();
+    }
+}
+
 void PatientDataBase::generateFullCard(QString birthDate, QString path)
 {
     QString patientName;
@@ -683,8 +853,8 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     webView->setHtml(html3);
     loop.exec();
 
-    webView->page()->printToPdf(path);
-    loop.exec();
+    // Генерация дневников
+    generateDiary(birthDate, &paths);
 
     path.replace("_3.pdf", "_4.pdf");
     paths.push_back(path.toStdString());
@@ -706,10 +876,6 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     for (const auto &path : paths)
     {
-        QFileInfo f(path.c_str());
-
-        qDebug() << f.exists();
-
         writer.AppendPDFPagesFromPDF(path, PDFPageRange());
     }
 
