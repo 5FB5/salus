@@ -537,6 +537,152 @@ void PatientDataBase::getPatientsListFromJson()
     }
 }
 
+/**
+ * @brief Заполнение строк с анамнезом дневника мед. карты
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
+{
+    if (recIt.anamnesis.length() <= 101)
+    {
+        if (recIt.anamnesis.length() <= 10)
+            html->replace("МЕТКА_АНАМНЕЗ1", ".");
+        else
+            html->replace("МЕТКА_АНАМНЕЗ1", recIt.anamnesis);
+
+        html->replace("МЕТКА_АНАМНЕЗ2", ".");
+    }
+    else
+    {
+        QString buffer, anamnesis = recIt.anamnesis;
+
+        for (int i = 0; i < 101; i++)
+        {
+            buffer.append(anamnesis.at(i));
+        }
+        anamnesis.remove(0, 101);
+
+        html->replace("МЕТКА_АНАМНЕЗ2", buffer);
+    }
+}
+
+/**
+ * @brief Заполнение строк с жалобами дневника мед. карты
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
+{
+    // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
+    if (recIt.complaints.length() <= 101)
+    {
+        if (recIt.complaints.length() <= 10)
+        {
+            // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
+            // Иначе отсутствие символов ломает карту
+            html->replace("МЕТКА_ЖАЛОБЫ1", ".");
+        }
+        else
+            html->replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
+
+        html->replace("МЕТКА_ЖАЛОБЫ2", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ3", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ4", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ5", ".");
+    }
+    else
+    {
+        QString array[5];
+        QString complaint = recIt.complaints; // Копируем, ибо иначе нельзя дойти до remove метода
+
+        // Копируем в первую строку
+        for (int i = 0; i < 101; i++)
+        {
+            array[0].append(complaint.at(i));
+        }
+        complaint.remove(0, 101);
+
+        // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
+        // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
+
+        // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
+        if (complaint.length() < 125)
+        {
+            array[1] = complaint;
+            array[2] = ".";
+            array[3] = ".";
+            array[4] = ".";
+        }
+        else
+        {
+            // То же самое для второй строки
+            for (int i = 0; i < 125; i++)
+            {
+                array[1].append(complaint.at(i));
+            }
+            complaint.remove(0, 125);
+
+            // Переносим на следующую строку, если размер текста не превышает длину след. строки
+            if (complaint.length() <= 112)
+            {
+                array[2] = complaint;
+                array[3] = ".";
+                array[4] = ".";
+            }
+            else
+            {
+                // То же самое для третьей строки (112)
+                for (int i = 0; i < 112; i++)
+                {
+                    array[2].append(complaint.at(i));
+                }
+                complaint.remove(0, 112);
+
+                if (complaint.length() < 112)
+                {
+                    array[3] = complaint;
+                    array[4] = ".";
+                }
+
+                else
+                {
+                    // То же самое для четвёртой строки
+                    for (int i = 0; i < 112; i++)
+                    {
+                        array[3].append(complaint.at(i));
+                    }
+                    complaint.remove(0, 112);
+
+                    if (complaint.length() < 112)
+                    {
+                        array[4] = complaint;
+                    }
+                    else
+                    {
+                        // То же самое для пятой строки
+                        for (int i = 0; i < 112; i++)
+                        {
+                            array[4].append(complaint.at(i));
+                        }
+                        complaint.remove(0, 112);
+
+                        if (complaint.length() < 112)
+                        {
+                            array[4] = complaint;
+                        }
+                    }
+                }
+            }
+        }
+        html->replace("МЕТКА_ЖАЛОБЫ1", array[0]);
+        html->replace("МЕТКА_ЖАЛОБЫ2", array[1]);
+        html->replace("МЕТКА_ЖАЛОБЫ3", array[2]);
+        html->replace("МЕТКА_ЖАЛОБЫ4", array[3]);
+        html->replace("МЕТКА_ЖАЛОБЫ5", array[4]);
+    }
+}
+
 void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> *paths)
 {
     QList<Record_t> records;
@@ -578,114 +724,8 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
 
         html.replace("МЕТКА_ДАТА", recIt.date);
 
-        // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
-        if (recIt.complaints.length() <= 101)
-        {
-            if (recIt.complaints.length() <= 10)
-            {
-                // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
-                // Иначе отсутствие символов ломает карту
-                html.replace("МЕТКА_ЖАЛОБЫ1", ".");
-            }
-            else
-                html.replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
-
-            html.replace("МЕТКА_ЖАЛОБЫ2", ".");
-            html.replace("МЕТКА_ЖАЛОБЫ3", ".");
-            html.replace("МЕТКА_ЖАЛОБЫ4", ".");
-            html.replace("МЕТКА_ЖАЛОБЫ5", ".");
-        }
-        else
-        {
-            QString array[5];
-            QString complaint = recIt.complaints; // Копируем, ибо иначе нельзя дойти до remove метода
-
-            // Копируем в первую строку
-            for (int i = 0; i < 101; i++)
-            {
-                array[0].append(complaint.at(i));
-            }
-            complaint.remove(0, 101);
-
-            // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
-            // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
-
-            // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
-            if (complaint.length() < 125)
-            {
-                array[1] = complaint;
-                array[2] = ".";
-                array[3] = ".";
-                array[4] = ".";
-            }
-            else
-            {
-                // То же самое для второй строки
-                for (int i = 0; i < 125; i++)
-                {
-                    array[1].append(complaint.at(i));
-                }
-                complaint.remove(0, 125);
-
-                // Переносим на следующую строку, если размер текста не превышает длину след. строки
-                if (complaint.length() <= 112)
-                {
-                    array[2] = complaint;
-                    array[3] = ".";
-                    array[4] = ".";
-                }
-                else
-                {
-                    // То же самое для третьей строки (112)
-                    for (int i = 0; i < 112; i++)
-                    {
-                        array[2].append(complaint.at(i));
-                    }
-                    complaint.remove(0, 112);
-
-                    if (complaint.length() < 112)
-                    {
-                        array[3] = complaint;
-                        array[4] = ".";
-                    }
-
-                    else
-                    {
-                        // То же самое для четвёртой строки
-                        for (int i = 0; i < 112; i++)
-                        {
-                            array[3].append(complaint.at(i));
-                        }
-                        complaint.remove(0, 112);
-
-                        if (complaint.length() < 112)
-                        {
-                            array[4] = complaint;
-                        }
-                        else
-                        {
-                            // То же самое для пятой строки
-                            for (int i = 0; i < 112; i++)
-                            {
-                                array[4].append(complaint.at(i));
-                            }
-                            complaint.remove(0, 112);
-
-                            if (complaint.length() < 112)
-                            {
-                                array[4] = complaint;
-                            }
-                        }
-                    }
-                }
-            }
-
-            html.replace("МЕТКА_ЖАЛОБЫ1", array[0]);
-            html.replace("МЕТКА_ЖАЛОБЫ2", array[1]);
-            html.replace("МЕТКА_ЖАЛОБЫ3", array[2]);
-            html.replace("МЕТКА_ЖАЛОБЫ4", array[3]);
-            html.replace("МЕТКА_ЖАЛОБЫ5", array[4]);
-        }
+        fillComplaints(recIt, &html);
+        fillAnamnesis(recIt, &html);
 
         html.replace("МЕТКА_РЕНТГЕН1", ".");
         html.replace("МЕТКА_РЕНТГЕН2", ".");
