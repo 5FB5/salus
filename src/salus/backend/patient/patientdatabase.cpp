@@ -28,39 +28,6 @@ void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
                                     QString birthDate, QString address,
                                     QString phoneNumber, QString occupation)
 {
-
-    // Структура профиля в patients.json
-    // [
-    //        {
-    //
-    //            "fullname": "Иванов Иван Иванович",
-    //            "age": 22,                                                // количество полных лет
-    //            "sex": false,                                             // MAN = 0 / WOMAN = 1
-    //            "birthdate": "20.11.2000",                                // day.month.year
-    //            "address": "ул. Пролетарская 25 д.222"
-    //            "phoneNumber": "8 989 330 1309",
-    //            "occupation": "Слесарь 4 разряда" профессия
-    //
-    //            "records":
-    //              [
-    //                  {
-    //                      "data": "12.12.2020                             // Дата составления записи
-    //                      "diagnosis": "Острый пульпит" диагноз
-    //                      "complaints": [                                 // Список жалоб
-    //                      ]
-    //                      "diseases": [                                   // Список перенесенных заболеваний
-    //                        "Парадонтоз"
-    //                      ]
-    //                      "anamnesis": "текст"                            // Анамнез
-    //                      "treatment": "текст"
-    //
-    //                  },
-    //                  ... следующая запись
-    //              ]
-    //        },
-    //          ... следующий профиль
-    //    ]
-
     if (patientsList == nullptr){
         patientsList = new QList<Patient>;
     }
@@ -556,7 +523,271 @@ void PatientDataBase::getPatientsListFromJson()
 }
 
 /**
+ * @brief Заполнение строк объективного исследования, внешнего осмотра
+ * @todo Количество добавляемых символов ограниченно. Исправить!
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
+{
+    // FIXME: Поле diseases на данный момент хранит строки внешнего осмотра. Исправить!
+    if (recIt.diseases.length() <= 92)
+    {
+        if (recIt.diseases.length() <= 10)
+            html->replace("МЕТКА_ОСМОТР1", ".");
+        else
+            html->replace("МЕТКА_ОСМОТР1", recIt.diseases);
+
+        html->replace("МЕТКА_ОСМОТР2", ".");
+        html->replace("МЕТКА_ОСМОТР3", ".");
+        html->replace("МЕТКА_ОСМОТР4", ".");
+        html->replace("МЕТКА_ОСМОТР5", ".");
+
+        html->replace("МЕТКА_ОБЪЕКТИВНО1", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО2", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО3", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО4", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО5", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО6", ".");
+        html->replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+    }
+    else
+    {
+        QString array[12];
+        QString inspection = recIt.diseases; // Копируем, ибо иначе нельзя дойти до remove метода
+
+        // Копируем в первую строку
+        for (int i = 0; i < 101; i++)
+        {
+            array[0].append(inspection.at(i));
+        }
+        inspection.remove(0, 101);
+
+        // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
+        // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
+
+        // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
+        if (inspection.length() < 125)
+        {
+            array[1] = inspection;
+            array[2] = ".";
+            array[3] = ".";
+            array[4] = ".";
+        }
+        else
+        {
+            // То же самое для второй строки
+            for (int i = 0; i < 125; i++)
+            {
+                array[1].append(inspection.at(i));
+            }
+            inspection.remove(0, 123);
+
+            // Переносим на следующую строку, если размер текста не превышает длину след. строки
+            if (inspection.length() <= 112)
+            {
+                array[2] = inspection;
+                array[3] = ".";
+                array[4] = ".";
+                array[5] = ".";
+                array[6] = ".";
+                array[7] = ".";
+                array[8] = ".";
+                array[9] = ".";
+                array[10] = ".";
+                array[11] = ".";
+            }
+            else
+            {
+                // То же самое для третьей строки (112)
+                for (int i = 0; i < 123; i++)
+                {
+                    array[2].append(inspection.at(i));
+                }
+                inspection.remove(0, 123);
+
+                if (inspection.length() < 123)
+                {
+                    array[3] = inspection;
+                    array[4] = ".";
+                    array[5] = ".";
+                    array[6] = ".";
+                    array[7] = ".";
+                    array[8] = ".";
+                    array[9] = ".";
+                    array[10] = ".";
+                    array[11] = ".";
+                }
+                else
+                {
+                    // То же самое для четвёртой строки
+                    for (int i = 0; i < 123; i++)
+                    {
+                        array[3].append(inspection.at(i));
+                    }
+                    inspection.remove(0, 123);
+
+                    if (inspection.length() < 123)
+                    {
+                        array[4] = inspection;
+                        array[5] = ".";
+                        array[6] = ".";
+                        array[7] = ".";
+                        array[8] = ".";
+                        array[9] = ".";
+                        array[10] = ".";
+                        array[11] = ".";
+                    }
+                    else
+                    {
+                        // То же самое для пятой строки
+                        for (int i = 0; i < 123; i++)
+                        {
+                            array[4].append(inspection.at(i));
+                        }
+                        inspection.remove(0, 123);
+
+                        if (inspection.length() < 123)
+                        {
+                            array[5] = inspection;
+                            array[6] = ".";
+                            array[7] = ".";
+                            array[8] = ".";
+                            array[9] = ".";
+                            array[10] = ".";
+                            array[11] = ".";
+                        }
+                        else
+                        {
+                            // Тоже самое для шестой строки
+                            for (int i = 0; i < 112; i++)
+                            {
+                                array[5].append(inspection.at(i));
+                            }
+                            inspection.remove(0, 112);
+
+                            if (inspection.length() < 112)
+                            {
+                                array[6] = inspection;
+                                array[7] = ".";
+                                array[8] = ".";
+                                array[9] = ".";
+                                array[10] = ".";
+                                array[11] = ".";
+                            }
+                            else
+                            {
+                                // То же самое для седьмой строки
+                                for (int i = 0; i < 123; i++)
+                                {
+                                    array[6].append(inspection.at(i));
+                                }
+                                inspection.remove(0, 123);
+
+                                if (inspection.length() < 123)
+                                {
+                                    array[7] = inspection;
+                                    array[8] = ".";
+                                    array[9] = ".";
+                                    array[10] = ".";
+                                    array[11] = ".";
+                                }
+                                else
+                                {
+                                    // То же самое для восьмой строки
+                                    for (int i = 0; i < 123; i++)
+                                    {
+                                        array[7].append(inspection.at(i));
+                                    }
+                                    inspection.remove(0, 123);
+
+                                    if (inspection.length() < 123)
+                                    {
+                                        array[8] = inspection;
+                                        array[9] = ".";
+                                        array[10] = ".";
+                                        array[11] = ".";
+                                    }
+                                    else
+                                    {
+                                        // То же самое для девятой строки
+                                        for (int i = 0; i < 123; i++)
+                                        {
+                                            array[8].append(inspection.at(i));
+                                        }
+                                        inspection.remove(0, 123);
+
+                                        if (inspection.length() < 123)
+                                        {
+                                            array[9] = inspection;
+                                            array[10] = ".";
+                                            array[11] = ".";
+                                        }
+                                        else
+                                        {
+                                            // То же самое для десятой строки
+                                            for (int i = 0; i < 123; i++)
+                                            {
+                                                array[9].append(inspection.at(i));
+                                            }
+                                            inspection.remove(0, 123);
+
+                                            if (inspection.length() < 123)
+                                            {
+                                                array[10] = inspection;
+                                                array[11] = ".";
+                                            }
+                                            else
+                                            {
+                                                // То же самое для одиннадцатой строки
+                                                for (int i = 0; i < 123; i++)
+                                                {
+                                                    array[10].append(inspection.at(i));
+                                                }
+                                                inspection.remove(0, 123);
+
+                                                if (inspection.length() < 123)
+                                                {
+                                                    array[11] = inspection;
+                                                }
+                                                else
+                                                {
+                                                    // То же самое для двенадцатой строки
+                                                    for (int i = 0; i < 123; i++)
+                                                    {
+                                                        array[11].append(inspection.at(i));
+                                                    }
+                                                    inspection.remove(0, 123);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        html->replace("МЕТКА_ОСМОТР1", array[0]);
+        html->replace("МЕТКА_ОСМОТР2", array[1]);
+        html->replace("МЕТКА_ОСМОТР3", array[2]);
+        html->replace("МЕТКА_ОСМОТР4", array[3]);
+        html->replace("МЕТКА_ОСМОТР5", array[4]);
+
+        html->replace("МЕТКА_ОБЪЕКТИВНО1", array[5]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО2", array[6]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО3", array[7]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО4", array[8]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО5", array[9]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО6", array[10]);
+        html->replace("МЕТКА_ОБЪЕКТИВНО7", array[11]);
+    }
+}
+
+/**
  * @brief Заполнение строк с анамнезом дневника мед. карты
+ * @todo Количество добавляемых символов ограниченно. Исправить!
  * @param recIt
  * @param html
  */
@@ -587,6 +818,7 @@ void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
 
 /**
  * @brief Заполнение строк с жалобами дневника мед. карты
+ * @todo Количество добавляемых символов ограниченно. Исправить!
  * @param recIt
  * @param html
  */
@@ -744,6 +976,7 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
 
         fillComplaints(recIt, &html);
         fillAnamnesis(recIt, &html);
+        fillExternalInspection(recIt, &html);
 
         html.replace("МЕТКА_РЕНТГЕН1", ".");
         html.replace("МЕТКА_РЕНТГЕН2", ".");
@@ -939,6 +1172,10 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     writer.EndPDF();
 
+    for (const auto &path : paths)
+    {
+        std::remove(path.c_str());
+    }
 }
 
 /**

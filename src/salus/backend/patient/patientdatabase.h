@@ -34,6 +34,9 @@ class PatientDataBase : public QObject
 
 private:
     void getPatientsListFromJson();
+//    void fillTreatment(Record_t recIt, QString *html);
+//    void fillTreatmentResult(Record_t recIt, QString *html);
+    void fillExternalInspection(Record_t recIt, QString *html);
     void fillAnamnesis(Record_t recIt, QString *html);
     void fillComplaints(Record_t recIt, QString *html);
     void generateDiary(QString birthDate, std::vector<std::string> *paths);
