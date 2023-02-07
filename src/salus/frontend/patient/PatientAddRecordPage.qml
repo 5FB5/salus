@@ -545,6 +545,8 @@ Page
            }
        }
 
+       // FIXME: Сделать отдельное поле для внесения данных исследования, сейчас данные хранятся в поле заболеваний
+       // которое не используется
        Text
        {
            id: labelDiseases
@@ -552,7 +554,7 @@ Page
            anchors.horizontalCenter: parent.horizontalCenter
 
            font.pointSize: fontSize
-           text: "Введите перенесённые заболевания"
+           text: "Введите данные исследования"
        }
 
        Rectangle
@@ -583,7 +585,7 @@ Page
 
                    selectByMouse: true
                    font.pointSize: fontSize
-                   placeholderText: "Пульпит, Гингивит, ..."
+                   placeholderText: "Конфигурация лица не нарушена, прикус ортогнатический, ..."
 
                    MouseArea
                    {
@@ -719,6 +721,64 @@ Page
            }
        }
 
+       Text
+       {
+           id: labelTreatmentResult
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           font.pointSize: fontSize
+           text: "Результаты лечения (эпикриз)"
+       }
+
+       Rectangle
+       {
+           id: treatmentResultInput
+
+           anchors.horizontalCenter: parent.horizontalCenter
+
+           width: 500
+           height: 80
+           border.width: 1
+           color: "#0000ffff"
+
+           ScrollView
+           {
+               id: scrollViewtreatmentResult
+
+               anchors
+               {
+                   fill: parent
+                   horizontalCenter: parent.horizontalCenter
+               }
+               clip: true
+
+               TextArea
+               {
+                   id: textEditTreatmentResult
+
+                   selectByMouse: true
+                   font.pointSize: fontSize
+                   placeholderText: "Метод лечения: Терапевтич., ..."
+
+                   MouseArea
+                   {
+                       id: mouseAreaTreatmentResult
+
+                       anchors.fill: parent
+
+                       acceptedButtons: Qt.RightButton
+                       onClicked: function()
+                       {
+                           currentSelectedText = textEditTreatmentResult.selectedText;
+                           currentTextEditItem = textEditTreatmentResult;
+                           openContextMenu();
+                       }
+                   }
+               }
+           }
+       }
+
         Button
         {
             id: buttonAddRecord
@@ -748,8 +808,8 @@ Page
 
             onClicked: function()
             {
-                if (backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
-                                     textEditDiagnosis.text.toString(), textEditTreatment.text.toString()) === false)
+                if (!backend.addNewRecord(textEditRecordDate.text.toString(), textEditAnamnesis.text.toString(), textEditComplaints.text.toString(), textEditDiseases.text.toString(),
+                                        textEditDiagnosis.text.toString(), textEditTreatment.text.toString(), textEditTreatmentResult.text.toString()))
                 {
                     dialogRecordExists.open();
                 }

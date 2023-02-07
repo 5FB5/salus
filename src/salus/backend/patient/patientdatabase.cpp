@@ -96,10 +96,10 @@ void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
  * @param diseases
  * @param diagnosis
  * @param treatment
- * @return
+ * @return Успешно ли добавлена запись
  */
 bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
-                                   QString diseases, QString diagnosis, QString treatment)
+                                   QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     for (auto &p : *patientsList)
     {
@@ -115,6 +115,7 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 newRecord.complaints = complaints;
                 newRecord.diseases = diseases;
                 newRecord.treatment = treatment;
+                newRecord.treatmentResult = treatmentResult;
 
                 p.cardRecords.append(newRecord);
 
@@ -137,6 +138,7 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 newRecord.complaints = complaints;
                 newRecord.diseases = diseases;
                 newRecord.treatment = treatment;
+                newRecord.treatmentResult = treatmentResult;
 
                 p.cardRecords.append(newRecord);
 
@@ -172,7 +174,6 @@ void PatientDataBase::updateDbToFile()
         PatientProfileObj.insert("address", p.address);
         PatientProfileObj.insert("phoneNumber", p.phoneNumber);
         PatientProfileObj.insert("occupation", p.occupation);
-
         PatientProfileObj.insert("records", convertRecordsToJsonArray(p.cardRecords));
 
         jsonArray.append(PatientProfileObj);
@@ -204,7 +205,7 @@ void PatientDataBase::updateDbToFile()
  * @param diagnosis
  * @param treatment
  */
-void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     for (auto &p : *patientsList)
     {
@@ -219,6 +220,7 @@ void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QStrin
                     r.currentDiagnosis = diagnosis;
                     r.diseases = diseases;
                     r.treatment = treatment;
+                    r.treatmentResult = treatmentResult;
                     break;
                 }
             }
@@ -425,6 +427,22 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
             {
                 if (r.date == recordDate)
                     return r.treatment;
+            }
+        }
+    }
+    return "";
+}
+
+QString PatientDataBase::getTreatmentResult(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
+                    return r.treatmentResult;
             }
         }
     }
@@ -1040,6 +1058,7 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &rec
         recordObject.insert("treatment", data.treatment);
         recordObject.insert("complaints", data.complaints);
         recordObject.insert("diseases", data.diseases);
+        recordObject.insert("treatmentResult", data.treatmentResult);
 
         array.append(recordObject);
     }
@@ -1064,6 +1083,7 @@ QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recor
         tmpRecord.complaints = record["complaints"].toString();
         tmpRecord.currentDiagnosis = record["diagnosis"].toString();
         tmpRecord.treatment = record["treatment"].toString();
+        tmpRecord.treatmentResult = record["treatmentResult"].toString();
 
         tmpArray.append(tmpRecord);
     }

@@ -65,12 +65,12 @@ public:
                        QString phoneNumber, QString occupation);
 
     bool addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
-                      QString diseases, QString diagnosis, QString treatment);
+                      QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
 
     void reloadDatabase();
     void updateDbToFile();
     void updateRecord(QString birthDate, QString recordDate, QString anamnesis,
-                      QString complaints, QString diseases, QString diagnosis, QString treatment);
+                      QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
 
     void deleteRecord(QString birthDate, QString recordDate);
 
@@ -93,6 +93,7 @@ public:
     QString getDiagnosis(QString birthDate, QString recordDate);
     QString getDiseases(QString birthDate, QString recordDate);
     QString getTreatment(QString birthDate, QString recordDate);
+    QString getTreatmentResult(QString birthDate, QString recordDate);
 
     void saveCardPdf(QString birthDate, int opMode);
 

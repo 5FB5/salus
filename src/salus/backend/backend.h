@@ -107,14 +107,14 @@ public slots:
     void deletePatient();
 
     void updateRecord(QString recordDate, QString anamnesis, QString complaints,
-                      QString diseases, QString diagnosis, QString treatment);
+                      QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
     void deleteRecord(QString recordDate);
 
     void setCurrentDoctorInn(quint16 inn);
     void setPatient(QString fullName);
 
     bool addNewRecord(QString date, QString anamnesis, QString complaints,
-                      QString diseases, QString diagnosis, QString treatment);
+                      QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
 
     void addGlossaryDiagnosis(QString data);
     void addGlossaryTreatment(QString data);
@@ -147,6 +147,7 @@ public slots:
     QString getRecordDiagnosis(QString recordDate);
     QString getRecordDiseases(QString recordDate);
     QString getRecordTreatment(QString recordDate);
+    QString getRecordTreatmentResult(QString recordDate);
 
 signals:
     void profileAdded();
