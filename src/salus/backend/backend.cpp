@@ -134,10 +134,10 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
  * @param diagnosis
  * @param treatment
  */
-void Backend::updateRecord(QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+void Backend::updateRecord(QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     patientsDb->updateRecord(currentPatientBirthDate, recordDate, anamnesis, complaints,
-                             diseases, diagnosis, treatment);
+                             diseases, diagnosis, treatment, treatmentResult);
     emit recordUpdated();
 }
 
@@ -185,9 +185,9 @@ void Backend::addNewPatient(QString fullName, int age, bool sex,
  * @param treatment
  * @return
  */
-bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
-    if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment) == true)
+    if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment, treatmentResult) == true)
     {
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
         emit recordAdded();
@@ -503,6 +503,11 @@ QString Backend::getRecordDiseases(QString recordDate)
 QString Backend::getRecordTreatment(QString recordDate)
 {
     return patientsDb->getTreatment(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordTreatmentResult(QString recordDate)
+{
+    return patientsDb->getTreatmentResult(currentPatientBirthDate, recordDate);
 }
 
 QString Backend::getGlossaryDiagnosisAt(int index)
