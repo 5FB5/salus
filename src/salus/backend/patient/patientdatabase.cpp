@@ -534,7 +534,7 @@ void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
 
     // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
     // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
-    if (treatment.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
+    if (treatment.length() <= CARD_FIRST_FIELD_CHAR_COUNT + 29)
     {
         array[0] = treatment;
         array[1] = ".";
@@ -546,12 +546,12 @@ void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
     {
         // Расставляем спец. символы со следующего символа строки
         int counter = 0;
-        treatment.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
+        treatment.insert(CARD_FIRST_FIELD_CHAR_COUNT + 29 , '$');
 
         for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < treatment.length(); i++)
         {
             counter++;
-            if (counter == CARD_FIELD_CHAR_COUNT)
+            if (counter == CARD_FIELD_CHAR_COUNT + 47)
             {
                 counter = 0;
                 treatment.insert(i, '$');
