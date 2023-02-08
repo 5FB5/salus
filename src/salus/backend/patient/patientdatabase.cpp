@@ -530,259 +530,82 @@ void PatientDataBase::getPatientsListFromJson()
  */
 void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
 {
-    // FIXME: Поле diseases на данный момент хранит строки внешнего осмотра. Исправить!
-    if (recIt.diseases.length() <= 92)
+    QString inspection = recIt.diseases;
+    QString array[5]; // Массив для поля "Внешний осмотр"
+    QString array2[7]; // Массив для поля "Объективный осмотр"
+
+    // Если строка больше размера первой строки (108 символов), то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 108 и 123 символа размечаются корректно, но потом разметка идёт на 122-ом символе
+    if (inspection.length() <= 92)
     {
-        if (recIt.diseases.length() <= 10)
-            html->replace("МЕТКА_ОСМОТР1", ".");
-        else
-            html->replace("МЕТКА_ОСМОТР1", recIt.diseases);
-
-        html->replace("МЕТКА_ОСМОТР2", ".");
-        html->replace("МЕТКА_ОСМОТР3", ".");
-        html->replace("МЕТКА_ОСМОТР4", ".");
-        html->replace("МЕТКА_ОСМОТР5", ".");
-
-        html->replace("МЕТКА_ОБЪЕКТИВНО1", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО2", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО3", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО4", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО5", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО6", ".");
-        html->replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+        array[0] = inspection;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
     }
     else
     {
-        QString array[12];
-        QString inspection = recIt.diseases; // Копируем, ибо иначе нельзя дойти до remove метода
+        // Расставляем спец. символы
+        int counter = 0;
+        inspection.insert(92, '$');
 
-        // Копируем в первую строку
-        for (int i = 0; i < 101; i++)
+        for (int i = 93; i < inspection.length(); i++)
         {
-            array[0].append(inspection.at(i));
-        }
-        inspection.remove(0, 101);
+            counter++;
 
-        // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
-        // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
-
-        // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
-        if (inspection.length() < 125)
-        {
-            array[1] = inspection;
-            array[2] = ".";
-            array[3] = ".";
-            array[4] = ".";
-        }
-        else
-        {
-            // То же самое для второй строки
-            for (int i = 0; i < 125; i++)
+            if (counter == CARD_FIELD_CHAR_COUNT)
             {
-                array[1].append(inspection.at(i));
+                counter = 0;
+                inspection.insert(i, '$');
             }
-            inspection.remove(0, 123);
+        }
 
-            // Переносим на следующую строку, если размер текста не превышает длину след. строки
-            if (inspection.length() <= 112)
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : inspection)
             {
-                array[2] = inspection;
-                array[3] = ".";
-                array[4] = ".";
-                array[5] = ".";
-                array[6] = ".";
-                array[7] = ".";
-                array[8] = ".";
-                array[9] = ".";
-                array[10] = ".";
-                array[11] = ".";
-            }
-            else
-            {
-                // То же самое для третьей строки (112)
-                for (int i = 0; i < 123; i++)
+                chars += c;
+                if (c == "$")
                 {
-                    array[2].append(inspection.at(i));
-                }
-                inspection.remove(0, 123);
-
-                if (inspection.length() < 123)
-                {
-                    array[3] = inspection;
-                    array[4] = ".";
-                    array[5] = ".";
-                    array[6] = ".";
-                    array[7] = ".";
-                    array[8] = ".";
-                    array[9] = ".";
-                    array[10] = ".";
-                    array[11] = ".";
-                }
-                else
-                {
-                    // То же самое для четвёртой строки
-                    for (int i = 0; i < 123; i++)
-                    {
-                        array[3].append(inspection.at(i));
-                    }
-                    inspection.remove(0, 123);
-
-                    if (inspection.length() < 123)
-                    {
-                        array[4] = inspection;
-                        array[5] = ".";
-                        array[6] = ".";
-                        array[7] = ".";
-                        array[8] = ".";
-                        array[9] = ".";
-                        array[10] = ".";
-                        array[11] = ".";
-                    }
-                    else
-                    {
-                        // То же самое для пятой строки
-                        for (int i = 0; i < 123; i++)
-                        {
-                            array[4].append(inspection.at(i));
-                        }
-                        inspection.remove(0, 123);
-
-                        if (inspection.length() < 123)
-                        {
-                            array[5] = inspection;
-                            array[6] = ".";
-                            array[7] = ".";
-                            array[8] = ".";
-                            array[9] = ".";
-                            array[10] = ".";
-                            array[11] = ".";
-                        }
-                        else
-                        {
-                            // Тоже самое для шестой строки
-                            for (int i = 0; i < 112; i++)
-                            {
-                                array[5].append(inspection.at(i));
-                            }
-                            inspection.remove(0, 112);
-
-                            if (inspection.length() < 112)
-                            {
-                                array[6] = inspection;
-                                array[7] = ".";
-                                array[8] = ".";
-                                array[9] = ".";
-                                array[10] = ".";
-                                array[11] = ".";
-                            }
-                            else
-                            {
-                                // То же самое для седьмой строки
-                                for (int i = 0; i < 123; i++)
-                                {
-                                    array[6].append(inspection.at(i));
-                                }
-                                inspection.remove(0, 123);
-
-                                if (inspection.length() < 123)
-                                {
-                                    array[7] = inspection;
-                                    array[8] = ".";
-                                    array[9] = ".";
-                                    array[10] = ".";
-                                    array[11] = ".";
-                                }
-                                else
-                                {
-                                    // То же самое для восьмой строки
-                                    for (int i = 0; i < 123; i++)
-                                    {
-                                        array[7].append(inspection.at(i));
-                                    }
-                                    inspection.remove(0, 123);
-
-                                    if (inspection.length() < 123)
-                                    {
-                                        array[8] = inspection;
-                                        array[9] = ".";
-                                        array[10] = ".";
-                                        array[11] = ".";
-                                    }
-                                    else
-                                    {
-                                        // То же самое для девятой строки
-                                        for (int i = 0; i < 123; i++)
-                                        {
-                                            array[8].append(inspection.at(i));
-                                        }
-                                        inspection.remove(0, 123);
-
-                                        if (inspection.length() < 123)
-                                        {
-                                            array[9] = inspection;
-                                            array[10] = ".";
-                                            array[11] = ".";
-                                        }
-                                        else
-                                        {
-                                            // То же самое для десятой строки
-                                            for (int i = 0; i < 123; i++)
-                                            {
-                                                array[9].append(inspection.at(i));
-                                            }
-                                            inspection.remove(0, 123);
-
-                                            if (inspection.length() < 123)
-                                            {
-                                                array[10] = inspection;
-                                                array[11] = ".";
-                                            }
-                                            else
-                                            {
-                                                // То же самое для одиннадцатой строки
-                                                for (int i = 0; i < 123; i++)
-                                                {
-                                                    array[10].append(inspection.at(i));
-                                                }
-                                                inspection.remove(0, 123);
-
-                                                if (inspection.length() < 123)
-                                                {
-                                                    array[11] = inspection;
-                                                }
-                                                else
-                                                {
-                                                    // То же самое для двенадцатой строки
-                                                    for (int i = 0; i < 123; i++)
-                                                    {
-                                                        array[11].append(inspection.at(i));
-                                                    }
-                                                    inspection.remove(0, 123);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    array[i] = chars;
+                    inspection.remove(0, chars.length());
+                    break;
                 }
             }
         }
-        html->replace("МЕТКА_ОСМОТР1", array[0]);
-        html->replace("МЕТКА_ОСМОТР2", array[1]);
-        html->replace("МЕТКА_ОСМОТР3", array[2]);
-        html->replace("МЕТКА_ОСМОТР4", array[3]);
-        html->replace("МЕТКА_ОСМОТР5", array[4]);
 
-        html->replace("МЕТКА_ОБЪЕКТИВНО1", array[5]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО2", array[6]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО3", array[7]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО4", array[8]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО5", array[9]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО6", array[10]);
-        html->replace("МЕТКА_ОБЪЕКТИВНО7", array[11]);
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (inspection.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = inspection;
+                    break;
+                }
+            }
+        }
     }
+
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ОСМОТР1", array[0]);
+    html->replace("МЕТКА_ОСМОТР2", array[1]);
+    html->replace("МЕТКА_ОСМОТР3", array[2]);
+    html->replace("МЕТКА_ОСМОТР4", array[3]);
+    html->replace("МЕТКА_ОСМОТР5", array[4]);
 }
 
 /**
@@ -1140,11 +963,11 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     paths.push_back(path.toStdString());
 
     // 4 страница
-
     webView->setHtml(html3);
     loop.exec();
 
     // Генерация дневников
+    // TODO: Печатается 3-4 страницы
     generateDiary(birthDate, &paths);
 
     path.replace("_3.pdf", "_4.pdf");

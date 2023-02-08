@@ -2,6 +2,7 @@
 #define PATIENTDATABASE_H
 
 #define JSON_PATIENT_FILE_PATH QCoreApplication::applicationDirPath() + "/patients.json"
+#define CARD_FIELD_CHAR_COUNT 113
 
 #include <QCoreApplication>
 #include <QtWebEngineWidgets/QWebEngineView>
@@ -34,6 +35,7 @@ class PatientDataBase : public QObject
 
 private:
     void getPatientsListFromJson();
+    // TODO: Возможно весь функционал по печати карты нужно вывести в отдельный класс CardGenerator
 //    void fillTreatment(Record_t recIt, QString *html);
 //    void fillTreatmentResult(Record_t recIt, QString *html);
     void fillExternalInspection(Record_t recIt, QString *html);
