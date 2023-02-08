@@ -482,7 +482,7 @@ QString PatientDataBase::getPhoneNumber(QString birthDate)
 }
 
 /**
- * @brief Получает спислк пациентов из JSON файла
+ * @brief Получает список пациентов из JSON файла
  */
 void PatientDataBase::getPatientsListFromJson()
 {
@@ -523,6 +523,170 @@ void PatientDataBase::getPatientsListFromJson()
 }
 
 /**
+ * @brief Заполнение строк с лечением
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
+{
+    QString treatment = recIt.treatment;
+    QString array[5]; // Массив для поля "Лечение"
+
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (treatment.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
+    {
+        array[0] = treatment;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
+    }
+    else
+    {
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        treatment.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
+
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < treatment.length(); i++)
+        {
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT)
+            {
+                counter = 0;
+                treatment.insert(i, '$');
+            }
+        }
+
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : treatment)
+            {
+                chars += c;
+                if (c == "$")
+                {
+                    array[i] = chars;
+                    treatment.remove(0, chars.length());
+                    break;
+                }
+            }
+        }
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (treatment.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = treatment;
+                    break;
+                }
+            }
+        }
+    }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ЛЕЧЕНИЕ1", array[0]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ2", array[1]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ3", array[2]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ4", array[3]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ5", array[4]);
+}
+
+/**
+ * @brief Заполнение строк с результатами лечения
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
+{
+    QString treatmentResult = recIt.treatmentResult;
+    QString array[5]; // Массив для поля "Результаты лечения (эпикриз)"
+
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (treatmentResult.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
+    {
+        array[0] = treatmentResult;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
+    }
+    else
+    {
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        treatmentResult.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
+
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < treatmentResult.length(); i++)
+        {
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT)
+            {
+                counter = 0;
+                treatmentResult.insert(i, '$');
+            }
+        }
+
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : treatmentResult)
+            {
+                chars += c;
+                if (c == "$")
+                {
+                    array[i] = chars;
+                    treatmentResult.remove(0, chars.length());
+                    break;
+                }
+            }
+        }
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (treatmentResult.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = treatmentResult;
+                    break;
+                }
+            }
+        }
+    }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ЭПИКРИЗ1", array[0]);
+    html->replace("МЕТКА_ЭПИКРИЗ2", array[1]);
+    html->replace("МЕТКА_ЭПИКРИЗ3", array[2]);
+    html->replace("МЕТКА_ЭПИКРИЗ4", array[3]);
+    html->replace("МЕТКА_ЭПИКРИЗ5", array[4]);
+}
+
+/**
  * @brief Заполнение строк объективного исследования, внешнего осмотра
  * @todo Количество добавляемых символов ограниченно. Исправить!
  * @param recIt
@@ -534,9 +698,9 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
     QString array[5]; // Массив для поля "Внешний осмотр"
     QString array2[7]; // Массив для поля "Объективный осмотр"
 
-    // Если строка больше размера первой строки (108 символов), то делаем разметку спец. символами и распределяем строки в массив
-    // FIXME: Первые две строки на 108 и 123 символа размечаются корректно, но потом разметка идёт на 122-ом символе
-    if (inspection.length() <= 92)
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (inspection.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
     {
         array[0] = inspection;
         array[1] = ".";
@@ -546,14 +710,13 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
     }
     else
     {
-        // Расставляем спец. символы
+        // Расставляем спец. символы со следующего символа строки
         int counter = 0;
-        inspection.insert(92, '$');
+        inspection.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
 
-        for (int i = 93; i < inspection.length(); i++)
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < inspection.length(); i++)
         {
             counter++;
-
             if (counter == CARD_FIELD_CHAR_COUNT)
             {
                 counter = 0;
@@ -592,7 +755,6 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
             }
         }
     }
-
     // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
     for (auto &it : array)
     {
@@ -606,6 +768,14 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
     html->replace("МЕТКА_ОСМОТР3", array[2]);
     html->replace("МЕТКА_ОСМОТР4", array[3]);
     html->replace("МЕТКА_ОСМОТР5", array[4]);
+
+    html->replace("МЕТКА_ОБЪЕКТИВНО1", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО2", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО3", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО4", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО5", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО6", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО7", ".");
 }
 
 /**
@@ -756,6 +926,11 @@ void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
     }
 }
 
+/**
+ * @brief Заполнение данных дневника лечения
+ * @param birthDate
+ * @param paths
+ */
 void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> *paths)
 {
     QList<Record_t> records;
@@ -818,6 +993,40 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
 
         webView->page()->printToPdf(oldPath);
         loop.exec();
+
+        // Страница лечения и результатов лечения
+        QFile file2("://cards_src/page3.html");
+        file2.open(QIODevice::ReadOnly);
+
+        QTextStream input2(&file2);
+        html = input2.readAll();
+
+        file2.close();
+
+        oldPath.replace(".pdf", "_treatment.pdf");
+
+        fillTreatment(recIt, &html);
+        fillTreatmentResult(recIt, &html);
+
+        // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+        html.replace("МЕТКА_ВРАЧ", ".");
+        html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+
+        webView->setHtml(html);
+        loop.exec();
+
+        // Записываем изменённый путь в массив
+        paths->push_back(oldPath.toStdString());
+
+        webView->page()->printToPdf(oldPath);
+        loop.exec();
+
     }
 }
 
@@ -859,13 +1068,13 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     file1.close();
 
-    QFile file2("://cards_src/page3.html");
-    file2.open(QIODevice::ReadOnly);
+//    QFile file2("://cards_src/page3.html");
+//    file2.open(QIODevice::ReadOnly);
 
-    QTextStream input2(&file2);
-    QString html2 = input2.readAll();
+//    QTextStream input2(&file2);
+//    QString html2 = input2.readAll();
 
-    file2.close();
+//    file2.close();
 
     QFile file3("://cards_src/page4.html");
     file3.open(QIODevice::ReadOnly);
@@ -932,32 +1141,32 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     paths.push_back(path.toStdString());
 
     // 3 страница
-    html2.replace("МЕТКА_ЛЕЧЕНИЕ1", "");
-    html2.replace("МЕТКА_ЛЕЧЕНИЕ2", "");
-    html2.replace("МЕТКА_ЛЕЧЕНИЕ3", "");
-    html2.replace("МЕТКА_ЛЕЧЕНИЕ4", "");
-    html2.replace("МЕТКА_ЛЕЧЕНИЕ5", "");
+//    html2.replace("МЕТКА_ЛЕЧЕНИЕ1", "");
+//    html2.replace("МЕТКА_ЛЕЧЕНИЕ2", "");
+//    html2.replace("МЕТКА_ЛЕЧЕНИЕ3", "");
+//    html2.replace("МЕТКА_ЛЕЧЕНИЕ4", "");
+//    html2.replace("МЕТКА_ЛЕЧЕНИЕ5", "");
 
-    html2.replace("МЕТКА_ЭПИКРИЗ1", "");
-    html2.replace("МЕТКА_ЭПИКРИЗ2", "");
-    html2.replace("МЕТКА_ЭПИКРИЗ3", "");
-    html2.replace("МЕТКА_ЭПИКРИЗ4", "");
-    html2.replace("МЕТКА_ЭПИКРИЗ5", "");
+//    html2.replace("МЕТКА_ЭПИКРИЗ1", "");
+//    html2.replace("МЕТКА_ЭПИКРИЗ2", "");
+//    html2.replace("МЕТКА_ЭПИКРИЗ3", "");
+//    html2.replace("МЕТКА_ЭПИКРИЗ4", "");
+//    html2.replace("МЕТКА_ЭПИКРИЗ5", "");
 
-    html2.replace("МЕТКА_НАСТАВЛЕНИЯ1", "");
-    html2.replace("МЕТКА_НАСТАВЛЕНИЯ2", "");
-    html2.replace("МЕТКА_НАСТАВЛЕНИЯ3", "");
-    html2.replace("МЕТКА_НАСТАВЛЕНИЯ4", "");
-    html2.replace("МЕТКА_НАСТАВЛЕНИЯ5", "");
+//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ1", "");
+//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ2", "");
+//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ3", "");
+//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ4", "");
+//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ5", "");
 
-    html2.replace("МЕТКА_ВРАЧ", "");
-    html2.replace("МЕТКА_ЗАВЕДУЩ", "");
+//    html2.replace("МЕТКА_ВРАЧ", "");
+//    html2.replace("МЕТКА_ЗАВЕДУЩ", "");
 
-    webView->setHtml(html2);
-    loop.exec();
+//    webView->setHtml(html2);
+//    loop.exec();
 
-    webView->page()->printToPdf(path);
-    loop.exec();
+//    webView->page()->printToPdf(path);
+//    loop.exec();
 
     path.replace("_2.pdf", "_3.pdf");
     paths.push_back(path.toStdString());
@@ -982,7 +1191,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     path.remove("_4.pdf");
 
     std::string finalPdfPath = path.toStdString();
-    finalPdfPath += "_final.pdf";
+    finalPdfPath += "_generated.pdf";
 
     PDFWriter writer;
 
@@ -999,6 +1208,8 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     {
         std::remove(path.c_str());
     }
+
+    paths.clear();
 }
 
 /**
