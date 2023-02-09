@@ -59,30 +59,90 @@ Page
     {
         id: dialogChoosePage
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Печать";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Выберите страницу"
-        standardButtons: Dialog.Ok | Dialog.Cancel
         modal: true
         width: 350
         height: 300
 
-        onAccepted: function()
+        Button
         {
-            // TODO: Добавить заполнение данными пациента
-            backend.printCard(spinBoxPage.value, false);
+            id: buttonDialogChooseAccept
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDialogChooseAccept.down ? buttonTextDefaultColor : "#FFFFFF"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Печать"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDialogChooseAccept.down ? "#EBEBEB" : "#007AFF"
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                // TODO: Добавить заполнение данными пациента
+                backend.printCard(spinBoxPage.value, false);
+                dialogChoosePage.close();
+            }
         }
 
-        onRejected:
+        Button
         {
-            close();
+            id: buttonDialogChooseReject
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: buttonDialogChooseAccept.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDialogChooseReject.down ? "#000000" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDialogChooseReject.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogChoosePage.close();
+            }
         }
 
         contentItem: Item
