@@ -285,10 +285,27 @@ Page
 
             anchors.horizontalCenter: parent.horizontalCenter
 
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonRegisterPatient.down ? "#FFFFFF" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Сохранить запись"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 10
+                color: buttonRegisterPatient.down ? "#007AFF": "#EBEBEB"
+            }
+
             font.pointSize: 10
             width: 300
             height: 50
-
             text: "Добавить карту"
 
             onClicked: function()
