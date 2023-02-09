@@ -73,3 +73,6 @@ Thumbs.db
 
 # CMake temp files
 CMakeLists.txt.*
+
+# CLion trash
+cards_src/.idea

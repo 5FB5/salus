@@ -1,9 +1,17 @@
 #include "patientdatabase.h"
 
-
 PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
 {
     getPatientsListFromJson();
+    webView = new QWebEngineView();
+
+    connect(webView, &QWebEngineView::loadFinished, &loop, &QEventLoop::quit);
+    connect(webView->page(), &QWebEnginePage::pdfPrintingFinished, &loop, &QEventLoop::quit);
+}
+
+PatientDataBase::~PatientDataBase()
+{
+    delete webView;
 }
 
 /**
@@ -16,43 +24,10 @@ PatientDataBase::PatientDataBase(QObject *parent ): QObject(parent)
  * @param phoneNumber
  * @param occupation
  */
-void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
+void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
                                     QString birthDate, QString address,
                                     QString phoneNumber, QString occupation)
 {
-
-    // Структура профиля в patients.json
-    // [
-    //        {
-    //
-    //            "fullname": "Иванов Иван Иванович",
-    //            "age": 22,                                                // количество полных лет
-    //            "sex": false,                                             // MAN = 0 / WOMAN = 1
-    //            "birthdate": "20.11.2000",                                // day.month.year
-    //            "address": "ул. Пролетарская 25 д.222"
-    //            "phoneNumber": "8 989 330 1309",
-    //            "occupation": "Слесарь 4 разряда" профессия
-    //
-    //            "records":
-    //              [
-    //                  {
-    //                      "data": "12.12.2020                             // Дата составления записи
-    //                      "diagnosis": "Острый пульпит" диагноз
-    //                      "complaints": [                                 // Список жалоб
-    //                      ]
-    //                      "diseases": [                                   // Список перенесенных заболеваний
-    //                        "Парадонтоз"
-    //                      ]
-    //                      "anamnesis": "текст"                            // Анамнез
-    //                      "treatment": "текст"
-    //
-    //                  },
-    //                  ... следующая запись
-    //              ]
-    //        },
-    //          ... следующий профиль
-    //    ]
-
     if (patientsList == nullptr){
         patientsList = new QList<Patient>;
     }
@@ -88,10 +63,10 @@ void PatientDataBase::addNewPatient(QString fullName, quint16 age, bool sex,
  * @param diseases
  * @param diagnosis
  * @param treatment
- * @return
+ * @return Успешно ли добавлена запись
  */
 bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
-                                   QString diseases, QString diagnosis, QString treatment)
+                                   QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     for (auto &p : *patientsList)
     {
@@ -107,6 +82,7 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 newRecord.complaints = complaints;
                 newRecord.diseases = diseases;
                 newRecord.treatment = treatment;
+                newRecord.treatmentResult = treatmentResult;
 
                 p.cardRecords.append(newRecord);
 
@@ -129,6 +105,7 @@ bool PatientDataBase::addNewRecord(QString birthDate, QString recordDate, QStrin
                 newRecord.complaints = complaints;
                 newRecord.diseases = diseases;
                 newRecord.treatment = treatment;
+                newRecord.treatmentResult = treatmentResult;
 
                 p.cardRecords.append(newRecord);
 
@@ -164,7 +141,6 @@ void PatientDataBase::updateDbToFile()
         PatientProfileObj.insert("address", p.address);
         PatientProfileObj.insert("phoneNumber", p.phoneNumber);
         PatientProfileObj.insert("occupation", p.occupation);
-
         PatientProfileObj.insert("records", convertRecordsToJsonArray(p.cardRecords));
 
         jsonArray.append(PatientProfileObj);
@@ -196,7 +172,8 @@ void PatientDataBase::updateDbToFile()
  * @param diagnosis
  * @param treatment
  */
-void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
+                                   QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     for (auto &p : *patientsList)
     {
@@ -211,6 +188,7 @@ void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QStrin
                     r.currentDiagnosis = diagnosis;
                     r.diseases = diseases;
                     r.treatment = treatment;
+                    r.treatmentResult = treatmentResult;
                     break;
                 }
             }
@@ -423,53 +401,145 @@ QString PatientDataBase::getTreatment(QString birthDate, QString recordDate)
     return "";
 }
 
-//QString PatientDataBase::getDiagnosis(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.currentDiagnosis;
-//            }
-//        }
-//    }
-//    return nullptr;
-//}
+QString PatientDataBase::getTreatmentResult(QString birthDate, QString recordDate)
+{
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            for (const auto &r : p.cardRecords)
+            {
+                if (r.date == recordDate)
+                    return r.treatmentResult;
+            }
+        }
+    }
+    return "";
+}
 
-//QString PatientDataBase::getAnamnesis(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.anamnesis;
-//            }
-//        }
-//    }
-//    return nullptr;
-//}
+void PatientDataBase::saveCardPdf(QString birthDate)
+{
+    QString fileName;
+    QString patientName;
 
-//QList<QString> PatientDataBase::getDiseasesList(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.diseases;
-//            }
-//        }
-//    }
-//}
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
 
-//QList<QString> PatientDataBase::getComplaintsList(QString birthDate)
-//{
-//    if (patientsList->isEmpty() == false) {
-//        foreach(Patient patient, *patientsList) {
-//            if (patient.birthDate == birthDate) {
-//                return patient.complaints;
-//            }
-//        }
-//    }
-//}
+            fileName = p.fullName + p.birthDate;
+            fileName.remove(' ');
+            fileName.replace('.', '_');
+            break;
+        }
+    }
 
-quint16 PatientDataBase::getAge(QString birthDate)
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+
+    generateFullCard(birthDate, path);
+}
+
+void PatientDataBase::saveCardPdf(QString birthDate, int pageNumber, bool fillPatientData)
+{
+    QString fileName;
+    QString patientName;
+
+    if (fillPatientData == true)
+    {
+        for (const auto &p : *patientsList)
+        {
+            if (p.birthDate == birthDate)
+            {
+                // Для подстановки ФИО в карту
+                patientName = p.fullName;
+
+                fileName = p.fullName + p.birthDate;
+                fileName.remove(' ');
+                fileName.replace('.', '_');
+                break;
+            }
+        }
+
+        switch(pageNumber)
+        {
+        case 1: // Обложка
+            fileName.append("_обложка");
+            break;
+        case 2: // Данные осмотра полости рта
+            fileName.append("_данные_полости_рта");
+            break;
+        case 3: // Страница дневника
+            fileName.append("_лечение");
+            break;
+        case 4: // Страница лечения
+            fileName.append("_дневник");
+            break;
+        case 5: // Страница плана
+            fileName.append("_план");
+            break;
+        }
+    }
+    else
+    {
+        switch(pageNumber)
+        {
+        case 1: // Обложка
+            fileName.append("МедКарта_обложка");
+            break;
+        case 2: // Данные осмотра полости рта
+            fileName.append("МедКарта_данные_полости_рта");
+            break;
+        case 3: // Страница дневника
+            fileName.append("МедКарта_лечение");
+            break;
+        case 4: // Страница лечения
+            fileName.append("МедКарта_дневник");
+            break;
+        case 5: // Страница плана
+            fileName.append("МедКарта_план");
+            break;
+        }
+    }
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+    generatePage(birthDate, path, pageNumber, fillPatientData);
+}
+
+void PatientDataBase::saveDiaryPdf(QString birthDate, QString recordDate)
+{
+    QString fileName;
+    QString patientName;
+    Record_t currentRecord;
+
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
+
+            fileName = p.fullName + p.birthDate;
+            fileName.remove(' ');
+            fileName.replace('.', '_');
+
+            for (const auto &recIt : p.cardRecords)
+            {
+                if (recIt.date == recordDate)
+                {
+                    currentRecord = recIt;
+                    break;
+                }
+            }
+        }
+    }
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+    generateDiary(currentRecord, path);
+}
+
+int PatientDataBase::getAge(QString birthDate)
 {
     if (patientsList->isEmpty() == true)
         return 0;
@@ -496,7 +566,7 @@ QString PatientDataBase::getPhoneNumber(QString birthDate)
 }
 
 /**
- * @brief Получает спислк пациентов из JSON файла
+ * @brief Получает список пациентов из JSON файла
  */
 void PatientDataBase::getPatientsListFromJson()
 {
@@ -534,6 +604,892 @@ void PatientDataBase::getPatientsListFromJson()
 
         patientsList->append(currentProfile);
     }
+}
+
+/**
+ * @brief Заполнение строк с лечением
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
+{
+    QString treatment = recIt.treatment;
+    QString array[5]; // Массив для поля "Лечение"
+
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (treatment.length() <= CARD_FIRST_FIELD_CHAR_COUNT + 29)
+    {
+        array[0] = treatment;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
+    }
+    else
+    {
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        treatment.insert(CARD_FIRST_FIELD_CHAR_COUNT + 29 , '$');
+
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < treatment.length(); i++)
+        {
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT + 47)
+            {
+                counter = 0;
+                treatment.insert(i, '$');
+            }
+        }
+
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : treatment)
+            {
+                chars += c;
+                if (c == "$")
+                {
+                    array[i] = chars;
+                    treatment.remove(0, chars.length());
+                    break;
+                }
+            }
+        }
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (treatment.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = treatment;
+                    break;
+                }
+            }
+        }
+    }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ЛЕЧЕНИЕ1", array[0]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ2", array[1]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ3", array[2]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ4", array[3]);
+    html->replace("МЕТКА_ЛЕЧЕНИЕ5", array[4]);
+}
+
+/**
+ * @brief Заполнение строк с результатами лечения
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
+{
+    QString treatmentResult = recIt.treatmentResult;
+    QString array[5]; // Массив для поля "Результаты лечения (эпикриз)"
+
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (treatmentResult.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
+    {
+        array[0] = treatmentResult;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
+    }
+    else
+    {
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        treatmentResult.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
+
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < treatmentResult.length(); i++)
+        {
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT)
+            {
+                counter = 0;
+                treatmentResult.insert(i, '$');
+            }
+        }
+
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : treatmentResult)
+            {
+                chars += c;
+                if (c == "$")
+                {
+                    array[i] = chars;
+                    treatmentResult.remove(0, chars.length());
+                    break;
+                }
+            }
+        }
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (treatmentResult.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = treatmentResult;
+                    break;
+                }
+            }
+        }
+    }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ЭПИКРИЗ1", array[0]);
+    html->replace("МЕТКА_ЭПИКРИЗ2", array[1]);
+    html->replace("МЕТКА_ЭПИКРИЗ3", array[2]);
+    html->replace("МЕТКА_ЭПИКРИЗ4", array[3]);
+    html->replace("МЕТКА_ЭПИКРИЗ5", array[4]);
+}
+
+/**
+ * @brief Заполнение строк объективного исследования, внешнего осмотра
+ * @todo Количество добавляемых символов ограниченно. Исправить!
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
+{
+    QString inspection = recIt.diseases;
+    QString array[5]; // Массив для поля "Внешний осмотр"
+    QString array2[7]; // Массив для поля "Объективный осмотр"
+
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (inspection.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
+    {
+        array[0] = inspection;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
+    }
+    else
+    {
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        inspection.insert(CARD_FIRST_FIELD_CHAR_COUNT , '$');
+
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < inspection.length(); i++)
+        {
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT)
+            {
+                counter = 0;
+                inspection.insert(i, '$');
+            }
+        }
+
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : inspection)
+            {
+                chars += c;
+                if (c == "$")
+                {
+                    array[i] = chars;
+                    inspection.remove(0, chars.length());
+                    break;
+                }
+            }
+        }
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (inspection.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = inspection;
+                    break;
+                }
+            }
+        }
+    }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ОСМОТР1", array[0]);
+    html->replace("МЕТКА_ОСМОТР2", array[1]);
+    html->replace("МЕТКА_ОСМОТР3", array[2]);
+    html->replace("МЕТКА_ОСМОТР4", array[3]);
+    html->replace("МЕТКА_ОСМОТР5", array[4]);
+
+    html->replace("МЕТКА_ОБЪЕКТИВНО1", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО2", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО3", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО4", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО5", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО6", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+}
+
+/**
+ * @brief Заполнение строк с анамнезом дневника мед. карты
+ * @todo Количество добавляемых символов ограниченно. Исправить!
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
+{
+    if (recIt.anamnesis.length() <= 101)
+    {
+        if (recIt.anamnesis.length() <= 10)
+            html->replace("МЕТКА_АНАМНЕЗ1", ".");
+        else
+            html->replace("МЕТКА_АНАМНЕЗ1", recIt.anamnesis);
+
+        html->replace("МЕТКА_АНАМНЕЗ2", ".");
+    }
+    else
+    {
+        QString buffer, anamnesis = recIt.anamnesis;
+
+        for (int i = 0; i < 101; i++)
+        {
+            buffer.append(anamnesis.at(i));
+        }
+        anamnesis.remove(0, 101);
+
+        html->replace("МЕТКА_АНАМНЕЗ2", buffer);
+    }
+}
+
+/**
+ * @brief Заполнение строк с жалобами дневника мед. карты
+ * @todo Количество добавляемых символов ограниченно. Исправить!
+ * @param recIt
+ * @param html
+ */
+void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
+{
+    // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
+    if (recIt.complaints.length() <= 101)
+    {
+        if (recIt.complaints.length() <= 10)
+        {
+            // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
+            // Иначе отсутствие символов ломает карту
+            html->replace("МЕТКА_ЖАЛОБЫ1", ".");
+        }
+        else
+            html->replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
+
+        html->replace("МЕТКА_ЖАЛОБЫ2", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ3", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ4", ".");
+        html->replace("МЕТКА_ЖАЛОБЫ5", ".");
+    }
+    else
+    {
+        QString array[5];
+        QString complaint = recIt.complaints; // Копируем, ибо иначе нельзя дойти до remove метода
+
+        // Копируем в первую строку
+        for (int i = 0; i < 101; i++)
+        {
+            array[0].append(complaint.at(i));
+        }
+        complaint.remove(0, 101);
+
+        // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
+        // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
+
+        // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
+        if (complaint.length() < 125)
+        {
+            array[1] = complaint;
+            array[2] = ".";
+            array[3] = ".";
+            array[4] = ".";
+        }
+        else
+        {
+            // То же самое для второй строки
+            for (int i = 0; i < 125; i++)
+            {
+                array[1].append(complaint.at(i));
+            }
+            complaint.remove(0, 125);
+
+            // Переносим на следующую строку, если размер текста не превышает длину след. строки
+            if (complaint.length() <= 112)
+            {
+                array[2] = complaint;
+                array[3] = ".";
+                array[4] = ".";
+            }
+            else
+            {
+                // То же самое для третьей строки (112)
+                for (int i = 0; i < 112; i++)
+                {
+                    array[2].append(complaint.at(i));
+                }
+                complaint.remove(0, 112);
+
+                if (complaint.length() < 112)
+                {
+                    array[3] = complaint;
+                    array[4] = ".";
+                }
+
+                else
+                {
+                    // То же самое для четвёртой строки
+                    for (int i = 0; i < 112; i++)
+                    {
+                        array[3].append(complaint.at(i));
+                    }
+                    complaint.remove(0, 112);
+
+                    if (complaint.length() < 112)
+                    {
+                        array[4] = complaint;
+                    }
+                    else
+                    {
+                        // То же самое для пятой строки
+                        for (int i = 0; i < 112; i++)
+                        {
+                            array[4].append(complaint.at(i));
+                        }
+                        complaint.remove(0, 112);
+
+                        if (complaint.length() < 112)
+                        {
+                            array[4] = complaint;
+                        }
+                    }
+                }
+            }
+        }
+        html->replace("МЕТКА_ЖАЛОБЫ1", array[0]);
+        html->replace("МЕТКА_ЖАЛОБЫ2", array[1]);
+        html->replace("МЕТКА_ЖАЛОБЫ3", array[2]);
+        html->replace("МЕТКА_ЖАЛОБЫ4", array[3]);
+        html->replace("МЕТКА_ЖАЛОБЫ5", array[4]);
+    }
+}
+
+void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumber, bool fillPatientData)
+{
+    if (fillPatientData == true)
+    {
+        QString patientName;
+        QString sex;
+        QString age;
+        QString address;
+        QString occupation;
+
+        for (const auto &p : *patientsList)
+        {
+            if (p.birthDate == birthDate)
+            {
+                // Для подстановки ФИО в карту
+                patientName = p.fullName;
+                sex = p.sex == false ? "М" : "Ж";
+                age = QString::number(p.age);
+                address = p.address;
+                occupation = p.occupation;
+                break;
+            }
+        }
+    }
+    else
+    {
+        QString pageName;
+        pageName.append("page");
+        pageName.append(QString::number(pageNumber));
+        pageName.append(".html");
+
+        QString pageFile = "://cards_src/";
+        pageFile.append(pageName);
+
+        QFile file(pageFile);
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream input(&file);
+        QString html = input.readAll();
+        file.close();
+
+        switch(pageNumber)
+        {
+        case 1:
+        {
+            html.replace("МЕТКА_КОД_ОКУД", "");
+            html.replace("МЕТКА_КОД_ОКПО", "");
+            html.replace("МЕТКА_ДИАГНОЗ", "");
+            html.replace("МЕТКА_ЖАЛОБЫ", "");
+            html.replace("МЕТКА_ФИО", "");
+            html.replace("МЕТКА_ПОЛ", "");
+            html.replace("МЕТКА_ВОЗРАСТ", "");
+            html.replace("МЕТКА_АДРЕС", "");
+            html.replace("МЕТКА_ПРОФЕССИЯ", "");
+            break;
+        }
+        case 2:
+        {
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ1", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ2", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ3", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ4", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ5", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
+
+            html.replace("МЕТКА_СОСТОЯНИЕ", "");
+
+            html.replace("МЕТКА_ПРИКУС", "");
+
+            html.replace("МЕТКА_РЕНТГЕН1", "");
+            html.replace("МЕТКА_РЕНТГЕН2", "");
+            html.replace("МЕТКА_РЕНТГЕН3", "");
+            html.replace("МЕТКА_РЕНТГЕН4", "");
+            break;
+        }
+        case 3:
+        {
+            html.replace("МЕТКА_ЛЕЧЕНИЕ1", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ2", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ3", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ4", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ5", ".");
+
+            html.replace("МЕТКА_ЭПИКРИЗ1", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ2", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ3", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ4", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ5", ".");
+
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+            html.replace("МЕТКА_ВРАЧ", ".");
+            html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+            break;
+        }
+        case 4:
+        {
+            html.replace("МЕТКА_ДАТА", "");
+
+            html.replace("МЕТКА_ЖАЛОБЫ1", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ2", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ3", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ4", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ5", ".");
+
+            html.replace("МЕТКА_АНАМНЕЗ1", ".");
+            html.replace("МЕТКА_АНАМНЕЗ2", ".");
+
+            html.replace("МЕТКА_ОСМОТР1", ".");
+            html.replace("МЕТКА_ОСМОТР2", ".");
+            html.replace("МЕТКА_ОСМОТР3", ".");
+            html.replace("МЕТКА_ОСМОТР4", ".");
+            html.replace("МЕТКА_ОСМОТР5", ".");
+
+            html.replace("МЕТКА_ОБЪЕКТИВНО1", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО2", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО3", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО4", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО5", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО6", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+
+            html.replace("МЕТКА_РЕНТГЕН1", ".");
+            html.replace("МЕТКА_РЕНТГЕН2", ".");
+            html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+            html.replace("МЕТКА_ДИАГНОЗ", ".");
+            break;
+        }
+        }
+        webView->setHtml(html);
+        loop.exec();
+
+        webView->page()->printToPdf(path);
+        loop.exec();
+    }
+
+}
+
+void PatientDataBase::generateDiary(Record_t record, QString path)
+{
+    std::vector<QString> paths;
+
+    QFile file("://cards_src/page4.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
+
+    file.close();
+
+    QString finalExtenstionName;
+    QString formattedDate = record.date;
+
+    // Меняем в дате точки на нижнее подчёркивание, чтобы не было конфликтов при сохранении
+    formattedDate.replace(".", "_");
+    finalExtenstionName.append("_" + formattedDate + ".pdf");
+
+    // Заменяем у пути имя на <дата_записи>.pdf
+    path.replace(".pdf", finalExtenstionName);
+
+    html.replace("МЕТКА_ДАТА", record.date);
+
+    fillComplaints(record, &html);
+    fillAnamnesis(record, &html);
+    fillExternalInspection(record, &html);
+
+    html.replace("МЕТКА_РЕНТГЕН1", ".");
+    html.replace("МЕТКА_РЕНТГЕН2", ".");
+    html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+    if (record.currentDiagnosis.size() == 0)
+        html.replace("МЕТКА_ДИАГНОЗ", ".");
+    else
+        html.replace("МЕТКА_ДИАГНОЗ", record.currentDiagnosis);
+
+    webView->setHtml(html);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    paths.push_back(path);
+
+    // Страница лечения и результатов лечения
+    QFile file2("://cards_src/page3.html");
+    file2.open(QIODevice::ReadOnly);
+
+    QTextStream input2(&file2);
+    html = input2.readAll();
+
+    file2.close();
+
+    path.replace(".pdf", "_treatment.pdf");
+
+    fillTreatment(record, &html);
+    fillTreatmentResult(record, &html);
+
+    // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+    html.replace("МЕТКА_ВРАЧ", ".");
+    html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+
+    webView->setHtml(html);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    paths.push_back(path);
+
+    path.replace("_treatment.pdf", "_diary.pdf");
+
+    PDFWriter writer;
+
+    writer.StartPDF(path.toStdString(), ePDFVersion13);
+
+    for (const auto &path : paths)
+    {
+        writer.AppendPDFPagesFromPDF(path.toStdString(), PDFPageRange());
+        std::remove(path.toStdString().c_str());
+    }
+
+    writer.EndPDF();
+}
+
+/**
+ * @brief Заполнение данных дневника лечения
+ * @param birthDate
+ * @param paths
+ */
+void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> *paths)
+{
+    QList<Record_t> records;
+
+    // Вытаскиваем все записи для поочерёдного заполнения
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            records = p.cardRecords;
+            break;
+        }
+    }
+    // Изначальный путь до 4-й страницы с дневников
+    QString path = paths->back().c_str();
+
+    for (const auto &recIt : records)
+    {
+        QFile file("://cards_src/page4.html");
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream input(&file);
+        QString html = input.readAll();
+
+        file.close();
+
+        // Мы каждый раз берём изначальный путь без модификаций, чтобы в него без последствий вписать новое имя
+        QString oldPath = path;
+
+        QString finalExtenstionName;
+        QString formattedDate = recIt.date;
+
+        // Меняем в дате точки на нижнее подчёркивание, чтобы не было конфликтов при сохранении
+        formattedDate.replace(".", "_");
+        finalExtenstionName.append("_" + formattedDate + ".pdf");
+
+        // Заменяем у пути имя на <дата_записи>.pdf
+        oldPath.replace(".pdf", finalExtenstionName);
+
+        html.replace("МЕТКА_ДАТА", recIt.date);
+
+        fillComplaints(recIt, &html);
+        fillAnamnesis(recIt, &html);
+        fillExternalInspection(recIt, &html);
+
+        html.replace("МЕТКА_РЕНТГЕН1", ".");
+        html.replace("МЕТКА_РЕНТГЕН2", ".");
+        html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+        if (recIt.currentDiagnosis.size() == 0)
+            html.replace("МЕТКА_ДИАГНОЗ", ".");
+        else
+            html.replace("МЕТКА_ДИАГНОЗ", recIt.currentDiagnosis);
+
+        webView->setHtml(html);
+        loop.exec();
+
+        // Записываем изменённый путь в массив
+        paths->push_back(oldPath.toStdString());
+
+        webView->page()->printToPdf(oldPath);
+        loop.exec();
+
+        // Страница лечения и результатов лечения
+        QFile file2("://cards_src/page3.html");
+        file2.open(QIODevice::ReadOnly);
+
+        QTextStream input2(&file2);
+        html = input2.readAll();
+
+        file2.close();
+
+        oldPath.replace(".pdf", "_treatment.pdf");
+
+        fillTreatment(recIt, &html);
+        fillTreatmentResult(recIt, &html);
+
+        // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+        html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+        html.replace("МЕТКА_ВРАЧ", ".");
+        html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+
+        webView->setHtml(html);
+        loop.exec();
+
+        // Записываем изменённый путь в массив
+        paths->push_back(oldPath.toStdString());
+
+        webView->page()->printToPdf(oldPath);
+        loop.exec();
+
+    }
+}
+
+void PatientDataBase::generateFullCard(QString birthDate, QString path)
+{
+    QString patientName;
+    QString sex;
+    QString age;
+    QString address;
+    QString occupation;
+
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
+            sex = p.sex == false ? "М" : "Ж";
+            age = QString::number(p.age);
+            address = p.address;
+            occupation = p.occupation;
+            break;
+        }
+    }
+
+    QFile file("://cards_src/page1.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
+
+    file.close();
+
+    QFile file1("://cards_src/page2.html");
+    file1.open(QIODevice::ReadOnly);
+
+    QTextStream input1(&file1);
+    QString html1 = input1.readAll();
+
+    file1.close();
+
+    QFile file3("://cards_src/page4.html");
+    file3.open(QIODevice::ReadOnly);
+
+    QTextStream input3(&file3);
+    QString html3 = input3.readAll();
+
+    file3.close();
+
+    QFile file4("://cards_src/page5.html");
+    file4.open(QIODevice::ReadOnly);
+
+    QTextStream input4(&file4);
+    QString html4 = input4.readAll();
+
+    file4.close();
+
+    // 1 страница
+    html.replace("МЕТКА_КОД_ОКУД", "");
+    html.replace("МЕТКА_КОД_ОКПО", "");
+    html.replace("МЕТКА_ДИАГНОЗ", "");
+    html.replace("МЕТКА_ЖАЛОБЫ", "");
+    html.replace("МЕТКА_ФИО", patientName);
+    html.replace("МЕТКА_ПОЛ", sex);
+    html.replace("МЕТКА_ВОЗРАСТ", age);
+    html.replace("МЕТКА_АДРЕС", address);
+    html.replace("МЕТКА_ПРОФЕССИЯ", occupation);
+
+    webView->setHtml(html);
+    loop.exec();
+
+    paths.push_back(path.toStdString());
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    path.replace(".pdf", "_1.pdf");
+    paths.push_back(path.toStdString());
+
+    // 2 страница
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ1", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ2", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ3", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ4", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ5", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
+    html1.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
+
+    html1.replace("МЕТКА_СОСТОЯНИЕ", "");
+
+    html1.replace("МЕТКА_ПРИКУС", "");
+
+    html1.replace("МЕТКА_РЕНТГЕН1", "");
+    html1.replace("МЕТКА_РЕНТГЕН2", "");
+    html1.replace("МЕТКА_РЕНТГЕН3", "");
+    html1.replace("МЕТКА_РЕНТГЕН4", "");
+
+    webView->setHtml(html1);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    path.replace("_1.pdf", "_2.pdf");
+    paths.push_back(path.toStdString());
+
+    path.replace("_2.pdf", "_3.pdf");
+    paths.push_back(path.toStdString());
+
+    // 4 страница
+    webView->setHtml(html3);
+    loop.exec();
+
+    // Генерация дневников
+    // TODO: Печатается 3-4 страницы
+    generateDiary(birthDate, &paths);
+
+    path.replace("_3.pdf", "_4.pdf");
+    paths.push_back(path.toStdString());
+
+    webView->setHtml(html4);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    path.remove("_4.pdf");
+
+    std::string finalPdfPath = path.toStdString();
+    finalPdfPath += "_generated.pdf";
+
+    PDFWriter writer;
+
+    writer.StartPDF(finalPdfPath, ePDFVersion13);
+
+    for (const auto &path : paths)
+    {
+        writer.AppendPDFPagesFromPDF(path, PDFPageRange());
+        std::remove(path.c_str());
+    }
+
+    writer.EndPDF();
+
+    paths.clear();
 }
 
 /**
@@ -653,6 +1609,7 @@ QJsonArray PatientDataBase::convertRecordsToJsonArray(const QList<Record_t> &rec
         recordObject.insert("treatment", data.treatment);
         recordObject.insert("complaints", data.complaints);
         recordObject.insert("diseases", data.diseases);
+        recordObject.insert("treatmentResult", data.treatmentResult);
 
         array.append(recordObject);
     }
@@ -677,6 +1634,7 @@ QList<Record_t> PatientDataBase::convertJsonRecordsToList(const QJsonArray recor
         tmpRecord.complaints = record["complaints"].toString();
         tmpRecord.currentDiagnosis = record["diagnosis"].toString();
         tmpRecord.treatment = record["treatment"].toString();
+        tmpRecord.treatmentResult = record["treatmentResult"].toString();
 
         tmpArray.append(tmpRecord);
     }

@@ -134,10 +134,10 @@ void Backend::addNewDoctorProfile(QString doctorFullName, QString doctorSpeciali
  * @param diagnosis
  * @param treatment
  */
-void Backend::updateRecord(QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+void Backend::updateRecord(QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     patientsDb->updateRecord(currentPatientBirthDate, recordDate, anamnesis, complaints,
-                             diseases, diagnosis, treatment);
+                             diseases, diagnosis, treatment, treatmentResult);
     emit recordUpdated();
 }
 
@@ -163,7 +163,7 @@ void Backend::deleteRecord(QString recordDate)
  * @param phoneNumber
  * @param occupation
  */
-void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
+void Backend::addNewPatient(QString fullName, int age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
@@ -185,9 +185,9 @@ void Backend::addNewPatient(QString fullName, quint16 age, bool sex,
  * @param treatment
  * @return
  */
-bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment)
+bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
-    if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment) == true)
+    if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment, treatmentResult) == true)
     {
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
         emit recordAdded();
@@ -359,6 +359,21 @@ bool Backend::getIsPatientDbEmpty()
     return patientsDb->patientsList->isEmpty();
 }
 
+void Backend::printCard()
+{
+    patientsDb->saveCardPdf(currentPatientBirthDate);
+}
+
+void Backend::printCard(int pageNumber, bool fillPatientData)
+{
+    patientsDb->saveCardPdf(currentPatientBirthDate, pageNumber, fillPatientData);
+}
+
+void Backend::printDiary(QString recordDate)
+{
+    patientsDb->saveDiaryPdf(currentPatientBirthDate, recordDate);
+}
+
 void Backend::sortPatientRecordListModel()
 {
     if (patientRecordsListModel == nullptr)
@@ -415,7 +430,7 @@ QString Backend::getCurrentDoctorInitials()
     return doctorDb.getProfileInitials(currentDoctorInn);
 }
 
-quint16 Backend::getCurrentPatientAge()
+int Backend::getCurrentPatientAge()
 {
     return patientsDb->getAge(currentPatientBirthDate);
 }
@@ -498,6 +513,11 @@ QString Backend::getRecordDiseases(QString recordDate)
 QString Backend::getRecordTreatment(QString recordDate)
 {
     return patientsDb->getTreatment(currentPatientBirthDate, recordDate);
+}
+
+QString Backend::getRecordTreatmentResult(QString recordDate)
+{
+    return patientsDb->getTreatmentResult(currentPatientBirthDate, recordDate);
 }
 
 QString Backend::getGlossaryDiagnosisAt(int index)
