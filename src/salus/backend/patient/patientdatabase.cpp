@@ -507,6 +507,38 @@ void PatientDataBase::saveCardPdf(QString birthDate, int pageNumber, bool fillPa
     generatePage(birthDate, path, pageNumber, fillPatientData);
 }
 
+void PatientDataBase::saveDiaryPdf(QString birthDate, QString recordDate)
+{
+    QString fileName;
+    QString patientName;
+    Record_t currentRecord;
+
+    for (const auto &p : *patientsList)
+    {
+        if (p.birthDate == birthDate)
+        {
+            // Для подстановки ФИО в карту
+            patientName = p.fullName;
+
+            fileName = p.fullName + p.birthDate;
+            fileName.remove(' ');
+            fileName.replace('.', '_');
+
+            for (const auto &recIt : p.cardRecords)
+            {
+                if (recIt.date == recordDate)
+                {
+                    currentRecord = recIt;
+                    break;
+                }
+            }
+        }
+    }
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+    generateDiary(currentRecord, path);
+}
+
 int PatientDataBase::getAge(QString birthDate)
 {
     if (patientsList->isEmpty() == true)
@@ -1122,6 +1154,98 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
 
 }
 
+void PatientDataBase::generateDiary(Record_t record, QString path)
+{
+    std::vector<QString> paths;
+
+    QFile file("://cards_src/page4.html");
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream input(&file);
+    QString html = input.readAll();
+
+    file.close();
+
+    QString finalExtenstionName;
+    QString formattedDate = record.date;
+
+    // Меняем в дате точки на нижнее подчёркивание, чтобы не было конфликтов при сохранении
+    formattedDate.replace(".", "_");
+    finalExtenstionName.append("_" + formattedDate + ".pdf");
+
+    // Заменяем у пути имя на <дата_записи>.pdf
+    path.replace(".pdf", finalExtenstionName);
+
+    html.replace("МЕТКА_ДАТА", record.date);
+
+    fillComplaints(record, &html);
+    fillAnamnesis(record, &html);
+    fillExternalInspection(record, &html);
+
+    html.replace("МЕТКА_РЕНТГЕН1", ".");
+    html.replace("МЕТКА_РЕНТГЕН2", ".");
+    html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+    if (record.currentDiagnosis.size() == 0)
+        html.replace("МЕТКА_ДИАГНОЗ", ".");
+    else
+        html.replace("МЕТКА_ДИАГНОЗ", record.currentDiagnosis);
+
+    webView->setHtml(html);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    paths.push_back(path);
+
+    // Страница лечения и результатов лечения
+    QFile file2("://cards_src/page3.html");
+    file2.open(QIODevice::ReadOnly);
+
+    QTextStream input2(&file2);
+    html = input2.readAll();
+
+    file2.close();
+
+    path.replace(".pdf", "_treatment.pdf");
+
+    fillTreatment(record, &html);
+    fillTreatmentResult(record, &html);
+
+    // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+    html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+    html.replace("МЕТКА_ВРАЧ", ".");
+    html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+
+    webView->setHtml(html);
+    loop.exec();
+
+    webView->page()->printToPdf(path);
+    loop.exec();
+
+    paths.push_back(path);
+
+    path.replace("_treatment.pdf", "_diary.pdf");
+
+    PDFWriter writer;
+
+    writer.StartPDF(path.toStdString(), ePDFVersion13);
+
+    for (const auto &path : paths)
+    {
+        writer.AppendPDFPagesFromPDF(path.toStdString(), PDFPageRange());
+        std::remove(path.toStdString().c_str());
+    }
+
+    writer.EndPDF();
+}
+
 /**
  * @brief Заполнение данных дневника лечения
  * @param birthDate
@@ -1264,14 +1388,6 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
 
     file1.close();
 
-//    QFile file2("://cards_src/page3.html");
-//    file2.open(QIODevice::ReadOnly);
-
-//    QTextStream input2(&file2);
-//    QString html2 = input2.readAll();
-
-//    file2.close();
-
     QFile file3("://cards_src/page4.html");
     file3.open(QIODevice::ReadOnly);
 
@@ -1336,34 +1452,6 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     path.replace("_1.pdf", "_2.pdf");
     paths.push_back(path.toStdString());
 
-    // 3 страница
-//    html2.replace("МЕТКА_ЛЕЧЕНИЕ1", "");
-//    html2.replace("МЕТКА_ЛЕЧЕНИЕ2", "");
-//    html2.replace("МЕТКА_ЛЕЧЕНИЕ3", "");
-//    html2.replace("МЕТКА_ЛЕЧЕНИЕ4", "");
-//    html2.replace("МЕТКА_ЛЕЧЕНИЕ5", "");
-
-//    html2.replace("МЕТКА_ЭПИКРИЗ1", "");
-//    html2.replace("МЕТКА_ЭПИКРИЗ2", "");
-//    html2.replace("МЕТКА_ЭПИКРИЗ3", "");
-//    html2.replace("МЕТКА_ЭПИКРИЗ4", "");
-//    html2.replace("МЕТКА_ЭПИКРИЗ5", "");
-
-//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ1", "");
-//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ2", "");
-//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ3", "");
-//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ4", "");
-//    html2.replace("МЕТКА_НАСТАВЛЕНИЯ5", "");
-
-//    html2.replace("МЕТКА_ВРАЧ", "");
-//    html2.replace("МЕТКА_ЗАВЕДУЩ", "");
-
-//    webView->setHtml(html2);
-//    loop.exec();
-
-//    webView->page()->printToPdf(path);
-//    loop.exec();
-
     path.replace("_2.pdf", "_3.pdf");
     paths.push_back(path.toStdString());
 
@@ -1396,14 +1484,10 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     for (const auto &path : paths)
     {
         writer.AppendPDFPagesFromPDF(path, PDFPageRange());
+        std::remove(path.c_str());
     }
 
     writer.EndPDF();
-
-    for (const auto &path : paths)
-    {
-        std::remove(path.c_str());
-    }
 
     paths.clear();
 }

@@ -45,6 +45,7 @@ private:
     void fillComplaints(Record_t recIt, QString *html);
 
     void generatePage(QString birthDate, QString path, int pageNumber, bool fillPatientData);
+    void generateDiary(Record_t record, QString path);
     void generateDiary(QString birthDate, std::vector<std::string> *paths);
     void generateFullCard(QString birthDate, QString path);
     void saveProfileToJson(Patient patientProfile);
@@ -106,6 +107,7 @@ public:
 
     void saveCardPdf(QString birthDate);
     void saveCardPdf(QString birthDate, int pageNumber, bool fillPatientData);
+    void saveDiaryPdf(QString birthDate, QString recordDate);
 
 signals:
     void recordAdded();

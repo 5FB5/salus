@@ -31,6 +31,8 @@ Page
     property var patientDiseases: []
     property string patientAnamnesis: ""
 
+    property string currentRecord: ""
+
     signal openDiary()
     signal deletePatient()
 
@@ -196,6 +198,168 @@ Page
         }
     }
 
+    Dialog
+    {
+        id: dialogPrintRecord
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выберите запись"
+        modal: true
+        width: 400
+        height: 400
+
+        Button
+        {
+            id: buttonDialogRecordAccept
+
+            anchors
+            {
+                left: parent.left
+                right: parent.horizontalCenter
+                bottom: parent.bottom
+                rightMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDialogChooseAccept.down ? buttonTextDefaultColor : "#FFFFFF"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Печать"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDialogRecordAccept.down ? "#EBEBEB" : "#007AFF"
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                // TODO: Добавить заполнение данными пациента
+//                backend.printCard(spinBoxPage.value, false);
+                backend.printDiary(currentRecord);
+                dialogPrintRecord.close();
+            }
+        }
+
+        Button
+        {
+            id: buttonDialogRecordReject
+
+            anchors
+            {
+                left:  parent.horizontalCenter
+                right: parent.right
+                top: buttonDialogRecordAccept.top
+                leftMargin: 5
+            }
+
+            contentItem: Text
+            {
+                font.pointSize: 12
+                opacity: enabled ? 1.0 : 0.3
+                color: buttonDialogRecordReject.down ? "#000000" : buttonTextDefaultColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+                text: "Отмена"
+            }
+
+            background: Rectangle
+            {
+                anchors.fill: parent
+                radius: 14
+                color: buttonDialogRecordReject.down ? buttonPressedColor : buttonDefaultColor
+            }
+
+            height: 40
+
+            onClicked: function()
+            {
+                dialogPrintRecord.close();
+            }
+        }
+
+        contentItem: Item
+        {
+            ListView
+            {
+                id: listViewRecords
+
+                Component.onCompleted:
+                {
+                    highlightMoveDuration = 0;
+                }
+
+                anchors
+                {
+                    top: parent.top
+                    bottom: buttonDialogRecordAccept.top
+                    left: parent.left
+                    right: parent.right
+                }
+
+                clip: true
+                focus: true
+                model: patientRecordsListModel
+                spacing: 15
+
+                delegate: Text
+                {
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    font.pointSize: 15
+                    height: 40
+                    text: display
+
+                    Rectangle
+                    {
+                        id: separator
+
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
+                        height: 1
+                        color: "#E1E1E1"
+                    }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+
+                        onClicked: function()
+                        {
+                            listViewRecords.currentIndex = index;
+                            currentRecord = display;
+                        }
+                    }
+                }
+
+                highlight: Rectangle
+                {
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "#E1E1E1"
+                }
+            }
+        }
+    }
+
     Menu
     {
         id: menuPrintCard
@@ -223,6 +387,11 @@ Page
         MenuItem
         {
             text: "Дневник"
+
+            onTriggered: function()
+            {
+                dialogPrintRecord.open();
+            }
         }
     }
 

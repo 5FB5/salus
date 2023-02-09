@@ -79,13 +79,6 @@ public:
     QString getCurrentPatientOccupation();    
     int getCurrentPatientAge();
 
-//    QString getCurrentPatientRecordDate();
-//    QString getCurrentPatientRecordDiagnosis();
-//    QString getCurrentPatientRecordAnamnesis();
-//    QString getCurrentPatientRecordComplaints();
-//    QString getCurrentPatientRecordDiseases();
-//    QString getCurrentPatientRecordTreatment();
-
     bool getCurrentPatientSex();
     bool getIsDoctorDbExists();
     bool getIsPatientDbEmpty();
@@ -93,6 +86,7 @@ public:
 public slots:
     void printCard();
     void printCard(int pageNumber, bool fillPatientData);
+    void printDiary(QString recordDate);
 
     void sortPatientRecordListModel();
 

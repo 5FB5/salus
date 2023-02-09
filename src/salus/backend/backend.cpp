@@ -369,6 +369,11 @@ void Backend::printCard(int pageNumber, bool fillPatientData)
     patientsDb->saveCardPdf(currentPatientBirthDate, pageNumber, fillPatientData);
 }
 
+void Backend::printDiary(QString recordDate)
+{
+    patientsDb->saveDiaryPdf(currentPatientBirthDate, recordDate);
+}
+
 void Backend::sortPatientRecordListModel()
 {
     if (patientRecordsListModel == nullptr)
