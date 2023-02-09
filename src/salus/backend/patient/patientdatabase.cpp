@@ -172,7 +172,8 @@ void PatientDataBase::updateDbToFile()
  * @param diagnosis
  * @param treatment
  */
-void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
+void PatientDataBase::updateRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
+                                   QString diseases, QString diagnosis, QString treatment, QString treatmentResult)
 {
     for (auto &p : *patientsList)
     {
@@ -416,10 +417,8 @@ QString PatientDataBase::getTreatmentResult(QString birthDate, QString recordDat
     return "";
 }
 
-void PatientDataBase::saveCardPdf(QString birthDate, int opMode)
+void PatientDataBase::saveCardPdf(QString birthDate)
 {
-    // TODO: сгенерировать отдельные файлы для каждой страницы и слепить в одну
-
     QString fileName;
     QString patientName;
 
@@ -439,20 +438,73 @@ void PatientDataBase::saveCardPdf(QString birthDate, int opMode)
 
     QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
 
-    switch(opMode)
+    generateFullCard(birthDate, path);
+}
+
+void PatientDataBase::saveCardPdf(QString birthDate, int pageNumber, bool fillPatientData)
+{
+    QString fileName;
+    QString patientName;
+
+    if (fillPatientData == true)
     {
-    case PrintMode::ALL_CARD:
-        generateFullCard(birthDate, path);
-        break;
-    case PrintMode::PAGE_ONLY:
+        for (const auto &p : *patientsList)
+        {
+            if (p.birthDate == birthDate)
+            {
+                // Для подстановки ФИО в карту
+                patientName = p.fullName;
+
+                fileName = p.fullName + p.birthDate;
+                fileName.remove(' ');
+                fileName.replace('.', '_');
+                break;
+            }
+        }
+
+        switch(pageNumber)
+        {
+        case 1: // Обложка
+            fileName.append("_обложка");
+            break;
+        case 2: // Данные осмотра полости рта
+            fileName.append("_данные_полости_рта");
+            break;
+        case 3: // Страница дневника
+            fileName.append("_лечение");
+            break;
+        case 4: // Страница лечения
+            fileName.append("_дневник");
+            break;
+        case 5: // Страница плана
+            fileName.append("_план");
+            break;
+        }
+    }
+    else
     {
-        break;
+        switch(pageNumber)
+        {
+        case 1: // Обложка
+            fileName.append("МедКарта_обложка");
+            break;
+        case 2: // Данные осмотра полости рта
+            fileName.append("МедКарта_данные_полости_рта");
+            break;
+        case 3: // Страница дневника
+            fileName.append("МедКарта_лечение");
+            break;
+        case 4: // Страница лечения
+            fileName.append("МедКарта_дневник");
+            break;
+        case 5: // Страница плана
+            fileName.append("МедКарта_план");
+            break;
+        }
     }
-    case PrintMode::RECORD:
-    {
-        break;
-    }
-    }
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Сохранить в PDF", fileName + ".pdf", "PDF (*.pdf)");
+    generatePage(birthDate, path, pageNumber, fillPatientData);
 }
 
 int PatientDataBase::getAge(QString birthDate)
@@ -924,6 +976,150 @@ void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
         html->replace("МЕТКА_ЖАЛОБЫ4", array[3]);
         html->replace("МЕТКА_ЖАЛОБЫ5", array[4]);
     }
+}
+
+void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumber, bool fillPatientData)
+{
+    if (fillPatientData == true)
+    {
+        QString patientName;
+        QString sex;
+        QString age;
+        QString address;
+        QString occupation;
+
+        for (const auto &p : *patientsList)
+        {
+            if (p.birthDate == birthDate)
+            {
+                // Для подстановки ФИО в карту
+                patientName = p.fullName;
+                sex = p.sex == false ? "М" : "Ж";
+                age = QString::number(p.age);
+                address = p.address;
+                occupation = p.occupation;
+                break;
+            }
+        }
+    }
+    else
+    {
+        QString pageName;
+        pageName.append("page");
+        pageName.append(QString::number(pageNumber));
+        pageName.append(".html");
+
+        QString pageFile = "://cards_src/";
+        pageFile.append(pageName);
+
+        QFile file(pageFile);
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream input(&file);
+        QString html = input.readAll();
+        file.close();
+
+        switch(pageNumber)
+        {
+        case 1:
+        {
+            html.replace("МЕТКА_КОД_ОКУД", "");
+            html.replace("МЕТКА_КОД_ОКПО", "");
+            html.replace("МЕТКА_ДИАГНОЗ", "");
+            html.replace("МЕТКА_ЖАЛОБЫ", "");
+            html.replace("МЕТКА_ФИО", "");
+            html.replace("МЕТКА_ПОЛ", "");
+            html.replace("МЕТКА_ВОЗРАСТ", "");
+            html.replace("МЕТКА_АДРЕС", "");
+            html.replace("МЕТКА_ПРОФЕССИЯ", "");
+            break;
+        }
+        case 2:
+        {
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ1", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ2", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ3", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ4", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ5", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
+            html.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
+
+            html.replace("МЕТКА_СОСТОЯНИЕ", "");
+
+            html.replace("МЕТКА_ПРИКУС", "");
+
+            html.replace("МЕТКА_РЕНТГЕН1", "");
+            html.replace("МЕТКА_РЕНТГЕН2", "");
+            html.replace("МЕТКА_РЕНТГЕН3", "");
+            html.replace("МЕТКА_РЕНТГЕН4", "");
+            break;
+        }
+        case 3:
+        {
+            html.replace("МЕТКА_ЛЕЧЕНИЕ1", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ2", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ3", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ4", ".");
+            html.replace("МЕТКА_ЛЕЧЕНИЕ5", ".");
+
+            html.replace("МЕТКА_ЭПИКРИЗ1", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ2", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ3", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ4", ".");
+            html.replace("МЕТКА_ЭПИКРИЗ5", ".");
+
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
+            html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
+
+            html.replace("МЕТКА_ВРАЧ", ".");
+            html.replace("МЕТКА_ЗАВЕДУЩ", ".");
+            break;
+        }
+        case 4:
+        {
+            html.replace("МЕТКА_ДАТА", "");
+
+            html.replace("МЕТКА_ЖАЛОБЫ1", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ2", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ3", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ4", ".");
+            html.replace("МЕТКА_ЖАЛОБЫ5", ".");
+
+            html.replace("МЕТКА_АНАМНЕЗ1", ".");
+            html.replace("МЕТКА_АНАМНЕЗ2", ".");
+
+            html.replace("МЕТКА_ОСМОТР1", ".");
+            html.replace("МЕТКА_ОСМОТР2", ".");
+            html.replace("МЕТКА_ОСМОТР3", ".");
+            html.replace("МЕТКА_ОСМОТР4", ".");
+            html.replace("МЕТКА_ОСМОТР5", ".");
+
+            html.replace("МЕТКА_ОБЪЕКТИВНО1", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО2", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО3", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО4", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО5", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО6", ".");
+            html.replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+
+            html.replace("МЕТКА_РЕНТГЕН1", ".");
+            html.replace("МЕТКА_РЕНТГЕН2", ".");
+            html.replace("МЕТКА_РЕНТГЕН3", ".");
+
+            html.replace("МЕТКА_ДИАГНОЗ", ".");
+            break;
+        }
+        }
+        webView->setHtml(html);
+        loop.exec();
+
+        webView->page()->printToPdf(path);
+        loop.exec();
+    }
+
 }
 
 /**

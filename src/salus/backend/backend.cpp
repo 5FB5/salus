@@ -359,9 +359,14 @@ bool Backend::getIsPatientDbEmpty()
     return patientsDb->patientsList->isEmpty();
 }
 
-void Backend::printCard(int opMode)
+void Backend::printCard()
 {
-    patientsDb->saveCardPdf(currentPatientBirthDate, opMode);
+    patientsDb->saveCardPdf(currentPatientBirthDate);
+}
+
+void Backend::printCard(int pageNumber, bool fillPatientData)
+{
+    patientsDb->saveCardPdf(currentPatientBirthDate, pageNumber, fillPatientData);
 }
 
 void Backend::sortPatientRecordListModel()

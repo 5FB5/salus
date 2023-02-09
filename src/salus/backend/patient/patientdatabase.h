@@ -37,11 +37,14 @@ class PatientDataBase : public QObject
 private:
     void getPatientsListFromJson();
     // TODO: Возможно весь функционал по печати карты нужно вывести в отдельный класс CardGenerator
+    // Печать карты
     void fillTreatment(Record_t recIt, QString *html);
     void fillTreatmentResult(Record_t recIt, QString *html);
     void fillExternalInspection(Record_t recIt, QString *html);
     void fillAnamnesis(Record_t recIt, QString *html);
     void fillComplaints(Record_t recIt, QString *html);
+
+    void generatePage(QString birthDate, QString path, int pageNumber, bool fillPatientData);
     void generateDiary(QString birthDate, std::vector<std::string> *paths);
     void generateFullCard(QString birthDate, QString path);
     void saveProfileToJson(Patient patientProfile);
@@ -101,7 +104,8 @@ public:
     QString getTreatment(QString birthDate, QString recordDate);
     QString getTreatmentResult(QString birthDate, QString recordDate);
 
-    void saveCardPdf(QString birthDate, int opMode);
+    void saveCardPdf(QString birthDate);
+    void saveCardPdf(QString birthDate, int pageNumber, bool fillPatientData);
 
 signals:
     void recordAdded();

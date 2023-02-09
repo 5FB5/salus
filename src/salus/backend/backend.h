@@ -91,7 +91,8 @@ public:
     bool getIsPatientDbEmpty();
 
 public slots:
-    void printCard(int opMode);
+    void printCard();
+    void printCard(int pageNumber, bool fillPatientData);
 
     void sortPatientRecordListModel();
 

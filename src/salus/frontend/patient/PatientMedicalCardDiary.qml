@@ -341,25 +341,6 @@ Page
 
         Button
         {
-            id: buttonPrintRecord
-
-            font.pointSize: buttonStandartTextFontSize * 1.1
-            font.bold: false
-
-            width: 200
-            height: 60
-
-            text: "Печать записи"
-
-            onClicked:
-            {
-                console.log("TODO: Печать записи")
-                backend.printCard();
-            }
-        }
-
-        Button
-        {
             id: buttonDeleteMedicalData
 
             contentItem: Text

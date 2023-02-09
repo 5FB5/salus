@@ -55,6 +55,87 @@ Page
         color: mainBackgroundColor
     }
 
+    Dialog
+    {
+        id: dialogChoosePage
+
+        Component.onCompleted: function()
+        {
+            standardButton(Dialog.Ok).text = "Печать";
+            standardButton(Dialog.Cancel).text = "Отмена";
+        }
+
+        anchors.centerIn: parent
+
+        font.pixelSize: 15
+        title: "Выберите страницу"
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        modal: true
+        width: 350
+        height: 300
+
+        onAccepted: function()
+        {
+            // TODO: Добавить заполнение данными пациента
+            backend.printCard(spinBoxPage.value, false);
+        }
+
+        onRejected:
+        {
+            close();
+        }
+
+        contentItem: Item
+        {
+            Text
+            {
+                id: labelPage
+
+                anchors
+                {
+                    top: parent.top
+                    left: parent.left
+                    margins: 5
+                }
+                height: 30
+                font.pixelSize: 17
+                text: "Номер страницы"
+            }
+
+            SpinBox
+            {
+                id: spinBoxPage
+
+                anchors
+                {
+                    top: labelPage.top
+                    bottom: labelPage.bottom
+                    left: labelPage.right
+                    right: parent.right
+                    leftMargin: 15
+                    verticalCenter: labelPage.verticalCenter
+                }
+                from: 1
+                to: 5
+            }
+
+            CheckBox
+            {
+                id: checkBoxFillData
+
+                anchors
+                {
+                    top: labelPage.bottom
+                    left: parent.left
+                    topMargin: 15
+                }
+
+                text: "Заполнить данными пациента"
+                enabled: false
+            }
+        }
+    }
+
     Menu
     {
         id: menuPrintCard
@@ -65,13 +146,18 @@ Page
 
             onTriggered: function()
             {
-                backend.printCard(0);
+                backend.printCard();
             }
         }
 
         MenuItem
         {
             text: "Страница"
+
+            onTriggered: function()
+            {
+                dialogChoosePage.open();
+            }
         }
 
         MenuItem
