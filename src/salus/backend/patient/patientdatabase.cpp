@@ -904,14 +904,14 @@ void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
     // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
     if (recIt.complaints.length() <= 101)
     {
-        if (recIt.complaints.length() <= 10)
+        if (recIt.complaints.length() > 0)
         {
             // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
             // Иначе отсутствие символов ломает карту
-            html->replace("МЕТКА_ЖАЛОБЫ1", ".");
+            html->replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
         }
         else
-            html->replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
+            html->replace("МЕТКА_ЖАЛОБЫ1", ".");
 
         html->replace("МЕТКА_ЖАЛОБЫ2", ".");
         html->replace("МЕТКА_ЖАЛОБЫ3", ".");
