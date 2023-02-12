@@ -29,6 +29,7 @@ private:
     QList<QString> convertJsonArrayToList(const QJsonArray array);
 
     void getDataListFromJson();
+    void fillDiagnosesField(QList<QString> *list);
     void fillDocumentDefaultData(QJsonDocument *doc);
     void saveDataToJson();
 
