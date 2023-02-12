@@ -115,17 +115,10 @@ Page
     {
         id: dialogAddTextToGlossary
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Добавить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Выберите словарь"
-        standardButtons: Dialog.Ok | Dialog.Cancel
         modal: true
         width: 500
         height: 400
@@ -204,6 +197,104 @@ Page
                 }
                 model: ["Диагноз", "Терапия", "Симптомы", "Пользоват. формулировки"]
             }
+
+            Button
+            {
+                id: buttonDialogAddToGlossaryAccept
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.horizontalCenter
+                    bottom: parent.bottom
+                    margins: 5
+                }
+
+                contentItem: Text
+                {
+                    font.pointSize: 12
+                    opacity: enabled ? 1.0 : 0.3
+                    color: buttonDialogAddToGlossaryAccept.down ? buttonTextDefaultColor : "#FFFFFF"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: "Добавить"
+                }
+
+                background: Rectangle
+                {
+                    anchors.fill: parent
+                    radius: 14
+                    color: buttonDialogAddToGlossaryAccept.down ? "#EBEBEB" : "#007AFF"
+                }
+
+                height: 40
+
+                onClicked: function()
+                {
+                    var comboboxText = comboBoxChooseGlossary.currentText;
+
+                    switch (comboboxText)
+                    {
+                    case "Диагноз":
+                        backend.addGlossaryDiagnosis(currentSelectedText);
+                        break;
+
+                    case "Терапия":
+                        backend.addGlossaryTreatment(currentSelectedText);
+                        break;
+
+                    case "Симптомы":
+                        backend.addGlossarySymptom(currentSelectedText);
+                        break;
+
+                    case "Пользоват. формулировки":
+                        backend.addGlossaryUserFormulation(currentSelectedText);
+                        break;
+                    }
+
+                    dialogAddTextToGlossary.close();
+                }
+            }
+
+            Button
+            {
+                id: buttonDialogAddToGlossaryReject
+
+                anchors
+                {
+                    left:  parent.horizontalCenter
+                    right: parent.right
+                    top: buttonDialogAddToGlossaryAccept.top
+                    leftMargin: 5
+                    rightMargin: 5
+                }
+
+                contentItem: Text
+                {
+                    font.pointSize: 12
+                    opacity: enabled ? 1.0 : 0.3
+                    color: buttonDialogAddToGlossaryReject.down ? "#000000" : buttonTextDefaultColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: "Отмена"
+                }
+
+                background: Rectangle
+                {
+                    anchors.fill: parent
+                    radius: 14
+                    color: buttonDialogAddToGlossaryReject.down ? buttonPressedColor : buttonDefaultColor
+                }
+
+                height: 40
+
+                onClicked: function()
+                {
+                    dialogAddTextToGlossary.close();
+                }
+            }
         }
     }
 
@@ -211,17 +302,10 @@ Page
     {
         id: dialogGlossaryMenu
 
-        Component.onCompleted: function()
-        {
-            standardButton(Dialog.Ok).text = "Вставить";
-            standardButton(Dialog.Cancel).text = "Отмена";
-        }
-
         anchors.centerIn: parent
 
         font.pixelSize: 15
         title: "Выбор записи"
-        standardButtons: Dialog.Ok | Dialog.Cancel
         modal: true
         width: 500
         height: 400
@@ -231,6 +315,87 @@ Page
             id: itemGlossaryList
 
             anchors.fill: parent
+
+            Button
+            {
+                id: buttonDialogPasteAccept
+
+                anchors
+                {
+                    left: parent.left
+                    right: parent.horizontalCenter
+                    bottom: parent.bottom
+                    margins: 5
+                }
+
+                contentItem: Text
+                {
+                    font.pointSize: 12
+                    opacity: enabled ? 1.0 : 0.3
+                    color: buttonDialogPasteAccept.down ? buttonTextDefaultColor : "#FFFFFF"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: "Вставить"
+                }
+
+                background: Rectangle
+                {
+                    anchors.fill: parent
+                    radius: 14
+                    color: buttonDialogPasteAccept.down ? "#EBEBEB" : "#007AFF"
+                }
+
+                height: 40
+
+                onClicked: function()
+                {
+                    if (!currentTextEditItem)
+                        return;
+
+                    currentTextEditItem.text += " " + currentGlossaryItem;
+                    dialogGlossaryMenu.close();
+                }
+            }
+
+            Button
+            {
+                id: buttonDialogPasteReject
+
+                anchors
+                {
+                    left:  parent.horizontalCenter
+                    right: parent.right
+                    top: buttonDialogPasteAccept.top
+                    leftMargin: 5
+                    rightMargin: 5
+                }
+
+                contentItem: Text
+                {
+                    font.pointSize: 12
+                    opacity: enabled ? 1.0 : 0.3
+                    color: buttonDialogPasteReject.down ? "#000000" : buttonTextDefaultColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: "Отмена"
+                }
+
+                background: Rectangle
+                {
+                    anchors.fill: parent
+                    radius: 14
+                    color: buttonDialogPasteReject.down ? buttonPressedColor : buttonDefaultColor
+                }
+
+                height: 40
+
+                onClicked: function()
+                {
+                    dialogGlossaryMenu.close();
+                }
+            }
 
             TextField
             {
@@ -324,9 +489,8 @@ Page
                     top: textFieldSearch.bottom
                     left: parent.left
                     right: parent.right
-                    bottom: parent.bottom
+                    bottom: buttonDialogPasteAccept.top
                     topMargin: 5
-                    bottomMargin: 80
                 }
                 clip: true
                 spacing: 15
@@ -371,14 +535,6 @@ Page
                     color: "lightsteelblue"
                 }
             }
-        }
-
-        onAccepted: function()
-        {
-            if (!currentTextEditItem)
-                return;
-
-            currentTextEditItem.text += " " + currentGlossaryItem;
         }
     }
 
