@@ -213,9 +213,87 @@ Page
 
             anchors.fill: parent
 
+            TextField
+            {
+                id: textFieldSearch
+
+                anchors
+                {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    topMargin: 45
+                    leftMargin: 5
+                    rightMargin: 5
+                }
+
+                height: 40
+                placeholderText: "Поиск..."
+
+                onTextChanged:
+                {
+                    if(text.length > 0 )
+                        listViewGlossary.applyFilter(text);
+                    else
+                        listViewGlossary.reload();
+                }
+            }
+
             ListView
             {
                 id: listViewGlossary
+
+                function reload()
+                {
+                    var list;
+
+                    switch(currentGlossaryMode)
+                    {
+                    case 0:
+                        listViewGlossary.model = glossaryDiagnosesListModel;
+                        break;
+                    case 1:
+                        listViewGlossary.model = glossaryTreatmentsListModel;
+                        break;
+                    case 2:
+                        listViewGlossary.model = glossarySymptomsListModel;
+                        break;
+                    case 3:
+                        listViewGlossary.model = glossaryUserListModel;
+                        break;
+                    }
+
+                    listViewGlossary.currentIndex = 0;
+                    currentGlossaryItem = listViewGlossary.currentItem.text;
+                }
+
+                function applyFilter(name)
+                {
+                    switch(currentGlossaryMode)
+                    {
+                    case 0:
+                    {
+                        backend.getGlossaryDiagnosesByName(name);
+                        listViewGlossary.model = glossaryDiagnosesFilteredListModel;
+                        break;
+                    }
+                    case 1:
+                        backend.getGlossaryTreatmentsByName(name);
+                        listViewGlossary.model = glossaryTreatmentsFilteredListModel;
+                        break;
+                    case 2:
+                        backend.getGlossarySymptomsByName(name)
+                        listViewGlossary.model = glossarySymptomsFilteredListModel;
+                        break;
+                    case 3:
+                        backend.getGlossaryUserListByName(name);
+                        listViewGlossary.model = glossaryUserFilteredListModel;
+                        break;
+                    }
+
+                    listViewGlossary.currentIndex = 0;
+                    currentGlossaryItem = listViewGlossary.currentItem.text;
+                }
 
                 Component.onCompleted:
                 {
@@ -224,8 +302,11 @@ Page
 
                 anchors
                 {
-                    fill: parent
-                    topMargin: 50
+                    top: textFieldSearch.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    topMargin: 5
                     bottomMargin: 80
                 }
                 clip: true
