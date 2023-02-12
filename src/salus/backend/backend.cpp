@@ -169,10 +169,10 @@ void Backend::addNewPatient(QString fullName, int age, bool sex,
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb->addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
-
     setPatient(fullName);
 
     emit patientAdded();
+    patientsDb->updateDbToFile();
 }
 
 /**
@@ -191,6 +191,7 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     {
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
         emit recordAdded();
+        patientsDb->updateDbToFile();
         return true;
     }
     return false;
@@ -333,7 +334,7 @@ void Backend::deleteGlossaryUserFormulation(QString data)
  */
 void Backend::deletePatient()
 {
-    if (!patientsDb->patientsList->isEmpty() == true)
+    if (patientsDb->patientsList->isEmpty() == true)
         return;
 
     qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
