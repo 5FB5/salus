@@ -71,3 +71,8 @@ Thumbs.db
 *.dll
 *.exe
 
+# CMake temp files
+CMakeLists.txt.*
+
+# CLion trash
+cards_src/.idea

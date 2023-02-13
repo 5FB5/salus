@@ -1,0 +1,11 @@
+/src/build*
+src/salus/salus_cmake
+*.user
+src/.cmake
+src/CMakeCache.txt
+src/salus/CMakeFiles
+src/qtcsettings.cmake
+src/salus/qtcsettings.cmake
+src/salus/CMakeCache.txt
+src/salus/.cmake
+src/CMakeFiles

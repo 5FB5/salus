@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>frontend/patient/PatientSearchMedicalCardPage.qml</file>
+        <file>frontend/patient/PatientMedicalCardRegistrationPage.qml</file>
+        <file>frontend/patient/PatientMedicalCardMain.qml</file>
+        <file>frontend/patient/PatientMedicalCardDiary.qml</file>
+        <file>frontend/doctor/LoginPage.qml</file>
+        <file>frontend/doctor/DoctorProfileRegistrationPage.qml</file>
+        <file>frontend/doctor/DoctorProfilePage.qml</file>
+        <file>frontend/doctor/DoctorGlossaryDatabase.qml</file>
+        <file>frontend/main.qml</file>
+        <file>frontend/patient/PatientAddRecordPage.qml</file>
+        <file>frontend/patient/PatientEditRecordPage.qml</file>
+        <file>frontend/doctor/components/GlossaryEditPanel.qml</file>
+        <file>frontend/patient/components/GlossaryPasteContextMenu.qml</file>
+        <file>frontend/patient/components/ButtonReturn.qml</file>
+        <file>cards_src/page1.html</file>
+        <file>cards_src/page2.html</file>
+        <file>cards_src/page3.html</file>
+        <file>cards_src/page4.html</file>
+        <file>cards_src/page5.html</file>
+    </qresource>
+</RCC>
