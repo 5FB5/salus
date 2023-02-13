@@ -9,6 +9,7 @@ PatientListModel::PatientListModel(QObject *parent)
 QVariant PatientListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     // FIXME: Implement me!
+    return QVariant();
 }
 
 int PatientListModel::rowCount(const QModelIndex &parent) const

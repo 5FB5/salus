@@ -1048,6 +1048,7 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
         file.open(QIODevice::ReadOnly);
 
         QTextStream input(&file);
+        input.setCodec( "utf-8" );
         QString html = input.readAll();
         file.close();
 
@@ -1162,6 +1163,7 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     file.open(QIODevice::ReadOnly);
 
     QTextStream input(&file);
+    input.setCodec( "utf-8" );
     QString html = input.readAll();
 
     file.close();
@@ -1204,6 +1206,7 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     file2.open(QIODevice::ReadOnly);
 
     QTextStream input2(&file2);
+    input2.setCodec( "utf-8" );
     html = input2.readAll();
 
     file2.close();
@@ -1273,6 +1276,7 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
         file.open(QIODevice::ReadOnly);
 
         QTextStream input(&file);
+        input.setCodec( "utf-8" );
         QString html = input.readAll();
 
         file.close();
@@ -1319,6 +1323,7 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
         file2.open(QIODevice::ReadOnly);
 
         QTextStream input2(&file2);
+        input2.setCodec( "utf-8" );
         html = input2.readAll();
 
         file2.close();
@@ -1376,6 +1381,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     file.open(QIODevice::ReadOnly);
 
     QTextStream input(&file);
+    input.setCodec( "utf-8" );
     QString html = input.readAll();
 
     file.close();
@@ -1384,6 +1390,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     file1.open(QIODevice::ReadOnly);
 
     QTextStream input1(&file1);
+    input1.setCodec( "utf-8" );
     QString html1 = input1.readAll();
 
     file1.close();
@@ -1392,6 +1399,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     file3.open(QIODevice::ReadOnly);
 
     QTextStream input3(&file3);
+    input3.setCodec( "utf-8" );
     QString html3 = input3.readAll();
 
     file3.close();
@@ -1400,6 +1408,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     file4.open(QIODevice::ReadOnly);
 
     QTextStream input4(&file4);
+    input4.setCodec( "utf-8" );
     QString html4 = input4.readAll();
 
     file4.close();
