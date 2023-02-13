@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QString>
+#include <QRegularExpression>
 
 #include "doctor/doctordatabase.h"
 #include "doctor/glossarydatabase.h"
@@ -51,6 +52,11 @@ private:
     QStringListModel *glossaryTreatmentsListModel;
     QStringListModel *glossarySymptomsListModel;
     QStringListModel *glossaryUserListModel;
+
+    QStringListModel *glossaryDiagnosesFilteredListModel;
+    QStringListModel *glossaryTreatmentsFilteredListModel;
+    QStringListModel *glossarySymptomsFilteredListModel;
+    QStringListModel *glossaryUserFilteredListModel;
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -131,6 +137,11 @@ public slots:
     QStringList getGlossaryTreatmentsList();
     QStringList getGlossarySymptomsList();
     QStringList getGlossaryUserList();
+
+    void getGlossaryDiagnosesByName(QString name);
+    void getGlossaryTreatmentsByName(QString name);
+    void getGlossarySymptomsByName(QString name);
+    void getGlossaryUserListByName(QString name);
 
     QString getGlossaryDiagnosisAt(int index);
     QString getGlossaryTreatmentAt(int index);

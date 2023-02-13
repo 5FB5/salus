@@ -22,6 +22,11 @@ private:
     QList<QString> *symptomsList = nullptr;
     QList<QString> *userList = nullptr; // пользовательские формулировки
 
+    QList<QString> defaultDiagnosesList;
+    QList<QString> defaultTreatmentsList;
+    QList<QString> defaultSymptomsList;
+    QList<QString> defaultUserList;
+
     QJsonDocument loadJson();
 
     QJsonArray convertListToJsonArray(const QList<QString> list);
@@ -29,6 +34,7 @@ private:
     QList<QString> convertJsonArrayToList(const QJsonArray array);
 
     void getDataListFromJson();
+    void fillDiagnosesField(QList<QString> *list);
     void fillDocumentDefaultData(QJsonDocument *doc);
     void saveDataToJson();
 

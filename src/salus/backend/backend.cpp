@@ -20,6 +20,11 @@ Backend::Backend(QObject *parent) : QObject(parent)
     glossarySymptomsListModel = new QStringListModel();
     glossaryUserListModel = new QStringListModel();
 
+    glossaryDiagnosesFilteredListModel = new QStringListModel();
+    glossaryTreatmentsFilteredListModel = new QStringListModel();
+    glossarySymptomsFilteredListModel = new QStringListModel();
+    glossaryUserFilteredListModel = new QStringListModel();
+
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
 
@@ -37,6 +42,12 @@ Backend::~Backend()
     delete patientListModel;
     delete patientRecordsListModel;
     delete patientsDb;
+
+    delete glossaryDiagnosesFilteredListModel;
+    delete glossaryTreatmentsFilteredListModel;
+    delete glossarySymptomsFilteredListModel;
+    delete glossaryUserFilteredListModel;
+
     delete glossaryDiagnosesListModel;
     delete glossaryTreatmentsListModel;
     delete glossarySymptomsListModel;
@@ -55,22 +66,19 @@ void Backend::addPropertiesToContext(QQmlContext *context)
     context->setContextProperty("backend", this);
 
     qmlRegisterType<PatientListModel>("salus", 1, 0, "PatientListModel");
-    context->setContextProperty("patientListModel", patientListModel);
 
-    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
+    context->setContextProperty("patientListModel", patientListModel);
     context->setContextProperty("patientRecordsListModel", patientRecordsListModel);
 
-    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("glossaryDiagnosesListModel", glossaryDiagnosesListModel);
-
-    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("glossaryTreatmentsListModel", glossaryTreatmentsListModel);
-
-    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("glossarySymptomsListModel", glossarySymptomsListModel);
-
-    qmlRegisterType<QStringListModel>("salus", 1, 0, "QStringListModel");
     context->setContextProperty("glossaryUserListModel", glossaryUserListModel);
+
+    context->setContextProperty("glossaryDiagnosesFilteredListModel", glossaryDiagnosesFilteredListModel);
+    context->setContextProperty("glossaryTreatmentsFilteredListModel", glossaryTreatmentsFilteredListModel);
+    context->setContextProperty("glossarySymptomsFilteredListModel", glossarySymptomsFilteredListModel);
+    context->setContextProperty("glossaryUserFilteredListModel", glossaryUserFilteredListModel);
 }
 
 void Backend::setPatient(QString fullName)
@@ -169,10 +177,10 @@ void Backend::addNewPatient(QString fullName, int age, bool sex,
 {
     qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb->addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
-
     setPatient(fullName);
 
     emit patientAdded();
+    patientsDb->updateDbToFile();
 }
 
 /**
@@ -191,6 +199,7 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     {
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
         emit recordAdded();
+        patientsDb->updateDbToFile();
         return true;
     }
     return false;
@@ -333,7 +342,7 @@ void Backend::deleteGlossaryUserFormulation(QString data)
  */
 void Backend::deletePatient()
 {
-    if (!patientsDb->patientsList->isEmpty() == true)
+    if (patientsDb->patientsList->isEmpty() == true)
         return;
 
     qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
@@ -488,6 +497,38 @@ QStringList Backend::getGlossarySymptomsList()
 QStringList Backend::getGlossaryUserList()
 {
     return glossaryDb->getUserListModel();
+}
+
+void Backend::getGlossaryDiagnosesByName(QString name)
+{
+    QStringList list = getGlossaryDiagnosesList();
+    QStringList filteredList = list.filter(QRegularExpression(name, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption));
+
+    glossaryDiagnosesFilteredListModel->setStringList(filteredList);
+}
+
+void Backend::getGlossaryTreatmentsByName(QString name)
+{
+    QStringList list = getGlossaryTreatmentsList();
+    QStringList filteredList = list.filter(QRegularExpression(name, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption));
+
+    glossaryTreatmentsFilteredListModel->setStringList(filteredList);
+}
+
+void Backend::getGlossarySymptomsByName(QString name)
+{
+    QStringList list = getGlossarySymptomsList();
+    QStringList filteredList = list.filter(QRegularExpression(name, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption));
+
+    glossarySymptomsFilteredListModel->setStringList(filteredList);
+}
+
+void Backend::getGlossaryUserListByName(QString name)
+{
+    QStringList list = getGlossaryUserList();
+    QStringList filteredList = list.filter(QRegularExpression(name, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption));
+
+    glossaryUserFilteredListModel->setStringList(filteredList);
 }
 
 QString Backend::getRecordAnamnesis(QString recordDate)
