@@ -1243,7 +1243,7 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     for (const auto &path : paths)
     {
         writer.AppendPDFPagesFromPDF(path.toStdString(), PDFPageRange());
-        std::remove(path.toStdString().c_str());
+        QFile::remove(path.toStdString().c_str());
     }
 
     writer.EndPDF();
