@@ -1493,7 +1493,7 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     for (const auto &path : paths)
     {
         writer.AppendPDFPagesFromPDF(path, PDFPageRange());
-        std::remove(path.c_str());
+        QFile::remove(path.c_str());
     }
 
     writer.EndPDF();
