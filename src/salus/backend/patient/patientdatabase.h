@@ -20,8 +20,9 @@
 #include <QJsonObject>
 
 #include "patient.h"
-#include "patientcardrecord.h"
 #include "PDFWriter/PDFWriter.h"
+
+using Record_t = Patient::Record_t;
 
 class PatientDataBase : public QObject
 {
@@ -93,7 +94,6 @@ public:
     QString getOccupation(QString birthDate);
 
     bool getSex(QString birthDate);
-
     int getAge(QString birthDate);
 
     QStringList getRecordsList(QString birthDate);
