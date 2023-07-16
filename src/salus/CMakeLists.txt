@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(salus VERSION 0.1 LANGUAGES CXX)
+project(salus VERSION 1.0.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -25,6 +25,16 @@ qt5_add_resources(RESOURCES qml.qrc)
 set(PROJECT_SOURCES main.cpp)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${RESOURCES})
+
+if(WIN32)
+    set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+        LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
+        LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+        LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+        LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+    )
+endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC backend)
 
