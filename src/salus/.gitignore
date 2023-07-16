@@ -74,5 +74,9 @@ Thumbs.db
 # CMake temp files
 CMakeLists.txt.*
 
+# Build repository
+cmake-build-debug/
+
 # CLion trash
 cards_src/.idea
+.idea
