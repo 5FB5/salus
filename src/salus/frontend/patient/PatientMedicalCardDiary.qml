@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.1
 import salus 1.0
 
 import "components"
@@ -45,7 +46,7 @@ Page
 
         recordsListView.currentIndex = 0;
 
-        currentRecord = recordsListView.currentItem == null ? "" : recordsListView.currentItem.text
+        currentRecord = recordsListView.currentItem == null ? "" : recordsListView.currentItem.text;
     }
 
     Dialog
@@ -220,6 +221,7 @@ Page
         delegate: Text
         {
             anchors.horizontalCenter: parent.horizontalCenter
+            verticalAlignment: Qt.AlignVCenter
 
             font.pointSize: 15
             height: 40
