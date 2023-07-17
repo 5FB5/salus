@@ -33,7 +33,7 @@ void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
     }
     else {
         if (isProfileExists(birthDate) == true) {
-            qDebug() << "Salus: [PatienDataBase::addNewPatient()] - Patient " << fullName << " already exists. Selecting this profile...\n";
+            qDebug() << "[PatienDataBase::addNewPatient()] - Patient " << fullName << " already exists. Selecting this profile...\n";
             return;
         }
     }
@@ -50,7 +50,7 @@ void PatientDataBase::addNewPatient(QString fullName, int age, bool sex,
 
     patientsList->append(newPatient);
 
-    qDebug() << "Salus: [PatientDataBase::addNewPatient()] - Saving new profile...\n";
+    qDebug() << "[PatientDataBase::addNewPatient()] - Saving new profile...\n";
     saveProfileToJson(newPatient);
 }
 
@@ -159,7 +159,7 @@ void PatientDataBase::updateDbToFile()
        jsonFile.close();
     }
 
-    qDebug() << "Salus: [PatienDataBase::updateDbToFile()] - Database updated\n";
+    qDebug() << "[PatienDataBase::updateDbToFile()] - Database updated\n";
 }
 
 /**
@@ -893,7 +893,6 @@ void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
     }
 }
 
-// FIXME: Старый код генерации. Переписать на новый. См. код выше
 /**
  * @brief Заполнение строк с жалобами дневника мед. карты
  * @todo Количество добавляемых символов ограниченно. Исправить!
@@ -902,115 +901,82 @@ void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
  */
 void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
 {
-    // Если длина строки входит в количество символов, вмещаемых первой строкой, то заполняем только её, остальные делаем пустыми
-    if (recIt.complaints.length() <= 101)
-    {
-        if (recIt.complaints.length() > 0)
-        {
-            // FIXME: Скорее всего проблема в самом шаблоне и нужно сделать перевёрстку.
-            // Иначе отсутствие символов ломает карту
-            html->replace("МЕТКА_ЖАЛОБЫ1", recIt.complaints);
-        }
-        else
-            html->replace("МЕТКА_ЖАЛОБЫ1", ".");
+    QString complaints = recIt.complaints;
+    QString array[5]; // Массив для поля "Жалобы"
 
-        html->replace("МЕТКА_ЖАЛОБЫ2", ".");
-        html->replace("МЕТКА_ЖАЛОБЫ3", ".");
-        html->replace("МЕТКА_ЖАЛОБЫ4", ".");
-        html->replace("МЕТКА_ЖАЛОБЫ5", ".");
+    // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
+    // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
+    if (complaints.length() <= CARD_FIRST_FIELD_CHAR_COUNT + 9)
+    {
+        array[0] = complaints;
+        array[1] = ".";
+        array[2] = ".";
+        array[3] = ".";
+        array[4] = ".";
     }
     else
     {
-        QString array[5];
-        QString complaint = recIt.complaints; // Копируем, ибо иначе нельзя дойти до remove метода
+        // Расставляем спец. символы со следующего символа строки
+        int counter = 0;
+        complaints.insert(CARD_FIRST_FIELD_CHAR_COUNT + 9, '$');
 
-        // Копируем в первую строку
-        for (int i = 0; i < 101; i++)
+        for (int i = CARD_FIRST_FIELD_CHAR_COUNT + 1 ; i < complaints.length(); i++)
         {
-            array[0].append(complaint.at(i));
-        }
-        complaint.remove(0, 101);
-
-        // Проверяем строку, что после удаления символов нужно переносить остаток на след. строки карты
-        // FIXME: Ну плохо же, ну очень плохо, Валера. Хотя, на самом деле, я даже не совсем знаю, насколько плохо... но работает же
-
-        // Если размер не подразумевает перенос, то просто в следующую строку копируем остатки
-        if (complaint.length() < 125)
-        {
-            array[1] = complaint;
-            array[2] = ".";
-            array[3] = ".";
-            array[4] = ".";
-        }
-        else
-        {
-            // То же самое для второй строки
-            for (int i = 0; i < 125; i++)
+            counter++;
+            if (counter == CARD_FIELD_CHAR_COUNT + 47)
             {
-                array[1].append(complaint.at(i));
+                counter = 0;
+                complaints.insert(i, '$');
             }
-            complaint.remove(0, 125);
+        }
 
-            // Переносим на следующую строку, если размер текста не превышает длину след. строки
-            if (complaint.length() <= 112)
+        // Заполняем элемент массива, пока не дошли до спец. символа
+        for (int i = 0; i < 5; i++)
+        {
+            int counter = 0;
+            QString chars;
+
+            for (auto &c : complaints)
             {
-                array[2] = complaint;
-                array[3] = ".";
-                array[4] = ".";
-            }
-            else
-            {
-                // То же самое для третьей строки (112)
-                for (int i = 0; i < 112; i++)
+                chars += c;
+                if (c == "$")
                 {
-                    array[2].append(complaint.at(i));
-                }
-                complaint.remove(0, 112);
-
-                if (complaint.length() < 112)
-                {
-                    array[3] = complaint;
-                    array[4] = ".";
-                }
-
-                else
-                {
-                    // То же самое для четвёртой строки
-                    for (int i = 0; i < 112; i++)
-                    {
-                        array[3].append(complaint.at(i));
-                    }
-                    complaint.remove(0, 112);
-
-                    if (complaint.length() < 112)
-                    {
-                        array[4] = complaint;
-                    }
-                    else
-                    {
-                        // То же самое для пятой строки
-                        for (int i = 0; i < 112; i++)
-                        {
-                            array[4].append(complaint.at(i));
-                        }
-                        complaint.remove(0, 112);
-
-                        if (complaint.length() < 112)
-                        {
-                            array[4] = complaint;
-                        }
-                    }
+                    array[i] = chars;
+                    complaints.remove(0, chars.length());
+                    break;
                 }
             }
         }
-        html->replace("МЕТКА_ЖАЛОБЫ1", array[0]);
-        html->replace("МЕТКА_ЖАЛОБЫ2", array[1]);
-        html->replace("МЕТКА_ЖАЛОБЫ3", array[2]);
-        html->replace("МЕТКА_ЖАЛОБЫ4", array[3]);
-        html->replace("МЕТКА_ЖАЛОБЫ5", array[4]);
+
+        // Проверяем, остались ли ещё символы и заполняем остаток в пустой элемент массива
+        if (complaints.isEmpty() == false)
+        {
+            for (auto &it : array)
+            {
+                if (it.isEmpty())
+                {
+                    it = complaints;
+                    break;
+                }
+            }
+        }
     }
+    // Проверяем наличие в массиве спец. символе а также его пустоту для замены иным символом, чтобы не слетела вёрстка
+    for (auto &it : array)
+    {
+        it.remove("$");
+        if (it == "")
+            it = ".";
+    }
+
+    html->replace("МЕТКА_ЖАЛОБЫ1", array[0]);
+    html->replace("МЕТКА_ЖАЛОБЫ2", array[1]);
+    html->replace("МЕТКА_ЖАЛОБЫ3", array[2]);
+    html->replace("МЕТКА_ЖАЛОБЫ4", array[3]);
+    html->replace("МЕТКА_ЖАЛОБЫ5", array[4]);
 }
 
+// FIXME: Вынести в отдельный поток
 void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumber, bool fillPatientData)
 {
     if (fillPatientData == true)
@@ -1156,6 +1122,7 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
 
 }
 
+// FIXME: Вынести в отдельный поток
 void PatientDataBase::generateDiary(Record_t record, QString path)
 {
     std::vector<QString> paths;
@@ -1250,6 +1217,7 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     writer.EndPDF();
 }
 
+// FIXME: Вынести в отдельный поток
 /**
  * @brief Заполнение данных дневника лечения
  * @param birthDate
@@ -1356,6 +1324,7 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
     }
 }
 
+// FIXME: Вынести в отдельный поток
 void PatientDataBase::generateFullCard(QString birthDate, QString path)
 {
     QString patientName;
@@ -1536,7 +1505,7 @@ void PatientDataBase::saveProfileToJson(Patient patientProfile)
     jsonFile.write(jsonDocument.toJson());
     jsonFile.close();
 
-    qDebug() << "\tSalus: [PatienDataBase::saveProfileToJson()] - Profile saved\n";
+    qDebug() << "\t[PatienDataBase::saveProfileToJson()] - Profile saved\n";
 }
 
 bool PatientDataBase::isProfileExists(QString birthDate)

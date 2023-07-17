@@ -82,7 +82,8 @@ public:
     QString getCurrentPatientBirthDate();
     QString getCurrentPatientPhoneNumber();
     QString getCurrentPatientAddress();
-    QString getCurrentPatientOccupation();    
+    QString getCurrentPatientOccupation();
+
     int getCurrentPatientAge();
 
     bool getCurrentPatientSex();
