@@ -181,7 +181,8 @@ Page
         text: "Дневник лечения"
     }
 
-    Label {
+    Label
+    {
         id: labelRecords
 
         anchors
