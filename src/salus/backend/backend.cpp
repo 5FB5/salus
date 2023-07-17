@@ -27,6 +27,7 @@ Backend::Backend(QObject *parent) : QObject(parent)
 
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
+    sortPatientRecordListModel();
 
     glossaryDiagnosesListModel->setStringList(getGlossaryDiagnosesList());
     glossaryTreatmentsListModel->setStringList(getGlossaryTreatmentsList());
@@ -102,6 +103,7 @@ void Backend::setPatient(QString fullName)
                 qDebug() << "[Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
                 currentPatientBirthDate = p.birthDate;
                 patientRecordsListModel->setStringList(getCurrentPatientRecords());
+                sortPatientRecordListModel();
                 qDebug() << "[Backend::setPatient()] - Birth date selected!\n";
                 return;
             }
@@ -158,6 +160,7 @@ void Backend::deleteRecord(QString recordDate)
     patientsDb->deleteRecord(currentPatientBirthDate, recordDate);
     patientsDb->updateDbToFile();
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
+    sortPatientRecordListModel();
     emit recordDeleted();
 }
 
@@ -198,6 +201,7 @@ bool Backend::addNewRecord(QString date, QString anamnesis, QString complaints, 
     if (patientsDb->addNewRecord(currentPatientBirthDate, date, anamnesis, complaints, diseases, diagnosis, treatment, treatmentResult) == true)
     {
         patientRecordsListModel->setStringList(getCurrentPatientRecords());
+        sortPatientRecordListModel();
         emit recordAdded();
         patientsDb->updateDbToFile();
         return true;
@@ -388,7 +392,24 @@ void Backend::sortPatientRecordListModel()
     if (patientRecordsListModel == nullptr)
         return;
 
-    patientRecordsListModel->sort(0);
+    QList<QDate> dates;
+
+    for (const auto &it : patientRecordsListModel->stringList())
+    {
+        QDate currentDate = QDate::fromString(it, "dd.MM.yyyy");
+        dates.push_back(currentDate);
+    }
+
+    std::sort(std::begin(dates), std::end(dates));
+
+    QStringList sortedList;
+
+    for (const auto &it : dates)
+    {
+        sortedList.push_back(it.toString("dd.MM.yyyy"));
+    }
+
+    patientRecordsListModel->setStringList(sortedList);
 }
 
 QString Backend::getCurrentDoctorFullName()
