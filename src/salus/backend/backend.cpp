@@ -36,7 +36,7 @@ Backend::Backend(QObject *parent) : QObject(parent)
 
 Backend::~Backend()
 {
-    qDebug() << "Salus: [Backend::~Backend] - updateDbToFile()\n";
+    qDebug() << "[Backend::~Backend] - updateDbToFile()\n";
     patientsDb->updateDbToFile();
 
     delete patientListModel;
@@ -86,7 +86,7 @@ void Backend::setPatient(QString fullName)
     if (patientsDb->patientsList->isEmpty() == true)
         return;
 
-    qDebug() << "Salus: [Backend::setPatient()] - Set patient " << fullName << "... \n";
+    qDebug() << "[Backend::setPatient()] - Set patient " << fullName << "... \n";
 
     foreach(Patient p, *patientsDb->patientsList)
     {
@@ -94,20 +94,20 @@ void Backend::setPatient(QString fullName)
         {
             if (p.birthDate == currentPatientBirthDate)
             {
-                qDebug() << "Salus: [Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
+                qDebug() << "[Backend::setPatient()] - Patient birth date is the same with current! Return...\n";
                 return;
             }
             else
             {
-                qDebug() << "Salus: [Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
+                qDebug() << "[Backend::setPatient()] - Select birth date " << p.birthDate << " of " << fullName << "...\n";
                 currentPatientBirthDate = p.birthDate;
                 patientRecordsListModel->setStringList(getCurrentPatientRecords());
-                qDebug() << "Salus: [Backend::setPatient()] - Birth date selected!\n";
+                qDebug() << "[Backend::setPatient()] - Birth date selected!\n";
                 return;
             }
         }
     }
-    qDebug() << "Salus: [Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
+    qDebug() << "[Backend::setPatient()] - Current patient's birth date " << fullName << " is " << currentPatientBirthDate << "\n";
 }
 
 /**
@@ -175,7 +175,7 @@ void Backend::addNewPatient(QString fullName, int age, bool sex,
                             QString birthDate, QString address,
                             QString phoneNumber, QString occupation)
 {
-    qDebug() << "Salus: [Backend::addNewPatient()] - Adding new patient to database..." << "\n";
+    qDebug() << "[Backend::addNewPatient()] - Adding new patient to database..." << "\n";
     patientsDb->addNewPatient(fullName, age, sex, birthDate, address, phoneNumber,  occupation);
     setPatient(fullName);
 
@@ -345,11 +345,11 @@ void Backend::deletePatient()
     if (patientsDb->patientsList->isEmpty() == true)
         return;
 
-    qDebug() << "Salus: [Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
+    qDebug() << "[Backend::deletePatient()] - Deleting patient " << getCurrentDoctorFullName() << "...\n";
     patientsDb->deletePatient(currentPatientBirthDate);
     patientsDb->updateDbToFile();
     emit patientDeleted();
-    qDebug() << "Salus: [Backend::deletePatient()] - Patient deleted from DB\n";
+    qDebug() << "[Backend::deletePatient()] - Patient deleted from DB\n";
 }
 
 void Backend::setCurrentDoctorInn(quint16 inn)
@@ -359,7 +359,7 @@ void Backend::setCurrentDoctorInn(quint16 inn)
 
 bool Backend::getIsDoctorDbExists()
 {
-    qDebug() << "Salus: [Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
+    qDebug() << "[Backend::getIsDoctorDbExists()] - returned " << doctorDb.doctorsList->isEmpty() << "\n";
     return doctorDb.doctorsList->isEmpty();
 }
 
@@ -393,49 +393,49 @@ void Backend::sortPatientRecordListModel()
 
 QString Backend::getCurrentDoctorFullName()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorFullName()] - returned " << doctorDb.getFullName(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorFullName()] - returned " << doctorDb.getFullName(currentDoctorInn) << "\n";
     return doctorDb.getFullName(currentDoctorInn);
 }
 
 QString Backend::getCurrentDoctorSpecialization()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorSpecialization()] - returned " << doctorDb.getSpecialization(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorSpecialization()] - returned " << doctorDb.getSpecialization(currentDoctorInn) << "\n";
     return doctorDb.getSpecialization(currentDoctorInn);
 }
 
 QString Backend::getCurrentDoctorInstitutionName()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorInsitutionName()] - returned " << doctorDb.getInstitutionName(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorInsitutionName()] - returned " << doctorDb.getInstitutionName(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionName(currentDoctorInn);
 }
 
 quint16 Backend::getCurrentDoctorInstitutionCode()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorInstitutionCode()] - returned " << doctorDb.getInstitutionCode(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorInstitutionCode()] - returned " << doctorDb.getInstitutionCode(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionCode(currentDoctorInn);
 }
 
 QString Backend::getCurrentDoctorInstitutionAddress()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorInsitutionAddress()] - returned " << doctorDb.getInstitutionAddress(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorInsitutionAddress()] - returned " << doctorDb.getInstitutionAddress(currentDoctorInn) << "\n";
     return doctorDb.getInstitutionAddress(currentDoctorInn);
 }
 
 quint16 Backend::getCurrentDoctorInn()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorInn()] - returned " << currentDoctorInn << "\n";
+    qDebug() << "[Backend::getCurrentDoctorInn()] - returned " << currentDoctorInn << "\n";
     return currentDoctorInn;
 }
 
 QString Backend::getCurrentDoctorLicenseInfo()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorLicenseInfo()] - returned " << doctorDb.getLicenseInfo(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorLicenseInfo()] - returned " << doctorDb.getLicenseInfo(currentDoctorInn) << "\n";
     return doctorDb.getLicenseInfo(currentDoctorInn);
 }
 
 QString Backend::getCurrentDoctorInitials()
 {
-    qDebug() << "Salus: [Backend::getCurrentDoctorInitials()] - returned " << doctorDb.getProfileInitials(currentDoctorInn) << "\n";
+    qDebug() << "[Backend::getCurrentDoctorInitials()] - returned " << doctorDb.getProfileInitials(currentDoctorInn) << "\n";
     return doctorDb.getProfileInitials(currentDoctorInn);
 }
 
