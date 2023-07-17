@@ -604,6 +604,12 @@ void PatientDataBase::getPatientsListFromJson()
 
         patientsList->append(currentProfile);
     }
+
+    // Сортировка по фамилии
+    std::sort(patientsList->begin(), patientsList->end(), [](const Patient &left, const Patient &right)
+    {
+        return left.fullName.compare(right.fullName) < 0 ? true : false;
+    });
 }
 
 /**
