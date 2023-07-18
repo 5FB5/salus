@@ -1050,7 +1050,8 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
             html.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
 
-            html.replace("МЕТКА_СОСТОЯНИЕ", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ2", "");
 
             html.replace("МЕТКА_ПРИКУС", "");
 
@@ -1111,6 +1112,9 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_ОБЪЕКТИВНО6", ".");
             html.replace("МЕТКА_ОБЪЕКТИВНО7", ".");
 
+            html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ2", "");
+
             html.replace("МЕТКА_РЕНТГЕН1", ".");
             html.replace("МЕТКА_РЕНТГЕН2", ".");
             html.replace("МЕТКА_РЕНТГЕН3", ".");
@@ -1157,6 +1161,9 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     fillComplaints(record, &html);
     fillAnamnesis(record, &html);
     fillExternalInspection(record, &html);
+
+    html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+    html.replace("МЕТКА_СОСТОЯНИЕ2", "");
 
     html.replace("МЕТКА_РЕНТГЕН1", ".");
     html.replace("МЕТКА_РЕНТГЕН2", ".");
@@ -1419,7 +1426,8 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     html1.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
     html1.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
 
-    html1.replace("МЕТКА_СОСТОЯНИЕ", "");
+    html1.replace("МЕТКА_СОСТОЯНИЕ1", "");
+    html1.replace("МЕТКА_СОСТОЯНИЕ2", "");
 
     html1.replace("МЕТКА_ПРИКУС", "");
 
