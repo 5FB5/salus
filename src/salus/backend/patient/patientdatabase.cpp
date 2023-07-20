@@ -237,6 +237,11 @@ bool PatientDataBase::deletePatient(QString birthDate)
     return false;
 }
 
+void PatientDataBase::setCurrentDoctorInitials(QString initials)
+{
+    currentDoctorInitials = initials;
+}
+
 QString PatientDataBase::getFullName(QString birthDate)
 {
     if (patientsList->isEmpty() == true)
@@ -1080,13 +1085,13 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
             html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-            html.replace("МЕТКА_ВРАЧ", ".");
+            html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
             html.replace("МЕТКА_ЗАВЕДУЩ", ".");
             break;
         }
         case 4:
         {
-            html.replace("МЕТКА_ДАТА", "");
+            html.replace("МЕТКА_ДАТА", ".");
 
             html.replace("МЕТКА_ЖАЛОБЫ1", ".");
             html.replace("МЕТКА_ЖАЛОБЫ2", ".");
@@ -1190,14 +1195,13 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     fillTreatment(record, &html);
     fillTreatmentResult(record, &html);
 
-    // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
     html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-    html.replace("МЕТКА_ВРАЧ", ".");
+    html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
     html.replace("МЕТКА_ЗАВЕДУЩ", ".");
 
     webView->setHtml(html);
@@ -1308,14 +1312,13 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
         fillTreatment(recIt, &html);
         fillTreatmentResult(recIt, &html);
 
-        // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
         html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-        html.replace("МЕТКА_ВРАЧ", ".");
+        html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
         html.replace("МЕТКА_ЗАВЕДУЩ", ".");
 
         webView->setHtml(html);

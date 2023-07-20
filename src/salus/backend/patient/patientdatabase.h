@@ -57,13 +57,14 @@ private:
     QWebEngineView *webView;
 
     QJsonDocument loadJson();
-
     QJsonArray convertListToJsonArray(const QList<QString> &list);
     QJsonArray convertRecordsToJsonArray(const QList<Record_t> &records);
 
     QList<Record_t> convertJsonRecordsToList(const QJsonArray recordsArray);
 
     bool isProfileExists(QString birthDate);
+
+    QString currentDoctorInitials;
 
 public:
     explicit PatientDataBase(QObject *parent = nullptr);
@@ -74,18 +75,18 @@ public:
     void addNewPatient(QString fullName, int age, bool sex,
                        QString birthDate, QString address,
                        QString phoneNumber, QString occupation);
-
     bool addNewRecord(QString birthDate, QString recordDate, QString anamnesis, QString complaints,
                       QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
-
-    void reloadDatabase();
-    void updateDbToFile();
     void updateRecord(QString birthDate, QString recordDate, QString anamnesis,
                       QString complaints, QString diseases, QString diagnosis, QString treatment, QString treatmentResult);
 
-    void deleteRecord(QString birthDate, QString recordDate);
+    void reloadDatabase();
+    void updateDbToFile();
 
+    void deleteRecord(QString birthDate, QString recordDate);
     bool deletePatient(QString birthDate);
+
+    void setCurrentDoctorInitials(QString initials);
 
     QString getFullName(QString birthDate);
     QString getBirthDate(QString birthDate);

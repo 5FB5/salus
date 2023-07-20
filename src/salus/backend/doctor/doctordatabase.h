@@ -20,6 +20,19 @@ class DoctorDataBase : public QObject
 {
     Q_OBJECT
 
+private:
+    void getDoctorsListFromJson();
+
+    QString generateInitials(QString fullName);
+    QJsonDocument loadJson();
+    QJsonArray convertListToJsonArray(const QList<QString> &list);
+
+    /*! Возвращает true, если профиль существует в файле doctors.json */
+    bool isProfileExists(quint16 inn);
+
+    /*! Сохраняет профиль в файл doctors.json */
+    void saveProfileToJson(Doctor doctorProfile);
+
 public:
     explicit DoctorDataBase(QObject *parent = nullptr);
 
@@ -40,33 +53,10 @@ public:
     quint16 getInn(); // FIXME: works only for 1 profile
 
 
-    //QString findDiagnosis(QJsonArray diagnosesData);
-
-
 //    /*! Update profile's data via JSON's key */
 //    void updateProfile(QString key, QString value);
 
-//    /*! Add custom diagnosis to doctor's database */
-//    void addDiagnosis(QString value);
 
-//    /*! Add custom treatment to doctor's database */
-//    void addTreatment(QString value);
-
-// TODO: void editTreatments...
-// TODO: void editDiagnosis(QJsonArray diagnosesData, QString key, QString value);
-
-private:
-    void getDoctorsListFromJson();
-
-    QJsonDocument loadJson();
-
-    QJsonArray convertListToJsonArray(const QList<QString> &list);
-
-    /*! Возвращает true, если профиль существует в файле doctors.json */
-    bool isProfileExists(quint16 inn);
-
-    /*! Сохраняет профиль в файл doctors.json */
-    void saveProfileToJson(Doctor doctorProfile);
 
 };
 

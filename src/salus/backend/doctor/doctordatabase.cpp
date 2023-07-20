@@ -22,11 +22,6 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
 
     // Структура профиля в doctors.json. Представлен, как массив объектов со внутренними полями типа "ключ->значение"
     //    [
-    //        {
-    //            "diagnoses": [                                            // Набор собственных наименований диагнозов для подстановки в карту пациента
-    //                "Кариес",
-    //                "Пульпит"
-    //            ],
     //            "fullname": "Иванов Иван Иванович",
     //            "inn": "0000000",
     //            "institutionAddress": "ул. Строителей, д 25, кв. 12",     // Адрес организации
@@ -34,9 +29,7 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
     //            "institutionName": "ИП Иванов И.И.",                      // Наименование организации
     //            "licenseInfo": "Лицензия №256",                           // Наименование лицензии
     //            "specialization": "Стоматолог"                            // Наименование специализации врача
-    //            "treatments": [                                           // Набор собственных наименований способов лечения
-    //                "Антисептик"
-    //            ]
+    //            "initials": "Иванов И.И."                                 // Инициалы врача
     //        },
     //          ... следующий профиль
     //    ]
@@ -47,7 +40,7 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
     {
         if (isProfileExists(inn) == true)
         {
-            qDebug() << "Salus: [DoctorDataBase.h] createNewProfile() - Profile " << fullName << " already exists. Selecting this profile...\n";
+            qDebug() << "[DoctorDataBase.h] createNewProfile() - Profile " << fullName << " already exists. Selecting this profile...\n";
             return;
         }
     }
@@ -56,6 +49,7 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
 
     // Заполняем данными из введённых полей
     newDoctor.fullName = fullName;
+    newDoctor.initials = generateInitials(newDoctor.fullName);
     newDoctor.specialization = specialization;
     newDoctor.institutionName = institutionName;
     newDoctor.institutionCode = institutionCode;
@@ -65,8 +59,19 @@ void DoctorDataBase::createNewProfile(QString fullName, QString specialization,
 
     doctorsList->append(newDoctor);
 
-    qDebug() << "Salus: [DoctorDataBase.h] createNewProfile() - Saving new profile " << fullName << " ...\n";
+    qDebug() << "[DoctorDataBase.h] createNewProfile() - Saving new profile " << fullName << " ...\n";
     saveProfileToJson(newDoctor);
+}
+
+/**
+ * @brief Генерирует инициалы из ФИО в форме "Иванов И.И."
+ * @param fullName
+ * @return
+ */
+QString DoctorDataBase::generateInitials(QString fullName)
+{
+    QStringList subStrings = fullName.split(" ");
+    return subStrings[0] + " " + subStrings[1].at(0) + ". " + subStrings[2].at(0) + ".";
 }
 
 QString DoctorDataBase::getFullName(quint16 inn)
@@ -160,8 +165,13 @@ QString DoctorDataBase::getLicenseInfo(quint16 inn)
 
 QString DoctorDataBase::getProfileInitials(quint16 inn)
 {
-    //TODO: get initials from full name
-    return nullptr;
+    for (const auto &it : *doctorsList)
+    {
+        if (it.inn == inn && it.initials != "")
+            return it.initials;
+    }
+
+    return "";
 }
 
 /**
@@ -207,68 +217,6 @@ QJsonArray DoctorDataBase::convertListToJsonArray(const QList<QString> &list)
     return array;
 }
 
-//void DoctorDataBase::addDiagnosis(QString value)
-//{
-//    QJsonDocument doc = loadJson();
-//    QJsonArray array = doc.array(), currentObjDiagnoses;
-//    QJsonObject currentObj;
-
-//    for (int i = 0; i < array.size(); ++i) {
-//        for (auto j = array.cbegin(); j < array.cend(); ++j) {
-//            currentObj = j->toObject();
-
-//            if (currentObj["fullname"] == this->fullName) {
-//                currentObjDiagnoses = currentObj["diagnoses"].toArray();
-
-//                if (isArrayItemExists(currentObjDiagnoses, value) == false) {
-//                    currentObjDiagnoses.append(value);
-//                    currentObj["diagnoses"] = currentObjDiagnoses;
-
-//                    array.replace(i, currentObj);
-
-//                    qDebug() << "Salus: [DoctorDataBase.h] addDiagnosis() - Saving new diagnosis...\n";
-//                    saveProfileToJson(array);
-//                    break;
-//                }
-//                else {
-//                    qDebug() << "Salus: [DoctorDataBase.h] addDiagnosis() - Diagnosis " << value << " already exists\n";
-//                }
-//            }
-//        }
-//    }
-//}
-
-//void DoctorDataBase::addTreatment(QString value)
-//{
-//    QJsonDocument doc = loadJson();
-//    QJsonArray array = doc.array(), currentObjTreatments;
-//    QJsonObject currentObj;
-
-//    for (int i = 0; i < array.size(); ++i) {
-//        for (auto j = array.cbegin(); j < array.cend(); ++j) {
-//            currentObj = j->toObject();
-
-//            if (currentObj["fullname"] == this->fullName) {
-//                currentObjTreatments = currentObj["treatments"].toArray();
-
-//                if (isArrayItemExists(currentObjTreatments, value) == false) {
-//                    currentObjTreatments.append(value);
-//                    currentObj["treatments"] = currentObjTreatments;
-
-//                    array.replace(i, currentObj);
-
-//                    qDebug() << "Salus: [DoctorDataBase.h] addTreatments() - Saving new treatment...\n";
-//                    saveProfileToJson(array);
-//                    break;
-//                }
-//                else {
-//                    qDebug() << "Salus: [DoctorDataBase.h] addTreatments() - Treatment " << value << " already exists\n";
-//                }
-//            }
-//        }
-//    }
-//}
-
 /*!
  * @brief Загружает профили врачей
  */
@@ -297,27 +245,11 @@ void DoctorDataBase::getDoctorsListFromJson()
         currentProfile.institutionAddress = currentObj["institutionAddress"].toString();
         currentProfile.licenseInfo = currentObj["licenseInfo"].toString();
         currentProfile.inn = currentObj["inn"].toInt();
-
-        currentObjDiagnoses = currentObj["diagnoses"].toArray();
-        currentObjTreatments = currentObj["treatments"].toArray();
-
-        foreach(QJsonValue v, currentObjDiagnoses) {
-            currentProfile.diagnoses.append(v.toString());
-        }
-
-        foreach(QJsonValue v, currentObjTreatments) {
-            currentProfile.treatments.append(v.toString());
-        }
+        currentProfile.initials = currentObj["initials"].toString();
 
         doctorsList->append(currentProfile);
     }
 }
-
-// TODO: make diagnoses array editable
-//void DoctorDataBase::editDiagnosis(QJsonArray diagnosesData, QString value)
-//{
-
-//}
 
 /*!
  * @brief Сохраняет профиль врача в doctors.json
@@ -326,11 +258,8 @@ void DoctorDataBase::getDoctorsListFromJson()
 void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
 {
     QJsonDocument jsonDocument = loadJson();
-    QJsonArray jsonArray = jsonDocument.array(), doctorProfileDiagnoses, doctorProfileTreatments;
+    QJsonArray jsonArray = jsonDocument.array();
     QJsonObject DoctorProfileObj;
-
-    doctorProfileDiagnoses = convertListToJsonArray(doctorProfile.diagnoses);
-    doctorProfileDiagnoses = convertListToJsonArray(doctorProfile.treatments);
 
     DoctorProfileObj.insert("fullname", doctorProfile.fullName);
     DoctorProfileObj.insert("specialization", doctorProfile.specialization);
@@ -339,9 +268,7 @@ void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
     DoctorProfileObj.insert("institutionAddress", doctorProfile.institutionAddress);
     DoctorProfileObj.insert("inn", doctorProfile.inn);
     DoctorProfileObj.insert("licenseInfo", doctorProfile.licenseInfo);
-
-    DoctorProfileObj.insert("diagnoses", doctorProfileDiagnoses);
-    DoctorProfileObj.insert("treatments", doctorProfileTreatments);
+    DoctorProfileObj.insert("initials", doctorProfile.initials);
 
     jsonArray.append(DoctorProfileObj);
 
@@ -352,128 +279,8 @@ void DoctorDataBase::saveProfileToJson(Doctor doctorProfile)
     jsonFile.write(jsonDocument.toJson());
     jsonFile.close();
 
-    qDebug() << "\tSalus: [DoctorDataBase.h] saveProfileToJson() - Profile saved\n";
+    qDebug() << "\t[DoctorDataBase.h] saveProfileToJson() - Profile saved\n";
 }
-
-//QJsonArray DoctorDataBase::getArray(QString profileName, QString key)
-//{
-//    QJsonDocument doc = loadJson();
-//    QJsonArray array = doc.array(), objArray;
-//    QJsonObject obj;
-
-//    if (isProfileExists(profileName) == true) {
-//        foreach(const QJsonValue &v, array) {
-//            obj = v.toObject();
-
-//            if (obj["fullname"] == profileName) {
-//                objArray = obj[key].toArray();
-//                //qDebug() << "Salus: [DoctorDataBase.h] getArray() - Array '" << key << "' from profile '" << profileName << "' is " << objArray << "\n";
-//            }
-//        }
-//    }
-//    else {
-//        qDebug() << "Salus: [DoctorDataBase.h] getArray() - Can't get an array from non-existing profile " << profileName << "\n";
-//    }
-
-//    return objArray;
-//}
-
-//void DoctorDataBase::selectProfile(QString profileName)
-//{
-//    if (isProfileExists(profileName) == true) {
-//        this->fullName = getProfileField(profileName, "fullname");
-//        this->specialization = getProfileField(profileName, "specialization");
-//        this->institutionName = getProfileField(profileName, "institutionName");
-//        this->institutionAddress = getProfileField(profileName, "institutionAddress");
-//        this->institutionCode = getProfileField(profileName, "institutionCode");
-//        this->inn = getProfileField(profileName, "inn");
-//        this->licenseInfo = getProfileField(profileName, "licenseInfo");
-//        this->diagnosesData = getArray(profileName, "diagnoses");
-//        this->treatmentsData = getArray(profileName, "treatments");
-
-//        qDebug() << "Salus: [DoctorDataBase.h] selectProfile() - Profile " << profileName << " selected\n";
-//    }
-//    else {
-//        qDebug() << "Salus: [DoctorDataBase.h] selectProfile() - can't select non-existing profile (" << profileName << ")\n";
-//        return;
-//    }
-//}
-
-//void DoctorDataBase::updateProfile(QString key, QString value)
-//{
-//    QJsonDocument doc = loadJson();
-//    QJsonArray array = doc.array();
-//    QJsonObject currentObj;
-
-//    for (int i = 0; i < array.size(); ++i) {
-//        for (auto j = array.cbegin(); j < array.cend(); ++j) {
-//            currentObj = j->toObject();
-
-//            if ((currentObj["fullname"] == this->fullName)) {
-//                if (currentObj[key] == value) {
-//                    qDebug() << "Salus: [DoctorDataBase.h] updateProfile() - value " << value << " is equal to profile's value (" << currentObj[key].toString() << ")\n";
-//                    return;
-//                }
-//                currentObj[key] = value;
-//                array.replace(i, currentObj);
-
-//                qDebug() << "Salus: [DoctorDataBase.h] updateProfile() - Saving updated key...\n";
-//                saveProfileToJson(array);
-
-//                qDebug() << "Salus: [DoctorDataBase.h] updateProfile() - object's info (" << key << ") updated\n";
-//            }
-//        }
-//    }
-//}
-
-//QString DoctorDataBase::getProfileField(QString fullname, QString key)
-//{
-//    QJsonDocument doc = loadJson();
-//    QJsonArray array = doc.array();
-//    QString field;
-
-//    foreach (const QJsonValue &v, array) {
-//        if (v["fullname"] == fullname) {
-//            field = v[key].toString();
-//        }
-//        else if (v["fullname"] != fullname) {
-//            continue;
-//        }
-//        else {
-//            qDebug() << "Salus: [DoctorDataBase.h] getProfileField() - Can't take a field from non-existing profile (" << fullName << ")\n";
-//            break;
-//        }
-
-//    }
-
-//    return !field.isEmpty() ? field : nullptr;
-//}
-
-//QString DoctorDataBase::getProfileShortName()
-//{
-//    QString shortName;
-
-//    if (isProfileExists(this->fullName) == true) {
-//        QString firstName;
-//        QString lastNameLetter;
-//        QString middleNameLetter;
-
-//        QString fullname = getProfileField(this->fullName, "fullname");
-//        QStringList sl = fullname.split(' ', Qt::SkipEmptyParts);
-
-//        firstName = sl[0];
-//        lastNameLetter = sl[1].at(0);
-//        middleNameLetter = sl[2].at(0);
-
-//        shortName = lastNameLetter + '.' + middleNameLetter + "." + firstName;
-
-//    }
-//    else {
-//        qDebug() << "Salus: [DoctorDataBase.h] getProfileShortName() - Can't get name from non-existing profile (" << this->fullName << ")\n";
-//    }
-
-//    return !shortName.isEmpty() ? shortName : nullptr;
-//}
 
 bool DoctorDataBase::isProfileExists(quint16 inn)
 {
@@ -487,15 +294,3 @@ bool DoctorDataBase::isProfileExists(quint16 inn)
         }
     return false;
 }
-
-//bool DoctorDataBase::isArrayItemExists(QJsonArray data, QString value)
-//{
-//    bool isExists = false;
-//    int i = 0;
-
-//    while((i < data.size()) && (isExists == false)) {
-//        isExists = (data[i] == value);
-//        i++;
-//    }
-//    return isExists;
-//}
