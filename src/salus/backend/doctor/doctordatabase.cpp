@@ -5,6 +5,59 @@ DoctorDataBase::DoctorDataBase(QObject *parent) : QObject(parent)
     getDoctorsListFromJson();
 }
 
+DoctorDataBase::~DoctorDataBase()
+{
+    updateDbToFile();
+}
+
+/**
+ * @brief Обновляет данные БД врачей в doctors.json
+ */
+void DoctorDataBase::updateDbToFile()
+{
+    QJsonDocument jsonDocument;
+    QJsonArray jsonArray = jsonDocument.array();
+
+    foreach (Doctor doctorProfile, *doctorsList)
+    {
+        QJsonObject DoctorProfileObj;
+
+        DoctorProfileObj.insert("fullname", doctorProfile.fullName);
+        DoctorProfileObj.insert("specialization", doctorProfile.specialization);
+        DoctorProfileObj.insert("institutionName", doctorProfile.institutionName);
+        DoctorProfileObj.insert("institutionCode", doctorProfile.institutionCode);
+        DoctorProfileObj.insert("institutionAddress", doctorProfile.institutionAddress);
+        DoctorProfileObj.insert("inn", doctorProfile.inn);
+        DoctorProfileObj.insert("licenseInfo", doctorProfile.licenseInfo);
+        DoctorProfileObj.insert("initials", doctorProfile.initials);
+
+        jsonArray.append(DoctorProfileObj);
+
+        jsonDocument.setArray(jsonArray);
+
+        QFile jsonFile(JSON_DOCTOR_FILE_PATH);
+        jsonFile.open(QFile::WriteOnly);
+        jsonFile.write(jsonDocument.toJson());
+        jsonFile.close();
+    }
+
+    jsonDocument.setArray(jsonArray);
+
+    QFileInfo fInfo(JSON_DOCTOR_FILE_PATH);
+    QFile jsonFile(JSON_DOCTOR_FILE_PATH);
+
+    if (fInfo.exists() == true)
+    {
+        jsonFile.remove();
+        jsonFile.open(QFile::WriteOnly);
+        jsonFile.write(jsonDocument.toJson());
+        jsonFile.close();
+    }
+
+    qDebug() << "[DoctorDataBase::updateDbToFile()] - Database updated\n";
+
+}
+
 /**
  * @brief Создаёт новый профиль врача
  * @param fullName
@@ -246,6 +299,12 @@ void DoctorDataBase::getDoctorsListFromJson()
         currentProfile.licenseInfo = currentObj["licenseInfo"].toString();
         currentProfile.inn = currentObj["inn"].toInt();
         currentProfile.initials = currentObj["initials"].toString();
+
+        if (currentProfile.initials == "")
+        {
+            QString initials = generateInitials(currentProfile.fullName);
+            currentProfile.initials = initials;
+        }
 
         doctorsList->append(currentProfile);
     }

@@ -35,9 +35,11 @@ private:
 
 public:
     explicit DoctorDataBase(QObject *parent = nullptr);
+    ~DoctorDataBase();
 
     QList<Doctor>* doctorsList = nullptr;
 
+    void updateDbToFile();
     void createNewProfile(QString fullName, QString specialization,
                           QString institutionName, quint16 institutionCode, QString institutionAddress,
                           quint16 inn, QString licenseInfo);
