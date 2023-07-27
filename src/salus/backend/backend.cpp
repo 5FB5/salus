@@ -1,14 +1,7 @@
 #include "backend.h"
 
 Backend::Backend(QObject *parent) : QObject(parent)
-{
-    // Проверка профиля на запуске
-    if (doctorDb.doctorsList->size() > 0)
-    {
-        if (doctorDb.doctorsList->size() == 1)
-            currentDoctorInn = doctorDb.getInn();
-    }
-
+{    
     glossaryDb = new GlossaryDatabase;
     patientsDb = new PatientDataBase;
 
@@ -24,6 +17,13 @@ Backend::Backend(QObject *parent) : QObject(parent)
     glossaryTreatmentsFilteredListModel = new QStringListModel();
     glossarySymptomsFilteredListModel = new QStringListModel();
     glossaryUserFilteredListModel = new QStringListModel();
+
+    // Проверка профиля на запуске
+    if (doctorDb.doctorsList->size() > 0)
+    {
+        if (doctorDb.doctorsList->size() == 1)
+            setCurrentDoctorInn(doctorDb.getInn());
+    }
 
     patientListModel->patientDb.patientsList = patientsDb->patientsList;
     patientRecordsListModel->setStringList(getCurrentPatientRecords());
@@ -80,6 +80,16 @@ void Backend::addPropertiesToContext(QQmlContext *context)
     context->setContextProperty("glossaryTreatmentsFilteredListModel", glossaryTreatmentsFilteredListModel);
     context->setContextProperty("glossarySymptomsFilteredListModel", glossarySymptomsFilteredListModel);
     context->setContextProperty("glossaryUserFilteredListModel", glossaryUserFilteredListModel);
+}
+
+
+void Backend::setCurrentDoctorInn(quint16 inn)
+{
+    currentDoctorInn = inn;
+
+    QString initials = doctorDb.getProfileInitials(currentDoctorInn);
+    patientsDb->setCurrentDoctorInitials(initials);
+    qDebug() << "[Backend::setCurrentDoctorInn] INN changed";
 }
 
 void Backend::setPatient(QString fullName)
@@ -354,11 +364,6 @@ void Backend::deletePatient()
     patientsDb->updateDbToFile();
     emit patientDeleted();
     qDebug() << "[Backend::deletePatient()] - Patient deleted from DB\n";
-}
-
-void Backend::setCurrentDoctorInn(quint16 inn)
-{
-    currentDoctorInn = inn;
 }
 
 bool Backend::getIsDoctorDbExists()

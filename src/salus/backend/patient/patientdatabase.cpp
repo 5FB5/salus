@@ -237,6 +237,11 @@ bool PatientDataBase::deletePatient(QString birthDate)
     return false;
 }
 
+void PatientDataBase::setCurrentDoctorInitials(QString initials)
+{
+    currentDoctorInitials = initials;
+}
+
 QString PatientDataBase::getFullName(QString birthDate)
 {
     if (patientsList->isEmpty() == true)
@@ -622,15 +627,17 @@ void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
     QString treatment = recIt.treatment;
     QString array[5]; // Массив для поля "Лечение"
 
+    const int arraySize = 5;
+
     // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
     // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
     if (treatment.length() <= CARD_FIRST_FIELD_CHAR_COUNT + 29)
     {
         array[0] = treatment;
-        array[1] = ".";
-        array[2] = ".";
-        array[3] = ".";
-        array[4] = ".";
+        array[1] = "ㅤ";
+        array[2] = "ㅤ";
+        array[3] = "ㅤ";
+        array[4] = "ㅤ";
     }
     else
     {
@@ -649,7 +656,7 @@ void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
         }
 
         // Заполняем элемент массива, пока не дошли до спец. символа
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < arraySize; i++)
         {
             int counter = 0;
             QString chars;
@@ -684,7 +691,7 @@ void PatientDataBase::fillTreatment(Record_t recIt, QString *html)
     {
         it.remove("$");
         if (it == "")
-            it = ".";
+            it = "ㅤ";
     }
 
     html->replace("МЕТКА_ЛЕЧЕНИЕ1", array[0]);
@@ -704,15 +711,17 @@ void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
     QString treatmentResult = recIt.treatmentResult;
     QString array[5]; // Массив для поля "Результаты лечения (эпикриз)"
 
+    const int arraySize = 5;
+
     // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
     // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
     if (treatmentResult.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
     {
         array[0] = treatmentResult;
-        array[1] = ".";
-        array[2] = ".";
-        array[3] = ".";
-        array[4] = ".";
+        array[1] = "ㅤ";
+        array[2] = "ㅤ";
+        array[3] = "ㅤ";
+        array[4] = "ㅤ";
     }
     else
     {
@@ -731,7 +740,7 @@ void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
         }
 
         // Заполняем элемент массива, пока не дошли до спец. символа
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < arraySize; i++)
         {
             int counter = 0;
             QString chars;
@@ -766,7 +775,7 @@ void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
     {
         it.remove("$");
         if (it == "")
-            it = ".";
+            it = "ㅤ";
     }
 
     html->replace("МЕТКА_ЭПИКРИЗ1", array[0]);
@@ -785,18 +794,20 @@ void PatientDataBase::fillTreatmentResult(Record_t recIt, QString *html)
 void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
 {
     QString inspection = recIt.diseases;
-    QString array[5]; // Массив для поля "Внешний осмотр"
+    QString array[4]; // Массив для поля "Внешний осмотр"
     QString array2[7]; // Массив для поля "Объективный осмотр"
+
+    const int arraySize = 4;
+    const int array2Size = 7;
 
     // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
     // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
     if (inspection.length() <= CARD_FIRST_FIELD_CHAR_COUNT)
     {
         array[0] = inspection;
-        array[1] = ".";
-        array[2] = ".";
-        array[3] = ".";
-        array[4] = ".";
+        array[1] = "ㅤ";
+        array[2] = "ㅤ";
+        array[3] = "ㅤ";
     }
     else
     {
@@ -815,7 +826,7 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
         }
 
         // Заполняем элемент массива, пока не дошли до спец. символа
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < arraySize; i++)
         {
             int counter = 0;
             QString chars;
@@ -850,22 +861,18 @@ void PatientDataBase::fillExternalInspection(Record_t recIt, QString *html)
     {
         it.remove("$");
         if (it == "")
-            it = ".";
+            it = "ㅤ";
     }
 
     html->replace("МЕТКА_ОСМОТР1", array[0]);
     html->replace("МЕТКА_ОСМОТР2", array[1]);
     html->replace("МЕТКА_ОСМОТР3", array[2]);
     html->replace("МЕТКА_ОСМОТР4", array[3]);
-    html->replace("МЕТКА_ОСМОТР5", array[4]);
 
-    html->replace("МЕТКА_ОБЪЕКТИВНО1", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО2", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО3", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО4", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО5", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО6", ".");
-    html->replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+    html->replace("МЕТКА_ОБЪЕКТИВНО1", "ㅤ");
+    html->replace("МЕТКА_ОБЪЕКТИВНО2", "ㅤ");
+    html->replace("МЕТКА_ОБЪЕКТИВНО3", "ㅤ");
+    html->replace("МЕТКА_ОБЪЕКТИВНО4", "ㅤ");
 }
 
 /**
@@ -879,11 +886,11 @@ void PatientDataBase::fillAnamnesis(Record_t recIt, QString *html)
     if (recIt.anamnesis.length() <= 101)
     {
         if (recIt.anamnesis.length() <= 10)
-            html->replace("МЕТКА_АНАМНЕЗ1", ".");
+            html->replace("МЕТКА_АНАМНЕЗ1", "ㅤ");
         else
             html->replace("МЕТКА_АНАМНЕЗ1", recIt.anamnesis);
 
-        html->replace("МЕТКА_АНАМНЕЗ2", ".");
+        html->replace("МЕТКА_АНАМНЕЗ2", "ㅤ");
     }
     else
     {
@@ -910,15 +917,17 @@ void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
     QString complaints = recIt.complaints;
     QString array[5]; // Массив для поля "Жалобы"
 
+    const int arraySize = 5;
+
     // Если строка больше размера первой строки, то делаем разметку спец. символами и распределяем строки в массив
     // FIXME: Первые две строки на 92 и 113 символа размечаются корректно, но потом разметка идёт на 114-ом символе
     if (complaints.length() <= CARD_FIRST_FIELD_CHAR_COUNT + 9)
     {
         array[0] = complaints;
-        array[1] = ".";
-        array[2] = ".";
-        array[3] = ".";
-        array[4] = ".";
+        array[1] = "ㅤ";
+        array[2] = "ㅤ";
+        array[3] = "ㅤ";
+        array[4] = "ㅤ";
     }
     else
     {
@@ -937,7 +946,7 @@ void PatientDataBase::fillComplaints(Record_t recIt, QString *html)
         }
 
         // Заполняем элемент массива, пока не дошли до спец. символа
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < arraySize; i++)
         {
             int counter = 0;
             QString chars;
@@ -1050,14 +1059,15 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
             html.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
 
-            html.replace("МЕТКА_СОСТОЯНИЕ", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ2", "");
 
             html.replace("МЕТКА_ПРИКУС", "");
 
-            html.replace("МЕТКА_РЕНТГЕН1", "");
-            html.replace("МЕТКА_РЕНТГЕН2", "");
-            html.replace("МЕТКА_РЕНТГЕН3", "");
-            html.replace("МЕТКА_РЕНТГЕН4", "");
+            html.replace("МЕТКА_РЕНТГЕН_1", "");
+            html.replace("МЕТКА_РЕНТГЕН_2", "");
+            html.replace("МЕТКА_РЕНТГЕН_3", "");
+            html.replace("МЕТКА_РЕНТГЕН_4", "");
             break;
         }
         case 3:
@@ -1080,13 +1090,13 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
             html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-            html.replace("МЕТКА_ВРАЧ", ".");
+            html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
             html.replace("МЕТКА_ЗАВЕДУЩ", ".");
             break;
         }
         case 4:
         {
-            html.replace("МЕТКА_ДАТА", "");
+            html.replace("МЕТКА_ДАТА", ".");
 
             html.replace("МЕТКА_ЖАЛОБЫ1", ".");
             html.replace("МЕТКА_ЖАЛОБЫ2", ".");
@@ -1110,6 +1120,14 @@ void PatientDataBase::generatePage(QString birthDate, QString path, int pageNumb
             html.replace("МЕТКА_ОБЪЕКТИВНО5", ".");
             html.replace("МЕТКА_ОБЪЕКТИВНО6", ".");
             html.replace("МЕТКА_ОБЪЕКТИВНО7", ".");
+
+            html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+            html.replace("МЕТКА_СОСТОЯНИЕ2", "");
+
+            html.replace("МЕТКА_РЕНТГЕН_1", "");
+            html.replace("МЕТКА_РЕНТГЕН_2", "");
+            html.replace("МЕТКА_РЕНТГЕН_3", "");
+            html.replace("МЕТКА_РЕНТГЕН_4", "");
 
             html.replace("МЕТКА_РЕНТГЕН1", ".");
             html.replace("МЕТКА_РЕНТГЕН2", ".");
@@ -1158,6 +1176,14 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     fillAnamnesis(record, &html);
     fillExternalInspection(record, &html);
 
+    html.replace("МЕТКА_СОСТОЯНИЕ1", "");
+    html.replace("МЕТКА_СОСТОЯНИЕ2", "");
+
+    html.replace("МЕТКА_РЕНТГЕН_1", "");
+    html.replace("МЕТКА_РЕНТГЕН_2", "");
+    html.replace("МЕТКА_РЕНТГЕН_3", "");
+    html.replace("МЕТКА_РЕНТГЕН_4", "");
+
     html.replace("МЕТКА_РЕНТГЕН1", ".");
     html.replace("МЕТКА_РЕНТГЕН2", ".");
     html.replace("МЕТКА_РЕНТГЕН3", ".");
@@ -1190,14 +1216,13 @@ void PatientDataBase::generateDiary(Record_t record, QString path)
     fillTreatment(record, &html);
     fillTreatmentResult(record, &html);
 
-    // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
     html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
     html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-    html.replace("МЕТКА_ВРАЧ", ".");
+    html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
     html.replace("МЕТКА_ЗАВЕДУЩ", ".");
 
     webView->setHtml(html);
@@ -1275,6 +1300,11 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
         fillAnamnesis(recIt, &html);
         fillExternalInspection(recIt, &html);
 
+        html.replace("МЕТКА_РЕНТГЕН_1", "");
+        html.replace("МЕТКА_РЕНТГЕН_2", "");
+        html.replace("МЕТКА_РЕНТГЕН_3", "");
+        html.replace("МЕТКА_РЕНТГЕН_4", "");
+
         html.replace("МЕТКА_РЕНТГЕН1", ".");
         html.replace("МЕТКА_РЕНТГЕН2", ".");
         html.replace("МЕТКА_РЕНТГЕН3", ".");
@@ -1308,14 +1338,13 @@ void PatientDataBase::generateDiary(QString birthDate, std::vector<std::string> 
         fillTreatment(recIt, &html);
         fillTreatmentResult(recIt, &html);
 
-        // TODO: Возможно сделать заполнение полей "Наставления", "Лечащий врач", "Заведующий отделением"
         html.replace("МЕТКА_НАСТАВЛЕНИЯ1", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ2", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ3", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ4", ".");
         html.replace("МЕТКА_НАСТАВЛЕНИЯ5", ".");
 
-        html.replace("МЕТКА_ВРАЧ", ".");
+        html.replace("МЕТКА_ВРАЧ", currentDoctorInitials);
         html.replace("МЕТКА_ЗАВЕДУЩ", ".");
 
         webView->setHtml(html);
@@ -1419,14 +1448,19 @@ void PatientDataBase::generateFullCard(QString birthDate, QString path)
     html1.replace("МЕТКА_ИССЛЕДОВАНИЕ6", "");
     html1.replace("МЕТКА_ИССЛЕДОВАНИЕ7", "");
 
-    html1.replace("МЕТКА_СОСТОЯНИЕ", "");
+    html1.replace("МЕТКА_СОСТОЯНИЕ1", "");
+    html1.replace("МЕТКА_СОСТОЯНИЕ2", "");
 
     html1.replace("МЕТКА_ПРИКУС", "");
 
-    html1.replace("МЕТКА_РЕНТГЕН1", "");
-    html1.replace("МЕТКА_РЕНТГЕН2", "");
-    html1.replace("МЕТКА_РЕНТГЕН3", "");
-    html1.replace("МЕТКА_РЕНТГЕН4", "");
+    html1.replace("МЕТКА_РЕНТГЕН_1", "");
+    html1.replace("МЕТКА_РЕНТГЕН_2", "");
+    html1.replace("МЕТКА_РЕНТГЕН_3", "");
+    html1.replace("МЕТКА_РЕНТГЕН_4", "");
+
+    html1.replace("МЕТКА_РЕНТГЕН1", ".");
+    html1.replace("МЕТКА_РЕНТГЕН2", ".");
+    html1.replace("МЕТКА_РЕНТГЕН3", ".");
 
     webView->setHtml(html1);
     loop.exec();
