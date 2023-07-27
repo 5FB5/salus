@@ -101,4 +101,42 @@ Page
             find(formattedName) !== -1 ? openCurrentMedicalCard(formattedName) : registerMedicalCard(formattedName);
         }
     }
+
+    Button
+    {
+        id: buttonChoosePatient
+
+        anchors
+        {
+            top: combobox_patients.top
+            bottom: combobox_patients.bottom
+            left: combobox_patients.right
+            leftMargin: 5
+        }
+
+        contentItem: Text
+        {
+            font.pointSize: 13
+            opacity: enabled ? 1.0 : 0.3
+            color: buttonChoosePatient.down ? buttonTextPressedColor : "#007AFF"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: "Открыть карту"
+        }
+
+        background: Rectangle
+        {
+            anchors.fill: parent
+            radius: 14
+            color: buttonChoosePatient.down ? buttonPressedColor : buttonDefaultColor
+        }
+
+        width: 150
+
+        onClicked: function()
+        {
+            combobox_patients.accepted();
+        }
+    }
 }
